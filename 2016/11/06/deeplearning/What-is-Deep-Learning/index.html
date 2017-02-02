@@ -1,0 +1,815 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="深度学习," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="业精于勤，行成于思" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="本篇将对深度学习进行简要的介绍，通过阅读本篇内容您将了解到：- 什么是深度学习；- 深度学习研究领域的几位大牛前辈；- 更多关于深度学习的详细介绍资料；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="什么是深度学习?">
+<meta property="og:url" content="http://yoursite.com/2016/11/06/deeplearning/What-is-Deep-Learning/index.html">
+<meta property="og:site_name" content="业精于勤，行成于思">
+<meta property="og:description" content="本篇将对深度学习进行简要的介绍，通过阅读本篇内容您将了解到：- 什么是深度学习；- 深度学习研究领域的几位大牛前辈；- 更多关于深度学习的详细介绍资料；">
+<meta property="og:image" content="http://yoursite.com/2016/11/06/deeplearning/What-is-Deep-Learning/dl-intro.png">
+<meta property="og:image" content="http://yoursite.com/2016/11/06/deeplearning/What-is-Deep-Learning/andrewng.jpg">
+<meta property="og:image" content="http://yoursite.com/2016/11/06/deeplearning/What-is-Deep-Learning/Why-Deep-Learning-1024x742.png">
+<meta property="og:image" content="http://yoursite.com/2016/11/06/deeplearning/What-is-Deep-Learning/bengio-yoshua.jpg">
+<meta property="og:image" content="http://yoursite.com/2016/11/06/deeplearning/What-is-Deep-Learning/yannlecun.jpg">
+<meta property="og:image" content="http://yoursite.com/2016/11/06/deeplearning/What-is-Deep-Learning/dl01.png">
+<meta property="og:image" content="http://yoursite.com/2016/11/06/deeplearning/What-is-Deep-Learning/dl02.png">
+<meta property="og:image" content="http://yoursite.com/2016/11/06/deeplearning/What-is-Deep-Learning/geoff-hinton.jpg">
+<meta property="og:image" content="http://yoursite.com/2016/11/06/deeplearning/What-is-Deep-Learning/deeplearningpioneers.jpg">
+<meta property="og:updated_time" content="2017-02-02T14:18:05.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="什么是深度学习?">
+<meta name="twitter:description" content="本篇将对深度学习进行简要的介绍，通过阅读本篇内容您将了解到：- 什么是深度学习；- 深度学习研究领域的几位大牛前辈；- 更多关于深度学习的详细介绍资料；">
+<meta name="twitter:image" content="http://yoursite.com/2016/11/06/deeplearning/What-is-Deep-Learning/dl-intro.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: 'Author'
+    }
+  };
+</script>
+
+  <title> 什么是深度学习? | 业精于勤，行成于思 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">业精于勤，行成于思</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                什么是深度学习?
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-11-06T20:58:12+08:00" content="2016-11-06">
+              2016-11-06
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/《深度学习入门教程》/" itemprop="url" rel="index">
+                    <span itemprop="name">《深度学习入门教程》</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <img src="/2016/11/06/deeplearning/What-is-Deep-Learning/dl-intro.png" alt="dl-intro.png" title=""> <br>本篇将对深度学习进行简要的介绍，通过阅读本篇内容您将了解到：<br>- 什么是深度学习；<br>- 深度学习研究领域的几位大牛前辈；<br>- 更多关于深度学习的详细介绍资料；<br><a id="more"></a>
+<h1 id="深度学习是什么？"><a href="#深度学习是什么？" class="headerlink" title="深度学习是什么？"></a>深度学习是什么？</h1><p>深度学习（Deep Learning）是机器学习（Machine Learning）的子集。深度学习所实现的算法主要受到动物大脑神经网络的启发，常被称为人工神经网络。<br>近年来深度学习在学术界和工业界的卓越表现少不了业界专家的努力和付出，所以深度学习到底是什么，还是听听几位大牛们的见解更有味道。</p>
+<h1 id="深度学习是大规模神经网络"><a href="#深度学习是大规模神经网络" class="headerlink" title="深度学习是大规模神经网络"></a>深度学习是大规模神经网络</h1><p><img src="/2016/11/06/deeplearning/What-is-Deep-Learning/andrewng.jpg" alt="andrewng.jpg" title=""> <a href="https://en.wikipedia.org/wiki/Andrew_Ng" target="_blank" rel="external">Andrew Ng</a> 百度首席科学家，曾在 Google 创建了 Google Brain 项目，应用于众多谷歌服务当中。<br>Andrew 认为我们现在已经具备了足够多的计算资源和海量数据用于大规模神经网络训练，随着训练数据量的递增，神经网络的性能也会随之增加，这一点相比于传统的机器学习具有明显的优势。<br><img src="/2016/11/06/deeplearning/What-is-Deep-Learning/Why-Deep-Learning-1024x742.png" alt="Why-Deep-Learning-1024x742.png" title=""> Andrew 还经常强调的是，当前我们取得的成果还多数来自“监督”学习领域，而在伴随着海量未标记数据产生的“非监督”学习领域深度学习将会带来更多可喜的表现。</p>
+<h1 id="深度学习是多层级表征学习"><a href="#深度学习是多层级表征学习" class="headerlink" title="深度学习是多层级表征学习"></a>深度学习是多层级表征学习</h1><p><img src="/2016/11/06/deeplearning/What-is-Deep-Learning/bengio-yoshua.jpg" alt="bengio-yoshua.jpg" title=""> <a href="https://en.wikipedia.org/wiki/Yoshua_Bengio" target="_blank" rel="external">Yoshua Bengio</a>，一位更专注于特征学习的大牛，他所强调的是深度学习可以对原始数据进行自动特征提取，也叫特征学习<a href="https://en.wikipedia.org/wiki/Feature_learning" target="_blank" rel="external">（feature learning）</a>。深度学习的特征学习是通过多层神经网络自动完成的，每一层神经元s会对输入数据进行特征提取并输出给后一层，后一层对传递来的各种特征（基础上）再次进行提取归纳，然后继续传递给后一层，层级数量一般视具体问题和训练调优效果而定。这种通过层级归纳的方式对所处理的原始数据往往具有很好的表征作用，相当于整个网络对所处理的数据形成了自己的概念和理解。<br><img src="/2016/11/06/deeplearning/What-is-Deep-Learning/yannlecun.jpg" alt="yannlecun.jpg" title=""> <a href="https://en.wikipedia.org/wiki/Yann_LeCun" target="_blank" rel="external">Yann LeCun</a>，Facebook AI 研究主管，<a href="https://en.wikipedia.org/wiki/Convolutional_neural_network" target="_blank" rel="external">Convolutional Neural Network (CNN)</a> 之父，对深度学习与传统的神经网络为我们做了更直观的对比和解释：<img src="/2016/11/06/deeplearning/What-is-Deep-Learning/dl01.png" alt="dl01.png" title=""> <img src="/2016/11/06/deeplearning/What-is-Deep-Learning/dl02.png" alt="dl02.png" title=""><a href="https://www.youtube.com/watch?v=Qk4SqF9FT-M" target="_blank" rel="external">Accelerating Understanding:深度学习, Intelligent Applications, and GPUs</a></p>
+<h1 id="为什么叫-“Deep”-Learning"><a href="#为什么叫-“Deep”-Learning" class="headerlink" title="为什么叫 “Deep” Learning?"></a>为什么叫 “Deep” Learning?</h1><p><img src="/2016/11/06/deeplearning/What-is-Deep-Learning/geoff-hinton.jpg" alt="geoff-hinton.jpg" title=""> <a href="https://en.wikipedia.org/wiki/Geoffrey_Hinton" target="_blank" rel="external">Geoffrey Hinton </a>，人工神经网络的开拓者，反向传播算<a href="https://en.wikipedia.org/wiki/Backpropagation" target="_blank" rel="external">(Backpropagation)</a>法发明人之一，可以说是最早提到 “deep” 一词来描述他们研究的大规模神经网络的。“Deep” 简单的说就是<strong>多层级</strong>表征学习，这也是相比于传统人工神经网络最大的不同之处。那为什么 “deep” 神经网络直到近些年才表现的如此突出呢？这还要回到上文Andrew Ng提到的，一切都是“时势使然”（充足的计算资源＋海量数据）。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>深度学习是一种多层级表证学习神经网络，称 “Deep” 是因为层级多、计算量大、训练数据多、表证特征多。Deep Learning 当前广为应用的算法主要有：</p>
+<ul>
+<li>Multilayer Perceptron Networks（多层感知器网络）</li>
+<li>Convolutional Neural Networks（卷积神经网络）</li>
+<li>Long Short-Term Memory Recurrent Neural Networks（短时记忆循环神经网络）</li>
+</ul>
+<p>希望通过阅读这篇文章您对深度学习有了初步的了解和认识。<br><img src="/2016/11/06/deeplearning/What-is-Deep-Learning/deeplearningpioneers.jpg" alt="deeplearningpioneers.jpg" title=""> AI 大牛难得一聚 (☆▽☆)</p>
+<h1 id="更多参考"><a href="#更多参考" class="headerlink" title="更多参考"></a>更多参考</h1><ul>
+<li><a href="http://www.cs.toronto.edu/~hinton/absps/NatureDeepReview.pdf" target="_blank" rel="external">Deep learning</a></li>
+<li><a href="https://manning-content.s3.amazonaws.com/download/6/f28e668-01fb-4b28-b8e1-2cbf110557e5/Chollet_DLwPython_MEAP_V01_ch1.pdf" target="_blank" rel="external">Deep Learning with Python - Part 1: What is Deep Learning</a></li>
+<li><a href="http://machinelearningmastery.com/what-is-deep-learning" target="_blank" rel="external">What is 深度学习?</a></li>
+<li><a href="https://www.youtube.com/watch?v=n1ViNeWhC24" target="_blank" rel="external">Deep Learning, Self-Taught Learning and Unsupervised Feature Learning</a></li>
+<li><a href="https://www.youtube.com/watch?v=O0VN0pGgBZM" target="_blank" rel="external">What data scientists should know about深度学习</a></li>
+<li><a href="http://www.slideshare.net/ExtractConf" target="_blank" rel="external">What data scientists should know about深度学习PPT</a></li>
+<li><a href="https://www.youtube.com/watch?v=W15K9PegQt0" target="_blank" rel="external">Invited Talk: Andrew Ng (Stanford University):深度学习</a></li>
+<li><a href="https://www.youtube.com/watch?v=QSaZGT4-6EY" target="_blank" rel="external">Deep Learning for Building Intelligent Computer Systems</a></li>
+<li><a href="https://www.youtube.com/watch?v=VhmE_UXDOGs" target="_blank" rel="external">Prof. Geoff Hinton -深度学习</a></li>
+<li><a href="https://www.youtube.com/watch?v=Qk4SqF9FT-M" target="_blank" rel="external">Accelerating Understanding:深度学习, Intelligent Applications, and GPUs</a></li>
+<li><a href="http://www.slideshare.net/tw_dsconf/ss-62245351" target="_blank" rel="external">一天搞懂深度学习</a></li>
+<li><a href="http://www.deeplearningbook.org/" target="_blank" rel="external">Deep Learning Book</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+<! -- 添加捐赠图标 -->
+    
+    
+
+    <div class ="post-donate">
+      <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="Donate 打赏"></a>
+        <span class="donate_txt">
+           &uarr;<br>
+           
+            豪赏本篇文章（¥ 0.99）
+           
+        </span>
+        <br>
+      </div>
+
+      <div id="donate_guide" class="donate_bar center hidden">
+        
+
+      
+       <a href="/images/wechat.png" title="微信打赏（¥ 0.99）" class="fancybox" rel="article0">
+         <img src="/images/wechat.png" title="微信打赏（¥ 0.99）" height="164px" width="164px">
+       </a>
+      
+
+      </div>
+
+      <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+          $('#donate_board').addClass('hidden');
+          $('#donate_guide').removeClass('hidden');
+        }
+      </script>
+    </div>
+
+    
+
+<! -- end 添加捐赠图标 --> 
+
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag">#深度学习</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/06/deeplearning/deep-learning-tutorial-introduction/" rel="next" title="深度学习教程简介">
+                <i class="fa fa-chevron-left"></i> 深度学习教程简介
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/20/deeplearning/Keras-Introduction/" rel="prev" title="Keras 简介">
+                Keras 简介 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/default_avatar.jpg"
+               alt="Yangguang" />
+          <p class="site-author-name" itemprop="name">Yangguang</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yangguang2009" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://stackoverflow.com/users/4869784/yangguang" target="_blank">
+                  
+                    <i class="fa fa-stackoverflow"></i> Stackoverflow
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#深度学习是什么？"><span class="nav-number">1.</span> <span class="nav-text">深度学习是什么？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#深度学习是大规模神经网络"><span class="nav-number">2.</span> <span class="nav-text">深度学习是大规模神经网络</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#深度学习是多层级表征学习"><span class="nav-number">3.</span> <span class="nav-text">深度学习是多层级表征学习</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#为什么叫-“Deep”-Learning"><span class="nav-number">4.</span> <span class="nav-text">为什么叫 “Deep” Learning?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#更多参考"><span class="nav-number">6.</span> <span class="nav-text">更多参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yangguang</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+
+</body>
+</html>

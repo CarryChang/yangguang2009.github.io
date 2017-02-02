@@ -1,0 +1,816 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="深度学习," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="业精于勤，行成于思" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="本篇将对 Keras 进行简要的介绍，通过阅读本篇内容您将了解到：- Keras 简要介绍；- Keras 基本概念；- Keras 设计思想；- Keras 安装运行；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Keras 简介">
+<meta property="og:url" content="http://yoursite.com/2016/11/20/deeplearning/Keras-Introduction/index.html">
+<meta property="og:site_name" content="业精于勤，行成于思">
+<meta property="og:description" content="本篇将对 Keras 进行简要的介绍，通过阅读本篇内容您将了解到：- Keras 简要介绍；- Keras 基本概念；- Keras 设计思想；- Keras 安装运行；">
+<meta property="og:image" content="http://yoursite.com/2016/11/20/deeplearning/Keras-Introduction/keras.jpg">
+<meta property="og:updated_time" content="2017-02-02T14:18:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Keras 简介">
+<meta name="twitter:description" content="本篇将对 Keras 进行简要的介绍，通过阅读本篇内容您将了解到：- Keras 简要介绍；- Keras 基本概念；- Keras 设计思想；- Keras 安装运行；">
+<meta name="twitter:image" content="http://yoursite.com/2016/11/20/deeplearning/Keras-Introduction/keras.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: 'Author'
+    }
+  };
+</script>
+
+  <title> Keras 简介 | 业精于勤，行成于思 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">业精于勤，行成于思</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Keras 简介
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-11-20T21:18:02+08:00" content="2016-11-20">
+              2016-11-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/《深度学习入门教程》/" itemprop="url" rel="index">
+                    <span itemprop="name">《深度学习入门教程》</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <img src="/2016/11/20/deeplearning/Keras-Introduction/keras.jpg" alt="keras.jpg" title=""> <br>本篇将对 Keras 进行简要的介绍，通过阅读本篇内容您将了解到：<br>- Keras 简要介绍；<br>- Keras 基本概念；<br>- Keras 设计思想；<br>- Keras 安装运行；<br><a id="more"></a>
+<h1 id="Keras-是什么？"><a href="#Keras-是什么？" class="headerlink" title="Keras 是什么？"></a>Keras 是什么？</h1><p><a href="https://keras.io/" target="_blank" rel="external">Keras</a> 是由纯 Python 编写的神经网络库，专注于深度学习，运行在 TensorFlow 或 Theano 之上。<br><a href="https://www.tensorflow.org/" target="_blank" rel="external">TensorFlow</a> 和 <a href="http://deeplearning.net/software/theano/" target="_blank" rel="external">Theano</a> 是当前比较流行的两大深度学习库，但是对初学者来说相对有些复杂。<br>Keras 使用简单，结构清晰，底层计算平台可基于 TensorFlow 或 Theano 之上，功能强大。<br>Keras 可运行于 Python 2.7 或 3.5 环境，完美结合于 GPU 和 CPU，基于 MIT license 发布。<br>Keras 由 Google 工程师 <a href="https://www.linkedin.com/in/fchollet" target="_blank" rel="external">François Chollet</a> 开发和维护。<br>以下是 Keras 的设计原则：</p>
+<ul>
+<li>模块化（Modularity）：一个模型（model）可以理解为一个独立的序列（sequence）或图，模型之间是相互独立的，可以自由组合。</li>
+<li>极简主义（Minimalism）：每个模块都应该尽量的简洁。每一段代码都应该在初次阅读时都显得直观易懂。没有黑魔法，因为它将给迭代和创新带来麻烦。</li>
+<li>易扩展（Extensibility）：添加新模块超级简单的容易，只需要仿照现有的模块编写新的类或函数即可。创建新模块的便利性使得Keras更适合于先进的研究工作。</li>
+<li>与 Python 协作：Keras 没有单独的模型配置文件类型（作为对比，caffe有），模型由 Python 代码描述，使其更加紧凑，易调试和易扩展。</li>
+</ul>
+<h1 id="Keras-安装"><a href="#Keras-安装" class="headerlink" title="Keras 安装"></a>Keras 安装</h1><p>Keras 的安装使用需要 Pyhton 及 SciPy 运行环境和 TensorFlow 或 Theano 的底层平台支持。<br>以下是配置安装的具体方法：</p>
+<h2 id="安装-TensorFlow-或-Theano"><a href="#安装-TensorFlow-或-Theano" class="headerlink" title="安装 TensorFlow 或 Theano"></a>安装 TensorFlow 或 Theano</h2><ul>
+<li><a href="https://github.com/tensorflow/tensorflow#download-and-setup" target="_blank" rel="external">Installation instructions for TensorFlow</a> </li>
+<li><a href="http://deeplearning.net/software/theano/install.html#install" target="_blank" rel="external">Installation instructions for Theano</a> </li>
+</ul>
+<h2 id="安装-Keras"><a href="#安装-Keras" class="headerlink" title="安装 Keras"></a>安装 Keras</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install keras</div></pre></td></tr></table></figure>
+<p><a href="https://pypi.python.org/pypi" target="_blank" rel="external">这里</a>可以了解更多 PyPI 相关内容    。<br>Keras 版本查看<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python -c &quot;import keras; print keras.__version__&quot;</div></pre></td></tr></table></figure></p>
+<p>Keras 版本更新<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install --upgrade keras</div></pre></td></tr></table></figure></p>
+<h2 id="TensorFlow-或-Theano-底层平台选择配置"><a href="#TensorFlow-或-Theano-底层平台选择配置" class="headerlink" title="TensorFlow 或 Theano 底层平台选择配置"></a>TensorFlow 或 Theano 底层平台选择配置</h2><p>Keras 底层平台计算选择哪个，可以通过 Keras 配置文件进行设置，文件具体位置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">~/.keras/keras.json</div></pre></td></tr></table></figure></p>
+<p>配置文件内容：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"image_dim_ordering"</span>: <span class="string">"tf"</span>, </div><div class="line">    <span class="attr">"epsilon"</span>: <span class="number">1e-07</span>, </div><div class="line">    <span class="attr">"floatx"</span>: <span class="string">"float32"</span>, </div><div class="line">    <span class="attr">"backend"</span>: <span class="string">"tensorflow"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>“backend” 配置项默认是 “tensorflow”，您也可以改为 “theano”，保存后当 Keras 下次运行时即可生效。</p>
+<h1 id="运行-Keras-模型"><a href="#运行-Keras-模型" class="headerlink" title="运行 Keras 模型"></a>运行 Keras 模型</h1><p>Keras 的核心概念是模型（model），深度学习模型的构建运行主要包括以下几个步骤：</p>
+<ul>
+<li>定义模型：创建一个序列（sequence），添加层s（layers）；</li>
+<li>编译模型：指定损失函数（loss function），优化器（optimizer）；</li>
+<li>训练模型：载入数据进行训练；</li>
+<li>模型预测：使用训练好的模型进行预测；</li>
+</ul>
+<p>Sequence 是主要模型之一，由层的线性栈构成，层加入的顺序即是运行计算之行的顺序。<br>当定义好 Sequence 之后，需要对模型进行编译来对学习过程进行配置，其中您可以指定损失函数和优化器等。<br>编译后的模型即可以载入数据进行训练了，通常这也是最需要计算资源的一步。<br>训练好的模型就可以拿来对新的数据做预测了！</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>通过本篇文章，您了解到了 Keras 是专注于深度学习简单易用的 Python 库。您对 Keras 的基本概念、设计思想、安装运行等方面有了基本的了解。<br>希望本篇对您在深度学习的学习中起到一定的帮助。</p>
+<h1 id="更多参考"><a href="#更多参考" class="headerlink" title="更多参考"></a>更多参考</h1><ul>
+<li><a href="https://keras.io/" target="_blank" rel="external">Keras 官网</a></li>
+<li><a href="https://github.com/fchollet/keras" target="_blank" rel="external">Keras Project on GitHub</a></li>
+<li><a href="https://groups.google.com/forum/#!forum/keras-users" target="_blank" rel="external">Keras User Group</a></li>
+<li><a href="https://keras-cn.readthedocs.io/en/latest/" target="_blank" rel="external">Keras 中文文档</a></li>
+<li><a href="https://www.manning.com/books/deep-learning-with-python" target="_blank" rel="external">Deep Learning with Python, Francois Chollet</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+<! -- 添加捐赠图标 -->
+    
+    
+
+    <div class ="post-donate">
+      <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="Donate 打赏"></a>
+        <span class="donate_txt">
+           &uarr;<br>
+           
+            豪赏本篇文章（¥ 0.99）
+           
+        </span>
+        <br>
+      </div>
+
+      <div id="donate_guide" class="donate_bar center hidden">
+        
+
+      
+       <a href="/images/wechat.png" title="微信打赏（¥ 0.99）" class="fancybox" rel="article0">
+         <img src="/images/wechat.png" title="微信打赏（¥ 0.99）" height="164px" width="164px">
+       </a>
+      
+
+      </div>
+
+      <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+          $('#donate_board').addClass('hidden');
+          $('#donate_guide').removeClass('hidden');
+        }
+      </script>
+    </div>
+
+    
+
+<! -- end 添加捐赠图标 --> 
+
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag">#深度学习</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/06/deeplearning/What-is-Deep-Learning/" rel="next" title="什么是深度学习?">
+                <i class="fa fa-chevron-left"></i> 什么是深度学习?
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/27/deeplearning/develop-neural-network-model-with-keras-step-by-step/" rel="prev" title="使用 Keras 手把手介绍神经网络构建">
+                使用 Keras 手把手介绍神经网络构建 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/default_avatar.jpg"
+               alt="Yangguang" />
+          <p class="site-author-name" itemprop="name">Yangguang</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yangguang2009" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://stackoverflow.com/users/4869784/yangguang" target="_blank">
+                  
+                    <i class="fa fa-stackoverflow"></i> Stackoverflow
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Keras-是什么？"><span class="nav-number">1.</span> <span class="nav-text">Keras 是什么？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Keras-安装"><span class="nav-number">2.</span> <span class="nav-text">Keras 安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-TensorFlow-或-Theano"><span class="nav-number">2.1.</span> <span class="nav-text">安装 TensorFlow 或 Theano</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-Keras"><span class="nav-number">2.2.</span> <span class="nav-text">安装 Keras</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TensorFlow-或-Theano-底层平台选择配置"><span class="nav-number">2.3.</span> <span class="nav-text">TensorFlow 或 Theano 底层平台选择配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#运行-Keras-模型"><span class="nav-number">3.</span> <span class="nav-text">运行 Keras 模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#更多参考"><span class="nav-number">5.</span> <span class="nav-text">更多参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yangguang</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+
+</body>
+</html>

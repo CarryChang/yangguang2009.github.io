@@ -1,0 +1,910 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="深度学习," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="业精于勤，行成于思" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="深度学习模型构建好之后，通常需要根据训练测试的结果对其进一步优化。本篇将主要介绍网络模型中大量参数设置调整优化（超参调优）的具体方法，及如何在超参调优中自动选出最好的模型配置。在通过阅读本篇内容您将了解到：- 模型参数调优的具体方法；- Keras 与 scikit-learn 库的结合使用方法；- GridSearchCV 在超参调优中的具体用法；- Hyperas 库介绍；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习超参调优技巧">
+<meta property="og:url" content="http://yoursite.com/2017/01/08/deeplearning/grid-search-hyperparameters-for-deep-learning/index.html">
+<meta property="og:site_name" content="业精于勤，行成于思">
+<meta property="og:description" content="深度学习模型构建好之后，通常需要根据训练测试的结果对其进一步优化。本篇将主要介绍网络模型中大量参数设置调整优化（超参调优）的具体方法，及如何在超参调优中自动选出最好的模型配置。在通过阅读本篇内容您将了解到：- 模型参数调优的具体方法；- Keras 与 scikit-learn 库的结合使用方法；- GridSearchCV 在超参调优中的具体用法；- Hyperas 库介绍；">
+<meta property="og:image" content="http://yoursite.com/2017/01/08/deeplearning/grid-search-hyperparameters-for-deep-learning/0.jpg">
+<meta property="og:updated_time" content="2017-02-02T14:14:29.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深度学习超参调优技巧">
+<meta name="twitter:description" content="深度学习模型构建好之后，通常需要根据训练测试的结果对其进一步优化。本篇将主要介绍网络模型中大量参数设置调整优化（超参调优）的具体方法，及如何在超参调优中自动选出最好的模型配置。在通过阅读本篇内容您将了解到：- 模型参数调优的具体方法；- Keras 与 scikit-learn 库的结合使用方法；- GridSearchCV 在超参调优中的具体用法；- Hyperas 库介绍；">
+<meta name="twitter:image" content="http://yoursite.com/2017/01/08/deeplearning/grid-search-hyperparameters-for-deep-learning/0.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: 'Author'
+    }
+  };
+</script>
+
+  <title> 深度学习超参调优技巧 | 业精于勤，行成于思 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">业精于勤，行成于思</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                深度学习超参调优技巧
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2017-01-08T20:01:03+08:00" content="2017-01-08">
+              2017-01-08
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/《深度学习入门教程》/" itemprop="url" rel="index">
+                    <span itemprop="name">《深度学习入门教程》</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <img src="/2017/01/08/deeplearning/grid-search-hyperparameters-for-deep-learning/0.jpg" alt="0.jpg" title=""> <br>深度学习模型构建好之后，通常需要根据训练测试的结果对其进一步优化。本篇将主要介绍网络模型中大量参数设置调整优化（超参调优）的具体方法，及如何在超参调优中自动选出最好的模型配置。在通过阅读本篇内容您将了解到：<br>- 模型参数调优的具体方法；<br>- Keras 与 scikit-learn 库的结合使用方法；<br>- GridSearchCV 在超参调优中的具体用法；<br>- Hyperas 库介绍；<br><a id="more"></a>
+<h1 id="训练周期数（epochs）和批大小（batch-size）调优"><a href="#训练周期数（epochs）和批大小（batch-size）调优" class="headerlink" title="训练周期数（epochs）和批大小（batch_size）调优"></a>训练周期数（epochs）和批大小（batch_size）调优</h1><p>我们首先讲解训练周期数（epochs）和批大小（batch_size）的调优过程，同时会介绍一些相关辅助库的使用。<br>示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Use scikit-learn to grid search the batch size and epochs</span></div><div class="line"><span class="keyword">import</span> numpy</div><div class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> GridSearchCV</div><div class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</div><div class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense</div><div class="line"><span class="keyword">from</span> keras.wrappers.scikit_learn <span class="keyword">import</span> KerasClassifier</div><div class="line"><span class="comment"># Function to create model, required for KerasClassifier</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_model</span><span class="params">()</span>:</span></div><div class="line">	<span class="comment"># create model</span></div><div class="line">	model = Sequential()</div><div class="line">	model.add(Dense(<span class="number">12</span>, input_dim=<span class="number">8</span>, activation=<span class="string">'relu'</span>))</div><div class="line">	model.add(Dense(<span class="number">1</span>, activation=<span class="string">'sigmoid'</span>))</div><div class="line">	<span class="comment"># Compile model</span></div><div class="line">	model.compile(loss=<span class="string">'binary_crossentropy'</span>, optimizer=<span class="string">'adam'</span>, metrics=[<span class="string">'accuracy'</span>])</div><div class="line">	<span class="keyword">return</span> model</div><div class="line"><span class="comment"># fix random seed for reproducibility</span></div><div class="line">seed = <span class="number">7</span></div><div class="line">numpy.random.seed(seed)</div><div class="line"><span class="comment"># load dataset</span></div><div class="line">dataset = numpy.loadtxt(<span class="string">"pima-indians-diabetes.csv"</span>, delimiter=<span class="string">","</span>)</div><div class="line"><span class="comment"># split into input (X) and output (Y) variables</span></div><div class="line">X = dataset[:,<span class="number">0</span>:<span class="number">8</span>]</div><div class="line">Y = dataset[:,<span class="number">8</span>]</div><div class="line"><span class="comment"># create model</span></div><div class="line">model = KerasClassifier(build_fn=create_model, verbose=<span class="number">0</span>)</div><div class="line"><span class="comment"># define the grid search parameters</span></div><div class="line">batch_size = [<span class="number">10</span>, <span class="number">20</span>, <span class="number">40</span>, <span class="number">60</span>, <span class="number">80</span>, <span class="number">100</span>]</div><div class="line">epochs = [<span class="number">10</span>, <span class="number">50</span>, <span class="number">100</span>]</div><div class="line">param_grid = dict(batch_size=batch_size, nb_epoch=epochs)</div><div class="line">grid = GridSearchCV(estimator=model, param_grid=param_grid, n_jobs=<span class="number">-1</span>)</div><div class="line">grid_result = grid.fit(X, Y)</div><div class="line"><span class="comment"># summarize results</span></div><div class="line">print(<span class="string">"Best: %f using %s"</span> % (grid_result.best_score_, grid_result.best_params_))</div><div class="line">means = grid_result.cv_results_[<span class="string">'mean_test_score'</span>]</div><div class="line">stds = grid_result.cv_results_[<span class="string">'std_test_score'</span>]</div><div class="line">params = grid_result.cv_results_[<span class="string">'params'</span>]</div><div class="line"><span class="keyword">for</span> mean, stdev, param <span class="keyword">in</span> zip(means, stds, params):</div><div class="line">    print(<span class="string">"%f (%f) with: %r"</span> % (mean, stdev, param))</div></pre></td></tr></table></figure>
+<p>本示例训练解决的是一个二值分类问题，使用的数据集是     <a href="http://archive.ics.uci.edu/ml/datasets/Pima+Indians+Diabetes" target="_blank" rel="external">Pima Indians onset of diabetes classification dataset</a>，您可以从<a href="http://archive.ics.uci.edu/ml/machine-learning-databases/pima-indians-diabetes/pima-indians-diabetes.data" target="_blank" rel="external">这里</a>进行下载，文件命名为“pima-indians-diabetes.csv”保存到与本示例代码相同的目录下即可。<br>下面我们将对代码中的参数调优部分进行详细介绍。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">model = KerasClassifier(build_fn=create_model, verbose=<span class="number">0</span>)</div></pre></td></tr></table></figure>
+<p>KerasClassifier 是 Keras 中模型封装类的一种，常用的还有像 KerasRegressor 等，主要作用是对模型及参数进行封装，以供结合相关辅助库（本例中为 scikit-learn）共同完成计算任务。<br><code>build_fn</code> 参数值为定义好的模型构建函数，同时 KerasClassifier 中也可以设置用于模型训练（fit）的相关参数，如设置<code>nb_epoch</code>:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">model = KerasClassifier(build_fn=create_model, nb_epoch=<span class="number">10</span>)</div></pre></td></tr></table></figure>
+<p>也可以在 KerasClassifier 的参数列表中直接对<code>create_model</code>函数的入参进行赋值：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_model</span><span class="params">(dropout_rate=<span class="number">0.0</span>)</span>:</span></div><div class="line">	...</div><div class="line">	<span class="keyword">return</span> model</div><div class="line"></div><div class="line">model = KerasClassifier(build_fn=create_model, dropout_rate=<span class="number">0.2</span>)</div><div class="line">```	</div><div class="line">需要注意的是，两处使用的参数名（dropout_rate）要相同。</div><div class="line"></div><div class="line">```python </div><div class="line">batch_size = [<span class="number">10</span>, <span class="number">20</span>, <span class="number">40</span>, <span class="number">60</span>, <span class="number">80</span>, <span class="number">100</span>]</div><div class="line">epochs = [<span class="number">10</span>, <span class="number">50</span>, <span class="number">100</span>]</div><div class="line">param_grid = dict(batch_size=batch_size, nb_epoch=epochs)</div><div class="line">grid = GridSearchCV(estimator=model, param_grid=param_grid, n_jobs=<span class="number">-1</span>)</div><div class="line">grid_result = grid.fit(X, Y)</div><div class="line"><span class="comment"># summarize results</span></div><div class="line">print(<span class="string">"Best: %f using %s"</span> % (grid_result.best_score_, grid_result.best_params_))</div></pre></td></tr></table></figure>
+<p><code>batch_size</code>和<code>epochs</code>是我们本次进行调优的两个参数，以组成字典<code>param_grid</code>的形式传给 GridSearchCV，计算时两组值会相互组合进行实际评测。<br>GridSearchCV 是常用的超参调优类，由 scikit-learn 机器学习库提供，下面是参数介绍：</p>
+<ul>
+<li><code>estimator</code>：评测对象，本例传入的值为上文由 KerasClassifier 封装好的模型； </li>
+<li><code>param_grid</code>：超参列表，参数值类型为字典（dict）或由字典组成的列表（list）。用于设置待评测参数和对应的参数值s；</li>
+<li><code>n_jobs</code>：执行线程数，<code>-1</code>：多线程，<code>1</code>：单线程。当开启多线程运行时，根据 Keras 底层计算平台的不同可能会与网络模型的训练进程产生冲突。</li>
+</ul>
+<p>更多关于 GridSearchCV 的参数配置可以参考<a href="http://scikit-learn.org/stable/modules/generated/sklearn.grid_search.GridSearchCV.html#sklearn.grid_search.GridSearchCV" target="_blank" rel="external">这里</a>。<br><code>grid_result</code>是超参调优后的评测结果，<code>best_score_</code>保存的是最有参数组合<code>best_params_</code>所对应的评测分数（准确率）。<br>本例的运行结果如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">Best: <span class="number">0.699219</span> using &#123;<span class="string">'nb_epoch'</span>: <span class="number">100</span>, <span class="string">'batch_size'</span>: <span class="number">60</span>&#125;</div><div class="line"><span class="number">0.657552</span> (<span class="number">0.021236</span>) <span class="keyword">with</span>: &#123;<span class="string">'nb_epoch'</span>: <span class="number">10</span>, <span class="string">'batch_size'</span>: <span class="number">10</span>&#125;</div><div class="line"><span class="number">0.669271</span> (<span class="number">0.017566</span>) <span class="keyword">with</span>: &#123;<span class="string">'nb_epoch'</span>: <span class="number">50</span>, <span class="string">'batch_size'</span>: <span class="number">10</span>&#125;</div><div class="line"><span class="number">0.630208</span> (<span class="number">0.054997</span>) <span class="keyword">with</span>: &#123;<span class="string">'nb_epoch'</span>: <span class="number">100</span>, <span class="string">'batch_size'</span>: <span class="number">10</span>&#125;</div><div class="line"><span class="number">0.506510</span> (<span class="number">0.136415</span>) <span class="keyword">with</span>: &#123;<span class="string">'nb_epoch'</span>: <span class="number">10</span>, <span class="string">'batch_size'</span>: <span class="number">20</span>&#125;</div><div class="line"><span class="number">0.654948</span> (<span class="number">0.013279</span>) <span class="keyword">with</span>: &#123;<span class="string">'nb_epoch'</span>: <span class="number">50</span>, <span class="string">'batch_size'</span>: <span class="number">20</span>&#125;</div><div class="line"><span class="number">0.661458</span> (<span class="number">0.027126</span>) <span class="keyword">with</span>: &#123;<span class="string">'nb_epoch'</span>: <span class="number">100</span>, <span class="string">'batch_size'</span>: <span class="number">20</span>&#125;</div><div class="line"><span class="number">0.619792</span> (<span class="number">0.031948</span>) <span class="keyword">with</span>: &#123;<span class="string">'nb_epoch'</span>: <span class="number">10</span>, <span class="string">'batch_size'</span>: <span class="number">40</span>&#125;</div><div class="line"><span class="number">0.651042</span> (<span class="number">0.018414</span>) <span class="keyword">with</span>: &#123;<span class="string">'nb_epoch'</span>: <span class="number">50</span>, <span class="string">'batch_size'</span>: <span class="number">40</span>&#125;</div><div class="line"><span class="number">0.566406</span> (<span class="number">0.161752</span>) <span class="keyword">with</span>: &#123;<span class="string">'nb_epoch'</span>: <span class="number">100</span>, <span class="string">'batch_size'</span>: <span class="number">40</span>&#125;</div><div class="line"><span class="number">0.453125</span> (<span class="number">0.050126</span>) <span class="keyword">with</span>: &#123;<span class="string">'nb_epoch'</span>: <span class="number">10</span>, <span class="string">'batch_size'</span>: <span class="number">60</span>&#125;</div><div class="line"><span class="number">0.555990</span> (<span class="number">0.163918</span>) <span class="keyword">with</span>: &#123;<span class="string">'nb_epoch'</span>: <span class="number">50</span>, <span class="string">'batch_size'</span>: <span class="number">60</span>&#125;</div><div class="line"><span class="number">0.699219</span> (<span class="number">0.019401</span>) <span class="keyword">with</span>: &#123;<span class="string">'nb_epoch'</span>: <span class="number">100</span>, <span class="string">'batch_size'</span>: <span class="number">60</span>&#125;</div><div class="line"><span class="number">0.533854</span> (<span class="number">0.033502</span>) <span class="keyword">with</span>: &#123;<span class="string">'nb_epoch'</span>: <span class="number">10</span>, <span class="string">'batch_size'</span>: <span class="number">80</span>&#125;</div><div class="line"><span class="number">0.622396</span> (<span class="number">0.035277</span>) <span class="keyword">with</span>: &#123;<span class="string">'nb_epoch'</span>: <span class="number">50</span>, <span class="string">'batch_size'</span>: <span class="number">80</span>&#125;</div><div class="line"><span class="number">0.660156</span> (<span class="number">0.028348</span>) <span class="keyword">with</span>: &#123;<span class="string">'nb_epoch'</span>: <span class="number">100</span>, <span class="string">'batch_size'</span>: <span class="number">80</span>&#125;</div><div class="line"><span class="number">0.578125</span> (<span class="number">0.052698</span>) <span class="keyword">with</span>: &#123;<span class="string">'nb_epoch'</span>: <span class="number">10</span>, <span class="string">'batch_size'</span>: <span class="number">100</span>&#125;</div><div class="line"><span class="number">0.641927</span> (<span class="number">0.036272</span>) <span class="keyword">with</span>: &#123;<span class="string">'nb_epoch'</span>: <span class="number">50</span>, <span class="string">'batch_size'</span>: <span class="number">100</span>&#125;</div><div class="line"><span class="number">0.669271</span> (<span class="number">0.027866</span>) <span class="keyword">with</span>: &#123;<span class="string">'nb_epoch'</span>: <span class="number">100</span>, <span class="string">'batch_size'</span>: <span class="number">100</span>&#125;</div></pre></td></tr></table></figure>
+<p>可以看到，对本例提供的两组参数进行评测，最优的训练组合是{‘nb_epoch’: 100, ‘batch_size’: 60}，准确率为69.92%。<br>在本例中我们讲解了模型超参调优的主要方法和操作过程，同时对<code>nb_epoch</code>和<code>batch_size</code>进行了调优评测。接下来我们将列举一些其它主要参数的调优示例。</p>
+<h1 id="优化器调优"><a href="#优化器调优" class="headerlink" title="优化器调优"></a>优化器调优</h1><p>本例将演示的是对模型优化器（optimizer）对调优，通过设置不同的优化算法来评测出最适合本例模型的优化器类型。<br>示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Use scikit-learn to grid search the batch size and epochs</span></div><div class="line"><span class="keyword">import</span> numpy</div><div class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> GridSearchCV</div><div class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</div><div class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense</div><div class="line"><span class="keyword">from</span> keras.wrappers.scikit_learn <span class="keyword">import</span> KerasClassifier</div><div class="line"><span class="comment"># Function to create model, required for KerasClassifier</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_model</span><span class="params">(optimizer=<span class="string">'adam'</span>)</span>:</span></div><div class="line">	<span class="comment"># create model</span></div><div class="line">	model = Sequential()</div><div class="line">	model.add(Dense(<span class="number">12</span>, input_dim=<span class="number">8</span>, activation=<span class="string">'relu'</span>))</div><div class="line">	model.add(Dense(<span class="number">1</span>, activation=<span class="string">'sigmoid'</span>))</div><div class="line">	<span class="comment"># Compile model</span></div><div class="line">	model.compile(loss=<span class="string">'binary_crossentropy'</span>, optimizer=optimizer, metrics=[<span class="string">'accuracy'</span>])</div><div class="line">	<span class="keyword">return</span> model</div><div class="line"><span class="comment"># fix random seed for reproducibility</span></div><div class="line">seed = <span class="number">7</span></div><div class="line">numpy.random.seed(seed)</div><div class="line"><span class="comment"># load dataset</span></div><div class="line">dataset = numpy.loadtxt(<span class="string">"pima-indians-diabetes.csv"</span>, delimiter=<span class="string">","</span>)</div><div class="line"><span class="comment"># split into input (X) and output (Y) variables</span></div><div class="line">X = dataset[:,<span class="number">0</span>:<span class="number">8</span>]</div><div class="line">Y = dataset[:,<span class="number">8</span>]</div><div class="line"><span class="comment"># create model</span></div><div class="line">model = KerasClassifier(build_fn=create_model, nb_epoch=<span class="number">100</span>, batch_size=<span class="number">10</span>, verbose=<span class="number">0</span>)</div><div class="line"><span class="comment"># define the grid search parameters</span></div><div class="line">optimizer = [<span class="string">'SGD'</span>, <span class="string">'RMSprop'</span>, <span class="string">'Adagrad'</span>, <span class="string">'Adadelta'</span>, <span class="string">'Adam'</span>, <span class="string">'Adamax'</span>, <span class="string">'Nadam'</span>]</div><div class="line">param_grid = dict(optimizer=optimizer)</div><div class="line">grid = GridSearchCV(estimator=model, param_grid=param_grid, n_jobs=<span class="number">-1</span>)</div><div class="line">grid_result = grid.fit(X, Y)</div><div class="line"><span class="comment"># summarize results</span></div><div class="line">print(<span class="string">"Best: %f using %s"</span> % (grid_result.best_score_, grid_result.best_params_))</div><div class="line">means = grid_result.cv_results_[<span class="string">'mean_test_score'</span>]</div><div class="line">stds = grid_result.cv_results_[<span class="string">'std_test_score'</span>]</div><div class="line">params = grid_result.cv_results_[<span class="string">'params'</span>]</div><div class="line"><span class="keyword">for</span> mean, stdev, param <span class="keyword">in</span> zip(means, stds, params):</div><div class="line">    print(<span class="string">"%f (%f) with: %r"</span> % (mean, stdev, param))</div></pre></td></tr></table></figure>
+<p>本例的运行结果如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Best: <span class="number">0.713542</span> using &#123;<span class="string">'optimizer'</span>: <span class="string">'Adamax'</span>&#125;</div><div class="line"><span class="number">0.455729</span> (<span class="number">0.146518</span>) <span class="keyword">with</span>: &#123;<span class="string">'optimizer'</span>: <span class="string">'SGD'</span>&#125;</div><div class="line"><span class="number">0.669271</span> (<span class="number">0.004872</span>) <span class="keyword">with</span>: &#123;<span class="string">'optimizer'</span>: <span class="string">'RMSprop'</span>&#125;</div><div class="line"><span class="number">0.625000</span> (<span class="number">0.026107</span>) <span class="keyword">with</span>: &#123;<span class="string">'optimizer'</span>: <span class="string">'Adagrad'</span>&#125;</div><div class="line"><span class="number">0.645833</span> (<span class="number">0.084042</span>) <span class="keyword">with</span>: &#123;<span class="string">'optimizer'</span>: <span class="string">'Adadelta'</span>&#125;</div><div class="line"><span class="number">0.675781</span> (<span class="number">0.022326</span>) <span class="keyword">with</span>: &#123;<span class="string">'optimizer'</span>: <span class="string">'Adam'</span>&#125;</div><div class="line"><span class="number">0.713542</span> (<span class="number">0.030647</span>) <span class="keyword">with</span>: &#123;<span class="string">'optimizer'</span>: <span class="string">'Adamax'</span>&#125;</div><div class="line"><span class="number">0.654948</span> (<span class="number">0.064133</span>) <span class="keyword">with</span>: &#123;<span class="string">'optimizer'</span>: <span class="string">'Nadam'</span>&#125;</div></pre></td></tr></table></figure>
+<h1 id="SGD-学习比率（rate-和动量（momentum）参数调优"><a href="#SGD-学习比率（rate-和动量（momentum）参数调优" class="headerlink" title="SGD 学习比率（rate) 和动量（momentum）参数调优"></a>SGD 学习比率（rate) 和动量（momentum）参数调优</h1><p>当优化器算法为 <a href="https://keras.io/optimizers/#sgd" target="_blank" rel="external">Stochastic Gradient Descent，SGD</a> 时，本例演示的是对学习比率（rate) 和动量（momentum）两个参数的调优。<br>示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Use scikit-learn to grid search the learning rate and momentum</span></div><div class="line"><span class="keyword">import</span> numpy</div><div class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> GridSearchCV</div><div class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</div><div class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense</div><div class="line"><span class="keyword">from</span> keras.wrappers.scikit_learn <span class="keyword">import</span> KerasClassifier</div><div class="line"><span class="keyword">from</span> keras.optimizers <span class="keyword">import</span> SGD</div><div class="line"><span class="comment"># Function to create model, required for KerasClassifier</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_model</span><span class="params">(learn_rate=<span class="number">0.01</span>, momentum=<span class="number">0</span>)</span>:</span></div><div class="line">	<span class="comment"># create model</span></div><div class="line">	model = Sequential()</div><div class="line">	model.add(Dense(<span class="number">12</span>, input_dim=<span class="number">8</span>, activation=<span class="string">'relu'</span>))</div><div class="line">	model.add(Dense(<span class="number">1</span>, activation=<span class="string">'sigmoid'</span>))</div><div class="line">	<span class="comment"># Compile model</span></div><div class="line">	optimizer = SGD(lr=learn_rate, momentum=momentum)</div><div class="line">	model.compile(loss=<span class="string">'binary_crossentropy'</span>, optimizer=optimizer, metrics=[<span class="string">'accuracy'</span>])</div><div class="line">	<span class="keyword">return</span> model</div><div class="line"><span class="comment"># fix random seed for reproducibility</span></div><div class="line">seed = <span class="number">7</span></div><div class="line">numpy.random.seed(seed)</div><div class="line"><span class="comment"># load dataset</span></div><div class="line">dataset = numpy.loadtxt(<span class="string">"pima-indians-diabetes.csv"</span>, delimiter=<span class="string">","</span>)</div><div class="line"><span class="comment"># split into input (X) and output (Y) variables</span></div><div class="line">X = dataset[:,<span class="number">0</span>:<span class="number">8</span>]</div><div class="line">Y = dataset[:,<span class="number">8</span>]</div><div class="line"><span class="comment"># create model</span></div><div class="line">model = KerasClassifier(build_fn=create_model, nb_epoch=<span class="number">100</span>, batch_size=<span class="number">10</span>, verbose=<span class="number">0</span>)</div><div class="line"><span class="comment"># define the grid search parameters</span></div><div class="line">learn_rate = [<span class="number">0.001</span>, <span class="number">0.01</span>, <span class="number">0.1</span>, <span class="number">0.2</span>, <span class="number">0.3</span>]</div><div class="line">momentum = [<span class="number">0.0</span>, <span class="number">0.2</span>, <span class="number">0.4</span>, <span class="number">0.6</span>, <span class="number">0.8</span>, <span class="number">0.9</span>]</div><div class="line">param_grid = dict(learn_rate=learn_rate, momentum=momentum)</div><div class="line">grid = GridSearchCV(estimator=model, param_grid=param_grid, n_jobs=<span class="number">-1</span>)</div><div class="line">grid_result = grid.fit(X, Y)</div><div class="line"><span class="comment"># summarize results</span></div><div class="line">print(<span class="string">"Best: %f using %s"</span> % (grid_result.best_score_, grid_result.best_params_))</div><div class="line">means = grid_result.cv_results_[<span class="string">'mean_test_score'</span>]</div><div class="line">stds = grid_result.cv_results_[<span class="string">'std_test_score'</span>]</div><div class="line">params = grid_result.cv_results_[<span class="string">'params'</span>]</div><div class="line"><span class="keyword">for</span> mean, stdev, param <span class="keyword">in</span> zip(means, stds, params):</div><div class="line">    print(<span class="string">"%f (%f) with: %r"</span> % (mean, stdev, param))</div></pre></td></tr></table></figure>
+<h1 id="权重初始化类型调优"><a href="#权重初始化类型调优" class="headerlink" title="权重初始化类型调优"></a>权重初始化类型调优</h1><p>示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Use scikit-learn to grid search the weight initialization</span></div><div class="line"><span class="keyword">import</span> numpy</div><div class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> GridSearchCV</div><div class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</div><div class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense</div><div class="line"><span class="keyword">from</span> keras.wrappers.scikit_learn <span class="keyword">import</span> KerasClassifier</div><div class="line"><span class="comment"># Function to create model, required for KerasClassifier</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_model</span><span class="params">(init_mode=<span class="string">'uniform'</span>)</span>:</span></div><div class="line">	<span class="comment"># create model</span></div><div class="line">	model = Sequential()</div><div class="line">	model.add(Dense(<span class="number">12</span>, input_dim=<span class="number">8</span>, init=init_mode, activation=<span class="string">'relu'</span>))</div><div class="line">	model.add(Dense(<span class="number">1</span>, init=init_mode, activation=<span class="string">'sigmoid'</span>))</div><div class="line">	<span class="comment"># Compile model</span></div><div class="line">	model.compile(loss=<span class="string">'binary_crossentropy'</span>, optimizer=<span class="string">'adam'</span>, metrics=[<span class="string">'accuracy'</span>])</div><div class="line">	<span class="keyword">return</span> model</div><div class="line"><span class="comment"># fix random seed for reproducibility</span></div><div class="line">seed = <span class="number">7</span></div><div class="line">numpy.random.seed(seed)</div><div class="line"><span class="comment"># load dataset</span></div><div class="line">dataset = numpy.loadtxt(<span class="string">"pima-indians-diabetes.csv"</span>, delimiter=<span class="string">","</span>)</div><div class="line"><span class="comment"># split into input (X) and output (Y) variables</span></div><div class="line">X = dataset[:,<span class="number">0</span>:<span class="number">8</span>]</div><div class="line">Y = dataset[:,<span class="number">8</span>]</div><div class="line"><span class="comment"># create model</span></div><div class="line">model = KerasClassifier(build_fn=create_model, nb_epoch=<span class="number">100</span>, batch_size=<span class="number">10</span>, verbose=<span class="number">0</span>)</div><div class="line"><span class="comment"># define the grid search parameters</span></div><div class="line">init_mode = [<span class="string">'uniform'</span>, <span class="string">'lecun_uniform'</span>, <span class="string">'normal'</span>, <span class="string">'zero'</span>, <span class="string">'glorot_normal'</span>, <span class="string">'glorot_uniform'</span>, <span class="string">'he_normal'</span>, <span class="string">'he_uniform'</span>]</div><div class="line">param_grid = dict(init_mode=init_mode)</div><div class="line">grid = GridSearchCV(estimator=model, param_grid=param_grid, n_jobs=<span class="number">-1</span>)</div><div class="line">grid_result = grid.fit(X, Y)</div><div class="line"><span class="comment"># summarize results</span></div><div class="line">print(<span class="string">"Best: %f using %s"</span> % (grid_result.best_score_, grid_result.best_params_))</div><div class="line">means = grid_result.cv_results_[<span class="string">'mean_test_score'</span>]</div><div class="line">stds = grid_result.cv_results_[<span class="string">'std_test_score'</span>]</div><div class="line">params = grid_result.cv_results_[<span class="string">'params'</span>]</div><div class="line"><span class="keyword">for</span> mean, stdev, param <span class="keyword">in</span> zip(means, stds, params):</div><div class="line">    print(<span class="string">"%f (%f) with: %r"</span> % (mean, stdev, param))</div></pre></td></tr></table></figure>
+<h1 id="激活函数类型调优"><a href="#激活函数类型调优" class="headerlink" title="激活函数类型调优"></a>激活函数类型调优</h1><p>示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Use scikit-learn to grid search the activation function</span></div><div class="line"><span class="keyword">import</span> numpy</div><div class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> GridSearchCV</div><div class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</div><div class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense</div><div class="line"><span class="keyword">from</span> keras.wrappers.scikit_learn <span class="keyword">import</span> KerasClassifier</div><div class="line"><span class="comment"># Function to create model, required for KerasClassifier</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_model</span><span class="params">(activation=<span class="string">'relu'</span>)</span>:</span></div><div class="line">	<span class="comment"># create model</span></div><div class="line">	model = Sequential()</div><div class="line">	model.add(Dense(<span class="number">12</span>, input_dim=<span class="number">8</span>, init=<span class="string">'uniform'</span>, activation=activation))</div><div class="line">	model.add(Dense(<span class="number">1</span>, init=<span class="string">'uniform'</span>, activation=<span class="string">'sigmoid'</span>))</div><div class="line">	<span class="comment"># Compile model</span></div><div class="line">	model.compile(loss=<span class="string">'binary_crossentropy'</span>, optimizer=<span class="string">'adam'</span>, metrics=[<span class="string">'accuracy'</span>])</div><div class="line">	<span class="keyword">return</span> model</div><div class="line"><span class="comment"># fix random seed for reproducibility</span></div><div class="line">seed = <span class="number">7</span></div><div class="line">numpy.random.seed(seed)</div><div class="line"><span class="comment"># load dataset</span></div><div class="line">dataset = numpy.loadtxt(<span class="string">"pima-indians-diabetes.csv"</span>, delimiter=<span class="string">","</span>)</div><div class="line"><span class="comment"># split into input (X) and output (Y) variables</span></div><div class="line">X = dataset[:,<span class="number">0</span>:<span class="number">8</span>]</div><div class="line">Y = dataset[:,<span class="number">8</span>]</div><div class="line"><span class="comment"># create model</span></div><div class="line">model = KerasClassifier(build_fn=create_model, nb_epoch=<span class="number">100</span>, batch_size=<span class="number">10</span>, verbose=<span class="number">0</span>)</div><div class="line"><span class="comment"># define the grid search parameters</span></div><div class="line">activation = [<span class="string">'softmax'</span>, <span class="string">'softplus'</span>, <span class="string">'softsign'</span>, <span class="string">'relu'</span>, <span class="string">'tanh'</span>, <span class="string">'sigmoid'</span>, <span class="string">'hard_sigmoid'</span>, <span class="string">'linear'</span>]</div><div class="line">param_grid = dict(activation=activation)</div><div class="line">grid = GridSearchCV(estimator=model, param_grid=param_grid, n_jobs=<span class="number">-1</span>)</div><div class="line">grid_result = grid.fit(X, Y)</div><div class="line"><span class="comment"># summarize results</span></div><div class="line">print(<span class="string">"Best: %f using %s"</span> % (grid_result.best_score_, grid_result.best_params_))</div><div class="line">means = grid_result.cv_results_[<span class="string">'mean_test_score'</span>]</div><div class="line">stds = grid_result.cv_results_[<span class="string">'std_test_score'</span>]</div><div class="line">params = grid_result.cv_results_[<span class="string">'params'</span>]</div><div class="line"><span class="keyword">for</span> mean, stdev, param <span class="keyword">in</span> zip(means, stds, params):</div><div class="line">    print(<span class="string">"%f (%f) with: %r"</span> % (mean, stdev, param))</div></pre></td></tr></table></figure>
+<h1 id="抽稀层节点去除比例调优"><a href="#抽稀层节点去除比例调优" class="headerlink" title="抽稀层节点去除比例调优"></a>抽稀层节点去除比例调优</h1><p>示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Use scikit-learn to grid search the dropout rate</span></div><div class="line"><span class="keyword">import</span> numpy</div><div class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> GridSearchCV</div><div class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</div><div class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense</div><div class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dropout</div><div class="line"><span class="keyword">from</span> keras.wrappers.scikit_learn <span class="keyword">import</span> KerasClassifier</div><div class="line"><span class="keyword">from</span> keras.constraints <span class="keyword">import</span> maxnorm</div><div class="line"><span class="comment"># Function to create model, required for KerasClassifier</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_model</span><span class="params">(dropout_rate=<span class="number">0.0</span>, weight_constraint=<span class="number">0</span>)</span>:</span></div><div class="line">	<span class="comment"># create model</span></div><div class="line">	model = Sequential()</div><div class="line">	model.add(Dense(<span class="number">12</span>, input_dim=<span class="number">8</span>, init=<span class="string">'uniform'</span>, activation=<span class="string">'linear'</span>, W_constraint=maxnorm(weight_constraint)))</div><div class="line">	model.add(Dropout(dropout_rate))</div><div class="line">	model.add(Dense(<span class="number">1</span>, init=<span class="string">'uniform'</span>, activation=<span class="string">'sigmoid'</span>))</div><div class="line">	<span class="comment"># Compile model</span></div><div class="line">	model.compile(loss=<span class="string">'binary_crossentropy'</span>, optimizer=<span class="string">'adam'</span>, metrics=[<span class="string">'accuracy'</span>])</div><div class="line">	<span class="keyword">return</span> model</div><div class="line"><span class="comment"># fix random seed for reproducibility</span></div><div class="line">seed = <span class="number">7</span></div><div class="line">numpy.random.seed(seed)</div><div class="line"><span class="comment"># load dataset</span></div><div class="line">dataset = numpy.loadtxt(<span class="string">"pima-indians-diabetes.csv"</span>, delimiter=<span class="string">","</span>)</div><div class="line"><span class="comment"># split into input (X) and output (Y) variables</span></div><div class="line">X = dataset[:,<span class="number">0</span>:<span class="number">8</span>]</div><div class="line">Y = dataset[:,<span class="number">8</span>]</div><div class="line"><span class="comment"># create model</span></div><div class="line">model = KerasClassifier(build_fn=create_model, nb_epoch=<span class="number">100</span>, batch_size=<span class="number">10</span>, verbose=<span class="number">0</span>)</div><div class="line"><span class="comment"># define the grid search parameters</span></div><div class="line">weight_constraint = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]</div><div class="line">dropout_rate = [<span class="number">0.0</span>, <span class="number">0.1</span>, <span class="number">0.2</span>, <span class="number">0.3</span>, <span class="number">0.4</span>, <span class="number">0.5</span>, <span class="number">0.6</span>, <span class="number">0.7</span>, <span class="number">0.8</span>, <span class="number">0.9</span>]</div><div class="line">param_grid = dict(dropout_rate=dropout_rate, weight_constraint=weight_constraint)</div><div class="line">grid = GridSearchCV(estimator=model, param_grid=param_grid, n_jobs=<span class="number">-1</span>)</div><div class="line">grid_result = grid.fit(X, Y)</div><div class="line"><span class="comment"># summarize results</span></div><div class="line">print(<span class="string">"Best: %f using %s"</span> % (grid_result.best_score_, grid_result.best_params_))</div><div class="line">means = grid_result.cv_results_[<span class="string">'mean_test_score'</span>]</div><div class="line">stds = grid_result.cv_results_[<span class="string">'std_test_score'</span>]</div><div class="line">params = grid_result.cv_results_[<span class="string">'params'</span>]</div><div class="line"><span class="keyword">for</span> mean, stdev, param <span class="keyword">in</span> zip(means, stds, params):</div><div class="line">    print(<span class="string">"%f (%f) with: %r"</span> % (mean, stdev, param))</div></pre></td></tr></table></figure>
+<h1 id="隐含层神经元数量调优"><a href="#隐含层神经元数量调优" class="headerlink" title="隐含层神经元数量调优"></a>隐含层神经元数量调优</h1><p>示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Use scikit-learn to grid search the number of neurons</span></div><div class="line"><span class="keyword">import</span> numpy</div><div class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> GridSearchCV</div><div class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</div><div class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense</div><div class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dropout</div><div class="line"><span class="keyword">from</span> keras.wrappers.scikit_learn <span class="keyword">import</span> KerasClassifier</div><div class="line"><span class="keyword">from</span> keras.constraints <span class="keyword">import</span> maxnorm</div><div class="line"><span class="comment"># Function to create model, required for KerasClassifier</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_model</span><span class="params">(neurons=<span class="number">1</span>)</span>:</span></div><div class="line">	<span class="comment"># create model</span></div><div class="line">	model = Sequential()</div><div class="line">	model.add(Dense(neurons, input_dim=<span class="number">8</span>, init=<span class="string">'uniform'</span>, activation=<span class="string">'linear'</span>, W_constraint=maxnorm(<span class="number">4</span>)))</div><div class="line">	model.add(Dropout(<span class="number">0.2</span>))</div><div class="line">	model.add(Dense(<span class="number">1</span>, init=<span class="string">'uniform'</span>, activation=<span class="string">'sigmoid'</span>))</div><div class="line">	<span class="comment"># Compile model</span></div><div class="line">	model.compile(loss=<span class="string">'binary_crossentropy'</span>, optimizer=<span class="string">'adam'</span>, metrics=[<span class="string">'accuracy'</span>])</div><div class="line">	<span class="keyword">return</span> model</div><div class="line"><span class="comment"># fix random seed for reproducibility</span></div><div class="line">seed = <span class="number">7</span></div><div class="line">numpy.random.seed(seed)</div><div class="line"><span class="comment"># load dataset</span></div><div class="line">dataset = numpy.loadtxt(<span class="string">"pima-indians-diabetes.csv"</span>, delimiter=<span class="string">","</span>)</div><div class="line"><span class="comment"># split into input (X) and output (Y) variables</span></div><div class="line">X = dataset[:,<span class="number">0</span>:<span class="number">8</span>]</div><div class="line">Y = dataset[:,<span class="number">8</span>]</div><div class="line"><span class="comment"># create model</span></div><div class="line">model = KerasClassifier(build_fn=create_model, nb_epoch=<span class="number">100</span>, batch_size=<span class="number">10</span>, verbose=<span class="number">0</span>)</div><div class="line"><span class="comment"># define the grid search parameters</span></div><div class="line">neurons = [<span class="number">1</span>, <span class="number">5</span>, <span class="number">10</span>, <span class="number">15</span>, <span class="number">20</span>, <span class="number">25</span>, <span class="number">30</span>]</div><div class="line">param_grid = dict(neurons=neurons)</div><div class="line">grid = GridSearchCV(estimator=model, param_grid=param_grid, n_jobs=<span class="number">-1</span>)</div><div class="line">grid_result = grid.fit(X, Y)</div><div class="line"><span class="comment"># summarize results</span></div><div class="line">print(<span class="string">"Best: %f using %s"</span> % (grid_result.best_score_, grid_result.best_params_))</div><div class="line">means = grid_result.cv_results_[<span class="string">'mean_test_score'</span>]</div><div class="line">stds = grid_result.cv_results_[<span class="string">'std_test_score'</span>]</div><div class="line">params = grid_result.cv_results_[<span class="string">'params'</span>]</div><div class="line"><span class="keyword">for</span> mean, stdev, param <span class="keyword">in</span> zip(means, stds, params):</div><div class="line">    print(<span class="string">"%f (%f) with: %r"</span> % (mean, stdev, param))</div></pre></td></tr></table></figure>
+<h1 id="Hyperas-介绍"><a href="#Hyperas-介绍" class="headerlink" title="Hyperas 介绍"></a>Hyperas 介绍</h1><p><a href="https://github.com/maxpumperla/hyperas" target="_blank" rel="external">Hyperas</a> 是用于 Keras 超参调优的 Python 库，基于对 <a href="https://github.com/hyperopt/hyperopt" target="_blank" rel="external">hyperopt</a> 库的封装简便易用。使用 Hyperas 进行超参调优时，只需要将模型中需要调试的参数以模版（“{{ 	}}”）的形式定义即可，结下来调优工作交给 Hyperas 就好了。<br>下面是引用官方的一个例子：</p>
+<pre><code class="python">from __future__ import print_function
+from hyperopt import Trials, STATUS_OK, tpe
+from hyperas import optim
+from hyperas.distributions import choice, uniform, conditional
+from keras.datasets import mnist
+from keras.utils import np_utils
+from keras.models import Sequential
+from keras.layers.core import Dense, Dropout, Activation
+
+def data():
+    '''
+    Data providing function:
+
+    This function is separated from model() so that hyperopt
+    won't reload data for each evaluation run.
+    '''
+    (X_train, y_train), (X_test, y_test) = mnist.load_data()
+    X_train = X_train.reshape(60000, 784)
+    X_test = X_test.reshape(10000, 784)
+    X_train = X_train.astype('float32')
+    X_test = X_test.astype('float32')
+    X_train /= 255
+    X_test /= 255
+    nb_classes = 10
+    Y_train = np_utils.to_categorical(y_train, nb_classes)
+    Y_test = np_utils.to_categorical(y_test, nb_classes)
+    return X_train, Y_train, X_test, Y_test
+
+
+def model(X_train, Y_train, X_test, Y_test):
+    '''
+    Model providing function:
+
+    Create Keras model with double curly brackets dropped-in as needed.
+    Return value has to be a valid python dictionary with two customary keys:
+        - loss: Specify a numeric evaluation metric to be minimized
+        - status: Just use STATUS_OK and see hyperopt documentation if not feasible
+    The last one is optional, though recommended, namely:
+        - model: specify the model just created so that we can later use it again.
+    '''
+    model = Sequential()
+    model.add(Dense(512, input_shape=(784,)))
+    model.add(Activation('relu'))
+    model.add(Dropout({{uniform(0, 1)}}))
+    model.add(Dense({{choice([256, 512, 1024])}}))
+    model.add(Activation({{choice(['relu', 'sigmoid'])}}))
+    model.add(Dropout({{uniform(0, 1)}}))
+
+    # If we choose 'four', add an additional fourth layer
+    if conditional({{choice(['three', 'four'])}}) == 'four':
+        model.add(Dense(100))
+        # We can also choose between complete sets of layers
+        model.add({{choice([Dropout(0.5), Activation('linear')])}})
+        model.add(Activation('relu'))
+
+    model.add(Dense(10))
+    model.add(Activation('softmax'))
+
+    model.compile(loss='categorical_crossentropy', metrics=['accuracy'],
+                  optimizer={{choice(['rmsprop', 'adam', 'sgd'])}})
+
+    model.fit(X_train, Y_train,
+              batch_size={{choice([64, 128])}},
+              nb_epoch=1,
+              show_accuracy=True,
+              verbose=2,
+              validation_data=(X_test, Y_test))
+    score, acc = model.evaluate(X_test, Y_test, verbose=0)
+    print('Test accuracy:', acc)
+    return {'loss': -acc, 'status': STATUS_OK, 'model': model}
+
+if __name__ == '__main__':
+    best_run, best_model = optim.minimize(model=model,
+                                          data=data,
+                                          algo=tpe.suggest,
+                                          max_evals=5,
+                                          trials=Trials())
+    X_train, Y_train, X_test, Y_test = data()
+    print("Evalutation of best performing model:")
+    print(best_model.evaluate(X_test, Y_test))
+</code></pre>
+<h1 id="超参调优的几点建议"><a href="#超参调优的几点建议" class="headerlink" title="超参调优的几点建议"></a>超参调优的几点建议</h1><p>超参调优的耗时一般都比较长，特别是训练数据集较大的情况下。为有效地提高调参效率以下这些建议指导可以作为您的参考：</p>
+<ul>
+<li>全局考虑；</li>
+<li>尽可能开启并行计算（n_jobs=-1）；</li>
+<li>样本由小到大：先对一小部分数据样本进行超参调优，以便快速确定整体的调优方向，再逐渐扩大样本进行细化；</li>
+<li>参值由粗到细：调优参数值s先以较粗的颗粒度进行划分，当确定大的最优范围之后再逐渐细化调整；</li>
+<li>具体模型具体调参，尽可能不复用之前模型的调优结果；</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>通过阅读本篇内容，您了解了深度学习网络模型常见参数对调优方法。之后我们介绍了几点提高超参调优效率的常用策略。<br>希望本篇对您在深度学习中关于超参调优的了解和具体操作有所帮助。</p>
+<h1 id="更多参考"><a href="#更多参考" class="headerlink" title="更多参考"></a>更多参考</h1><ul>
+<li><a href="http://machinelearningmastery.com/grid-search-hyperparameters-deep-learning-models-python-keras/" target="_blank" rel="external">How to Grid Search Hyperparameters for Deep Learning Models in Python With Keras</a></li>
+<li><a href="https://keras.io/scikit-learn-api/" target="_blank" rel="external">Wrappers for the Scikit-Learn API</a></li>
+<li><a href="http://scikit-learn.org/stable/modules/generated/sklearn.grid_search.GridSearchCV.html#sklearn.grid_search.GridSearchCV" target="_blank" rel="external">sklearn.grid_search.GridSearchCV</a></li>
+<li><a href="http://stats.stackexchange.com/questions/153531/what-is-batch-size-in-neural-network" target="_blank" rel="external">What is batch size in neural network?</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+<! -- 添加捐赠图标 -->
+    
+    
+
+    <div class ="post-donate">
+      <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="Donate 打赏"></a>
+        <span class="donate_txt">
+           &uarr;<br>
+           
+            豪赏本篇文章（¥ 0.99）
+           
+        </span>
+        <br>
+      </div>
+
+      <div id="donate_guide" class="donate_bar center hidden">
+        
+
+      
+       <a href="/images/wechat.png" title="微信打赏（¥ 0.99）" class="fancybox" rel="article0">
+         <img src="/images/wechat.png" title="微信打赏（¥ 0.99）" height="164px" width="164px">
+       </a>
+      
+
+      </div>
+
+      <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+          $('#donate_board').addClass('hidden');
+          $('#donate_guide').removeClass('hidden');
+        }
+      </script>
+    </div>
+
+    
+
+<! -- end 添加捐赠图标 --> 
+
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag">#深度学习</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/01/deeplearning/handwritten-digit-recognition-using-CNN-with-keras/" rel="next" title="CNN 实现基于 MNIST 数据集的手写识别">
+                <i class="fa fa-chevron-left"></i> CNN 实现基于 MNIST 数据集的手写识别
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/08/deeplearning/save-and-load-keras-deep-learning-model/" rel="prev" title="Keras 模型的保存与加载">
+                Keras 模型的保存与加载 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/default_avatar.jpg"
+               alt="Yangguang" />
+          <p class="site-author-name" itemprop="name">Yangguang</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yangguang2009" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://stackoverflow.com/users/4869784/yangguang" target="_blank">
+                  
+                    <i class="fa fa-stackoverflow"></i> Stackoverflow
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#训练周期数（epochs）和批大小（batch-size）调优"><span class="nav-number">1.</span> <span class="nav-text">训练周期数（epochs）和批大小（batch_size）调优</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#优化器调优"><span class="nav-number">2.</span> <span class="nav-text">优化器调优</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SGD-学习比率（rate-和动量（momentum）参数调优"><span class="nav-number">3.</span> <span class="nav-text">SGD 学习比率（rate) 和动量（momentum）参数调优</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#权重初始化类型调优"><span class="nav-number">4.</span> <span class="nav-text">权重初始化类型调优</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#激活函数类型调优"><span class="nav-number">5.</span> <span class="nav-text">激活函数类型调优</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#抽稀层节点去除比例调优"><span class="nav-number">6.</span> <span class="nav-text">抽稀层节点去除比例调优</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#隐含层神经元数量调优"><span class="nav-number">7.</span> <span class="nav-text">隐含层神经元数量调优</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hyperas-介绍"><span class="nav-number">8.</span> <span class="nav-text">Hyperas 介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#超参调优的几点建议"><span class="nav-number">9.</span> <span class="nav-text">超参调优的几点建议</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">10.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#更多参考"><span class="nav-number">11.</span> <span class="nav-text">更多参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yangguang</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+
+</body>
+</html>

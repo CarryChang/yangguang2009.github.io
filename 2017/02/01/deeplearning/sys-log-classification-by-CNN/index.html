@@ -1,0 +1,817 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="深度学习," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="业精于勤，行成于思" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="卷积神经网络（CNN）是当前广泛应用的深度学习神经网络类型之一，特点是可以自动对数据特征进行提取学习。CNN 在图片识别，语义分析等领域已经取得了非常令人振奋的成绩，本篇将介绍使用 CNN 对系统日志进行识别分类的具体方法。在通过阅读本篇内容您将了解到：- 文本数据进行 CNN 分析的相关预处理方法；- CNN 一维卷积网络的具体构建和用法；- CNN 对系统日志进行分类的具体应用；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于卷积神经网络的系统日志分类">
+<meta property="og:url" content="http://yoursite.com/2017/02/01/deeplearning/sys-log-classification-by-CNN/index.html">
+<meta property="og:site_name" content="业精于勤，行成于思">
+<meta property="og:description" content="卷积神经网络（CNN）是当前广泛应用的深度学习神经网络类型之一，特点是可以自动对数据特征进行提取学习。CNN 在图片识别，语义分析等领域已经取得了非常令人振奋的成绩，本篇将介绍使用 CNN 对系统日志进行识别分类的具体方法。在通过阅读本篇内容您将了解到：- 文本数据进行 CNN 分析的相关预处理方法；- CNN 一维卷积网络的具体构建和用法；- CNN 对系统日志进行分类的具体应用；">
+<meta property="og:image" content="http://yoursite.com/2017/02/01/deeplearning/sys-log-classification-by-CNN/0.png">
+<meta property="og:updated_time" content="2017-02-02T14:19:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于卷积神经网络的系统日志分类">
+<meta name="twitter:description" content="卷积神经网络（CNN）是当前广泛应用的深度学习神经网络类型之一，特点是可以自动对数据特征进行提取学习。CNN 在图片识别，语义分析等领域已经取得了非常令人振奋的成绩，本篇将介绍使用 CNN 对系统日志进行识别分类的具体方法。在通过阅读本篇内容您将了解到：- 文本数据进行 CNN 分析的相关预处理方法；- CNN 一维卷积网络的具体构建和用法；- CNN 对系统日志进行分类的具体应用；">
+<meta name="twitter:image" content="http://yoursite.com/2017/02/01/deeplearning/sys-log-classification-by-CNN/0.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: 'Author'
+    }
+  };
+</script>
+
+  <title> 基于卷积神经网络的系统日志分类 | 业精于勤，行成于思 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">业精于勤，行成于思</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                基于卷积神经网络的系统日志分类
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2017-02-01T20:11:22+08:00" content="2017-02-01">
+              2017-02-01
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/《深度学习入门教程》/" itemprop="url" rel="index">
+                    <span itemprop="name">《深度学习入门教程》</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <img src="/2017/02/01/deeplearning/sys-log-classification-by-CNN/0.png" alt="0.png" title=""> <br>卷积神经网络（CNN）是当前广泛应用的深度学习神经网络类型之一，特点是可以自动对数据特征进行提取学习。CNN 在图片识别，语义分析等领域已经取得了非常令人振奋的成绩，本篇将介绍使用 CNN 对系统日志进行识别分类的具体方法。在通过阅读本篇内容您将了解到：<br>- 文本数据进行 CNN 分析的相关预处理方法；<br>- CNN 一维卷积网络的具体构建和用法；<br>- CNN 对系统日志进行分类的具体应用；<br><a id="more"></a>
+<h1 id="系统日志"><a href="#系统日志" class="headerlink" title="系统日志"></a>系统日志</h1><p>系统日志泛指运行于计算机上的软件系统所产生的相关记录信息，通常以文本文件的形式存在。系统日志包含了大量的关于系统运行、操作使用等相关情况的原始记录，对于一家企业来说是非常宝贵的数据资产。如何更好的分析挖掘海量系统日志中包含的有意信息，近年来人们的关注度也是在不断升温。海量日志分析是一个系统性的工程，包含了从原始数据采集到终端可视化的展示交互等一系列的环节，我们这里将介绍的是在日志采集中使用 CNN 神经网络对日志类型进行自动分类的具体应用。</p>
+<h1 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h1><p>在海量系统日志数据采集的过程中经常需要对日志数据进行分类，这些分类工作通常是需要工程师或用户来事先设置指定的。但在实际应用中经常会出现日志类型指定错误或不知道所属类型的情况，经常导致需要对日志进行重新采集，或分析挖掘达不到预期的效果等问题。本篇所介绍的基于 CNN 神经网络的日志类型识别将有效的解决类似问题。</p>
+<h1 id="CNN-日志分类"><a href="#CNN-日志分类" class="headerlink" title="CNN 日志分类"></a>CNN 日志分类</h1><p>用于本示例的数据样本来自于 <a href="http://www.monitorware.com/en/logsamples/index.php" target="_blank" rel="external">MonitorWare Log Samples</a>，一共17种日志类型，为示例简化每种日志只选取5条记录，数据内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div></pre></td><td class="code"><pre><div class="line">Log Samples---Name</div><div class="line">Mar 29 2004 09:55:23: %PIX-6-302005: Built UDP connection for faddr 193.192.160.244/3053 gaddr 10.0.0.187/53 laddr 192.168.0.2/53---Cisco PIX</div><div class="line">Mar 29 2004 09:55:23: %PIX-6-302006: Teardown UDP connection for faddr 193.192.160.244/3053 gaddr 10.0.0.187/53 laddr 192.168.0.2/53---Cisco PIX</div><div class="line">Mar 29 2004 09:55:23: %PIX-6-302005: Built UDP connection for faddr 193.192.160.244/3053 gaddr 10.0.0.187/53 laddr 192.168.0.2/53---Cisco PIX</div><div class="line">Mar 29 2004 09:55:25: %PIX-6-302005: Built UDP connection for faddr 66.196.65.40/51250 gaddr 10.0.0.187/53 laddr 192.168.0.2/53---Cisco PIX</div><div class="line">Mar 29 2004 09:55:31: %PIX-6-302001: Built outbound TCP connection 152017 for faddr 212.56.240.37/9200 gaddr 10.0.0.187/2795 laddr 192.168.0.2/2795 ()---Cisco PIX</div><div class="line"></div><div class="line">Sun, 2004-03-28 15:30:45 - TCP packet - Source:172.21.0.1,4662 ,LAN - Destination:80.142.227.227,4662 ,WAN [Drop] - [TCP preconnect traffic dropped]---NetGear FWG114P</div><div class="line">Sun, 2004-03-28 15:31:34 - TCP packet - Source:82.82.111.67,4662 ,WAN - Destination:217.224.147.21,4762 ,LAN [Drop] - [TCP preconnect traffic dropped]---NetGear FWG114P</div><div class="line">Sun, 2004-03-28 15:31:39 - TCP packet - Source:80.5.99.100,4662 ,WAN - Destination:217.224.147.21,4788 ,LAN [Drop] - [TCP preconnect traffic dropped]---NetGear FWG114P</div><div class="line">Sun, 2004-03-28 15:36:10 - TCP packet - Source:140.112.243.228,5442 ,WAN - Destination:217.224.147.21,3283 ,LAN [Drop] - [TCP preconnect traffic dropped]---NetGear FWG114P</div><div class="line">Sun, 2004-03-28 15:39:54 - TCP packet - Source:217.234.212.2,0 ,WAN - Destination:217.224.147.21,0 ,LAN [Drop] - [Fragment Attack]---NetGear FWG114P</div><div class="line"></div><div class="line">Mar 12 12:00:08 server2 rcd[308]: Loaded 12 packages in &apos;ximian-red-carpet|351&apos; (0.01878 seconds)---SuSE SLES 8 </div><div class="line">Mar 12 12:00:08 server2 rcd[308]: id=304 COMPLETE &apos;Downloading https://server2/data/red-carpet.rdf&apos; time=0s (failed)---SuSE SLES 8 </div><div class="line">Mar 12 12:00:08 server2 rcd[308]: Unable to downloaded licenses info: Unable to authenticate - Authorization Required (https://server2/data/red-carpet.rdf)---SuSE SLES 8</div><div class="line">Mar 12 12:10:00 server2 /USR/SBIN/CRON[6808]: (root) CMD ( /usr/lib/sa/sa1 )---SuSE SLES 8</div><div class="line">Mar 12 12:20:00 server2 /USR/SBIN/CRON[6837]: (root) CMD ( /usr/lib/sa/sa1 )---SuSE SLES 8</div><div class="line"></div><div class="line">Mar 12 12:01:02 server4 snort: alert_multiple_requests: ACTIVE---RedHat Enterprise Linux</div><div class="line">Mar 12 12:01:02 server4 snort: telnet_decode arguments:---RedHat Enterprise Linux</div><div class="line">Mar 12 12:01:02 server4 snort: snort startup succeeded---RedHat Enterprise Linux</div><div class="line">Mar 12 12:01:02 server4 snort: Ports to decode telnet on: 21 23 25 119---RedHat Enterprise Linux</div><div class="line">Mar 12 12:01:03 server4 snort: Snort initialization completed successfully---RedHat Enterprise Linux</div><div class="line"></div><div class="line">Mar 10 03:19:48 server5 syslog: su : + tty?? root-informix---HP-UX B.10.20 </div><div class="line">Mar 11 03:19:54 server5 syslog: su : + tty?? root-informix---HP-UX B.10.20</div><div class="line">Mar 12 03:19:51 server5 syslog: su : + tty?? root-informix---HP-UX B.10.20 </div><div class="line">Mar 12 09:27:20 server5 syslog: su : - ttyp1 user-informix---HP-UX B.10.20 </div><div class="line">Mar 12 09:27:35 server5 syslog: su : + ttyp1 user-informix---HP-UX B.10.20</div><div class="line"></div><div class="line">Mar 12 08:24:51 server6 sshd[24742]: Accepted password for netscape from 111.222.333.444 port 1420 ssh2---HP UX B.11.00 </div><div class="line">Mar 12 08:25:15 server6 tftpd[24241]: Timeout (no requests in 10 minutes)---HP UX B.11.00</div><div class="line">Mar 12 08:49:53 server6 ftpd[27281]: FTP LOGIN FROM 111.222.333.444 [111.222.333.444], netscape---HP UX B.11.00 </div><div class="line">Mar 12 09:05:22 server6 ftpd[27281]: exiting on signal 14---HP UX B.11.00 </div><div class="line">Mar 12 12:32:24 server6 sshd[11187]: Accepted password for jfalgout from 111.222.333.444 port 34138 ssh2---HP UX B.11.00</div><div class="line"></div><div class="line">Mar 12 11:44:20 server7 ftpd[25306]: Goodbye.---HP UX B.11.11</div><div class="line">Mar 12 11:44:35 server7 tftpd[24955]: Timeout (no requests in 10 minutes)---HP UX B.11.11</div><div class="line">Mar 12 12:17:03 server7 sshd[26501]: pam_authenticate: error Authentication failed---HP UX B.11.11 </div><div class="line">Mar 12 12:17:03 server7 sshd[26501]: Accepted publickey for user from 111.222.333.444 port 32774 ssh2---HP UX B.11.11</div><div class="line">Mar 12 12:34:23 server7 sshd[27393]: pam_authenticate: error Authentication failed---HP UX B.11.11</div><div class="line"></div><div class="line">Mar 16 00:00:08 evita postfix/smtpd[1713]: connect from dialpool-210-214-5-215.maa.sify.net[210.214.5.215]---Postfix</div><div class="line">Mar 16 00:00:09 evita postfix/smtpd[1713]: NOQUEUE: reject: RCPT from dialpool-210-214-5-215.maa.sify.net[210.214.5.215]: 554 Service unavailable; Client host [210.214.5.215] blocked using dnsbl.sorbs.net; Dynamic IP Address See: http://www.dnsbl.sorbs.net/cgi-bin/lookup?IP=210.214.5.215; from= to= proto=SMTP helo=---Postfix </div><div class="line">Mar 16 00:00:11 evita postfix/smtpd[1713]: disconnect from dialpool-210-214-5-215.maa.sify.net[210.214.5.215]---Postfix</div><div class="line">Mar 16 00:01:25 evita postfix/smtpd[1713]: connect from camomile.cloud9.net[168.100.1.3]---Postfix </div><div class="line">Mar 16 00:01:28 evita postfix/smtpd[1713]: EA11834022: client=camomile.cloud9.net[168.100.1.3]---Postfix</div><div class="line"></div><div class="line">64.242.88.10 - - [07/Mar/2004:16:05:49 -0800] &quot;GET /twiki/bin/edit/Main/Double_bounce_sender?topicparent=Main.ConfigurationVariables HTTP/1.1&quot; 401 12846---Apache</div><div class="line">64.242.88.10 - - [07/Mar/2004:16:06:51 -0800] &quot;GET /twiki/bin/rdiff/TWiki/NewUserTemplate?rev1=1.3&amp;rev2=1.2 HTTP/1.1&quot; 200 4523---Apache</div><div class="line">64.242.88.10 - - [07/Mar/2004:16:10:02 -0800] &quot;GET /mailman/listinfo/hsdivision HTTP/1.1&quot; 200 6291---Apache</div><div class="line">64.242.88.10 - - [07/Mar/2004:16:11:58 -0800] &quot;GET /twiki/bin/view/TWiki/WikiSyntax HTTP/1.1&quot; 200 7352---Apache</div><div class="line">64.242.88.10 - - [07/Mar/2004:16:20:55 -0800] &quot;GET /twiki/bin/view/Main/DCCAndPostFix HTTP/1.1&quot; 200 5253---Apache</div><div class="line"></div><div class="line">Feb 2 09:00:14 avas.example.com amavisd[11568]: Perl version 5.008001---Amavis-New</div><div class="line">Feb 2 09:00:14 avas.example.com amavisd[11568]: Module Amavis::Conf 1.15---Amavis-New</div><div class="line">Feb 2 09:00:14 avas.example.com amavisd[11568]: Module Archive::Tar 1.07---Amavis-New</div><div class="line">Feb 2 09:00:14 avas.example.com amavisd[11568]: Module Archive::Zip 1.08---Amavis-New</div><div class="line">Feb 2 09:00:14 avas.example.com amavisd[11568]: Module Compress::Zlib 1.31---Amavis-New</div><div class="line"></div><div class="line">Mar 7 04:05:00 avas CROND[11233]: (cronjob) CMD (/usr/bin/mrtg /etc/mrtg/mrtg.cfg)---Cron Daemon </div><div class="line">Mar 7 04:05:00 avas CROND[11234]: (mailman) CMD (/usr/local/bin/python -S /usr/local/mailman/cron/gate_news)---Cron Daemon </div><div class="line">Mar 7 04:10:00 avas CROND[11253]: (cronjob) CMD (/usr/bin/mrtg /etc/mrtg/mrtg.cfg)---Cron Daemon </div><div class="line">Mar 7 04:10:00 avas CROND[11254]: (cronjob) CMD (/usr/lib/sa/sa1 1 1)---Cron Daemon </div><div class="line">Mar 7 04:10:00 avas CROND[11257]: (cronjob) CMD (/sbin/dcccollect.sh)---Cron Daemon</div><div class="line"></div><div class="line">Mar 6 03:52:07 avas dccd[13284]: 1.2.32 database /home/dcc/dcc_db reopened with 997 MByte window---Distributed Checksum Clearinghouse Server</div><div class="line">Mar 6 04:12:03 avas dccd[13284]: &quot;packet length 44 too small for REPORT&quot; sent to client 1 at 80.8.131.68,41000---Distributed Checksum Clearinghouse Server</div><div class="line">Mar 6 19:01:12 avas dccd[13284]: no incoming flood connection from dcc1.example.no, server-ID XXXX---Distributed Checksum Clearinghouse Server</div><div class="line">Mar 6 19:01:42 avas dccd[13284]: no outgoing flood connection to dcc1.example.no, server-ID XXXX---Distributed Checksum Clearinghouse Server</div><div class="line">Mar 6 20:06:37 avas dccd[13284]: &quot;packet length 44 too small for REPORT&quot; sent to client 1 at 194.63.250.215,56007---Distributed Checksum Clearinghouse Server</div><div class="line"></div><div class="line">Mar 12 13:23:58 avas sshd[23510]: Failed none for illegal user phil from 10.0.0.153 port 2006 ssh2---Red Hat Linux Server</div><div class="line">Mar 12 13:23:58 avas sshd[23510]: Failed keyboard-interactive for illegal user phil from 10.0.0.153 port 2006 ssh2---Red Hat Linux Server</div><div class="line">Mar 12 13:23:58 avas sshd[23510]: Disconnecting: Too many authentication failures for avas.cnc.bc.ca---Red Hat Linux Server</div><div class="line">Mar 12 13:24:17 avas sshd[23522]: Could not reverse map address 10.0.0.153.---Red Hat Linux Server</div><div class="line">Mar 12 13:24:17 avas sshd[23522]: Accepted password for tom from 10.0.0.153 port 2007 ssh2---Red Hat Linux Server</div><div class="line"></div><div class="line">[13:35:15] [13:35:15] Scanning for directory /usr/lib/...... [13:35:15] OK. Not found.---RK Hunter</div><div class="line">[13:35:15] [13:35:15] Scanning for directory /usr/lib/.../bkit-ssh... [13:35:15] OK. Not found.---RK Hunter</div><div class="line">[13:35:15] [13:35:15] Scanning for directory /usr/lib/.bkit-... [13:35:15] OK. Not found.---RK Hunter</div><div class="line">[13:35:15] [13:35:15] Scanning for directory /tmp/.bkp... [13:35:15] OK. Not found.---RK Hunter</div><div class="line">[13:35:15] [13:35:15] *** Start scan CiNIK Worm (Slapper.B variant) ***---RK Hunter</div><div class="line"></div><div class="line">[Sun Mar 7 05:39:40 2004] up2date new up2date run started---Up 2 Date</div><div class="line">[Sun Mar 7 05:39:40 2004] up2date Opening rpmdb in /var/lib/rpm/ with option 0---Up 2 Date</div><div class="line">[Sun Mar 7 05:39:40 2004] up2date Opening rpmdb in /var/lib/rpm/ with option 0---Up 2 Date</div><div class="line">[Sun Mar 7 09:39:40 2004] up2date new up2date run started---Up 2 Date</div><div class="line">[Sun Mar 7 09:39:40 2004] up2date Opening rpmdb in /var/lib/rpm/ with option 0---Up 2 Date</div><div class="line"></div><div class="line">[11-29-2002 - 15:22:37] Client at 24.69.73.3: URL contains high bit character. Request will be rejected. Site Instance=&apos;1&apos;, Raw URL=&apos;/scripts/mail.exe/2001���.jpg&apos;---URL Scan</div><div class="line">[11-29-2002 - 15:22:47] Client at 24.69.73.3: URL contains high bit character. Request will be rejected. Site Instance=&apos;1&apos;, Raw URL=&apos;/scripts/mail.exe/2001���.jpg&apos;---URL Scan</div><div class="line">[11-29-2002 - 21:15:17] Client at 24.67.253.204: URL contains extension &apos;.com&apos;, which is disallowed. Request will be rejected. Site Instance=&apos;1&apos;, Raw URL=&apos;/scripts/www.the5yearjournal.com&apos;---URL Scan</div><div class="line">[12-02-2002 - 09:52:33] Client at 142.27.68.15: URL contains high bit character. Request will be rejected. Site Instance=&apos;1&apos;, Raw URL=&apos;/scripts/mail.exe/2001%C2%A4%C3%AB%C2%BE%C3%A4.jpg&apos;---URL Scan</div><div class="line">[12-02-2002 - 09:52:43] Client at 142.27.68.15: URL contains high bit character. Request will be rejected. Site Instance=&apos;1&apos;, Raw URL=&apos;/scripts/mail.exe/2001%C2%A4%C3%AB%C2%BE%C3%A4.jpg&apos;---URL Scan</div><div class="line"></div><div class="line">(II) PCI: 00:00:0: chip 8086,2560 card 174b,174b rev 03 class 06,00,00 hdr 00---X Free 86</div><div class="line">(II) PCI: 00:02:0: chip 8086,2562 card 174b,174b rev 03 class 03,00,00 hdr 00---X Free 86</div><div class="line">(II) PCI: 00:1d:0: chip 8086,24c2 card 174b,174b rev 02 class 0c,03,00 hdr 80---X Free 86</div><div class="line">(II) PCI: 00:1d:1: chip 8086,24c4 card 174b,174b rev 02 class 0c,03,00 hdr 00---X Free 86</div><div class="line">(II) PCI: 00:1d:2: chip 8086,24c7 card 174b,174b rev 02 class 0c,03,00 hdr 00---X Free 86</div></pre></td></tr></table></figure>
+<p>为避免与日志文本内容冲突，本 CSV 的列分隔符选用的是3个“-”。<br>本示例的代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># CNN for the logs classificaton</span></div><div class="line"><span class="keyword">import</span> numpy</div><div class="line"><span class="keyword">import</span> pandas</div><div class="line"><span class="keyword">import</span> re</div><div class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</div><div class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense</div><div class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Flatten</div><div class="line"><span class="keyword">from</span> keras.layers.convolutional <span class="keyword">import</span> Convolution1D</div><div class="line"><span class="keyword">from</span> keras.layers.convolutional <span class="keyword">import</span> MaxPooling1D</div><div class="line"><span class="keyword">from</span> keras.layers.embeddings <span class="keyword">import</span> Embedding</div><div class="line"><span class="keyword">from</span> keras.preprocessing <span class="keyword">import</span> sequence</div><div class="line"><span class="keyword">from</span> keras.utils <span class="keyword">import</span> np_utils</div><div class="line"></div><div class="line"><span class="comment"># utils functions define</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">str2numbers</span><span class="params">(strs)</span>:</span></div><div class="line">	res = []</div><div class="line">	<span class="keyword">for</span> str <span class="keyword">in</span> strs:</div><div class="line">		wArr = []</div><div class="line">		words = re.split(<span class="string">"[\s\/]"</span>,str)</div><div class="line">		<span class="keyword">for</span> word <span class="keyword">in</span> words:</div><div class="line">			wArr.append(sum([ord(c) <span class="keyword">for</span> c <span class="keyword">in</span> word]))</div><div class="line">		res.append(wArr)</div><div class="line">	<span class="keyword">return</span> res</div><div class="line">	</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">predictions2className</span><span class="params">(classes,predictions)</span>:</span></div><div class="line">	res = []</div><div class="line">	<span class="keyword">for</span> prediction <span class="keyword">in</span> predictions:</div><div class="line">		index = numpy.argmax(prediction)</div><div class="line">		res.append(classes[index])</div><div class="line">	<span class="keyword">return</span> res</div><div class="line"></div><div class="line"><span class="comment"># fix random seed for reproducibility</span></div><div class="line">seed = <span class="number">7</span></div><div class="line">numpy.random.seed(seed)</div><div class="line"></div><div class="line">dataframe = pandas.read_csv(<span class="string">'sys-log.csv'</span>, sep=<span class="string">'---'</span>, engine=<span class="string">'python'</span>)</div><div class="line">dataset = dataframe.values</div><div class="line">numpy.random.shuffle(dataset)</div><div class="line">X_str = dataset[:,<span class="number">0</span>]</div><div class="line">y_str = dataset[:,<span class="number">1</span>]</div><div class="line"></div><div class="line">train_size = int(len(X_str) * <span class="number">0.8</span>)</div><div class="line">test_size = len(X_str) - train_size</div><div class="line"></div><div class="line">X_num = str2numbers(X_str)</div><div class="line">X_train = X_num[:train_size]</div><div class="line">X_test = X_num[train_size:]</div><div class="line"></div><div class="line">classes, y_num = numpy.unique(y_str, return_inverse=<span class="keyword">True</span>)</div><div class="line">y_oneHot = np_utils.to_categorical(y_num)</div><div class="line">y_train = y_oneHot[:train_size]</div><div class="line">y_test = y_oneHot[train_size:]</div><div class="line"></div><div class="line"><span class="comment"># pad dataset to a maximum review length in words</span></div><div class="line">max_words = <span class="number">100</span></div><div class="line">X_train = sequence.pad_sequences(X_train, maxlen=max_words)</div><div class="line">X_test = sequence.pad_sequences(X_test, maxlen=max_words)</div><div class="line"></div><div class="line"><span class="comment"># create the model</span></div><div class="line">top_words = <span class="number">10000</span></div><div class="line">outputs = len(classes)</div><div class="line">model = Sequential()</div><div class="line">model.add(Embedding(top_words, <span class="number">32</span>, input_length=max_words))</div><div class="line">model.add(Convolution1D(nb_filter=<span class="number">32</span>, filter_length=<span class="number">3</span>, border_mode=<span class="string">'same'</span>, activation=<span class="string">'relu'</span>))</div><div class="line">model.add(MaxPooling1D(pool_length=<span class="number">2</span>))</div><div class="line">model.add(Flatten())</div><div class="line">model.add(Dense(<span class="number">250</span>, activation=<span class="string">'relu'</span>))</div><div class="line">model.add(Dense(outputs, activation=<span class="string">'softmax'</span>))</div><div class="line">model.compile(loss=<span class="string">'categorical_crossentropy'</span>, optimizer=<span class="string">'adam'</span>, metrics=[<span class="string">'accuracy'</span>])</div><div class="line">print(model.summary())</div><div class="line"></div><div class="line"><span class="comment"># Fit the model</span></div><div class="line">model.fit(X_train, y_train, validation_data=(X_test, y_test), nb_epoch=<span class="number">30</span>, batch_size=<span class="number">1</span>, verbose=<span class="number">1</span>)</div><div class="line"><span class="comment"># Final evaluation of the model</span></div><div class="line">scores = model.evaluate(X_test, y_test, verbose=<span class="number">0</span>)</div><div class="line">print(<span class="string">"Accuracy: %.2f%%"</span> % (scores[<span class="number">1</span>]*<span class="number">100</span>))</div><div class="line"></div><div class="line">predictions = model.predict(X_test, verbose=<span class="number">0</span>)</div><div class="line">result = predictions2className(classes, predictions)</div><div class="line"><span class="keyword">print</span> <span class="string">"############## Test logs: "</span>,X_str[train_size:]</div><div class="line"><span class="keyword">print</span> <span class="string">"############## Log types: "</span>,y_str[train_size:]</div><div class="line"><span class="keyword">print</span> <span class="string">"############## Prediction types: "</span>,result</div></pre></td></tr></table></figure>
+<p>运行示例前，请先保存上文样本数据到本示例代码相同目录下，文件名为“sys-log.csv”。接下来我们将对上例关键代码部分进行详细讲解。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dataframe = pandas.read_csv(<span class="string">'sys-log.csv'</span>, sep=<span class="string">'---'</span>, engine=<span class="string">'python'</span>)</div></pre></td></tr></table></figure>
+<p>通过 <a href="http://pandas.pydata.org/" target="_blank" rel="external">pandas</a> 库对 CSV 数据进行加载，以“—”为列分隔符。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">numpy.random.shuffle(dataset)</div></pre></td></tr></table></figure>
+<p>我们的样本数据是按日志类型进行编辑整理的，这里对加载后数据进行了顺序随机重排，以使样本数据更好的用于模型训练和测试。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">train_size = int(len(X_str) * <span class="number">0.8</span>)</div><div class="line">test_size = len(X_str) - train_size</div></pre></td></tr></table></figure>
+<p>我们划分样本数据的80%用于训练，20%用于测试。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">X_num = str2numbers(X_str)</div></pre></td></tr></table></figure>
+<p>这里我们对日志文本内容进行了形式上的转换，将每个单词转换成了相应的整数，具体方法请参见<code>str2numbers()</code>函数内容。将单词转换为整数的作用是为后文的单词嵌入（word embedding）做准备，后面会详细介绍。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">classes, y_num = numpy.unique(y_str, return_inverse=<span class="keyword">True</span>)</div><div class="line">y_oneHot = np_utils.to_categorical(y_num)</div></pre></td></tr></table></figure>
+<p>将日志类型的目标输出转换为 <a href="https://en.wikipedia.org/wiki/One-hot" target="_blank" rel="external">One-hot</a> 的表示形式，主要由 Keras 工具类 <code>np_utils</code> 所提供的 <code>to_categorical</code> 方法来完成。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">max_words = <span class="number">100</span></div><div class="line">X_train = sequence.pad_sequences(X_train, maxlen=max_words)</div><div class="line">X_test = sequence.pad_sequences(X_test, maxlen=max_words)</div></pre></td></tr></table></figure>
+<p>进行模型处理前，我们将每组数据标准化为统一的长度，本例设置的是100，具体根据数据的大小而定。<code>sequence</code>类的<code>pad_sequences</code>方法可以根据<code>maxlen</code>参数指定的长度对传入数据的每一项进行处理。当数据长度小于<code>maxlen</code>时，自动左添0补全；当数据长度大于<code>maxlen</code>时，则从数据的右端开始进行<code>maxlen</code>长度保留。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">model.add(Embedding(top_words, <span class="number">32</span>, input_length=max_words))</div></pre></td></tr></table></figure>
+<p>Embedding 层添加。单词嵌入<a href="https://en.wikipedia.org/wiki/Word_embedding" target="_blank" rel="external">（word embedding）</a>是机器学习自然语言处理（NLP）中所使用的一种词汇处理方法，实现的是将单词转换为高维空间的实向量，单词间在语义上越接近，在向量空间中的距离就越近，同时也使转换后的词汇矩阵维度更低。我们在此添加 Embedding 层的作用是将每条维度为1x100的日志数据转换为32x100矩阵形式，之后输入给卷积层进行特征提取。<br><code>top_words</code>：输入数据的最大表示数值，也称为词汇容量（vocabulary size），输入数据词汇的最大数值要小于该值；<br><code>32</code>：输出矩阵的行数；<br><code>input_length</code>：输入数据长度。当模型后续有 Flatten 层时，该参数必须提供，以为其提供数据维度信息；</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">model.add(Convolution1D(nb_filter=<span class="number">32</span>, filter_length=<span class="number">3</span>, border_mode=<span class="string">'same'</span>, activation=<span class="string">'relu'</span>))</div><div class="line">model.add(MaxPooling1D(pool_length=<span class="number">2</span>))</div></pre></td></tr></table></figure>
+<p>Convolution1D 层具体实现的是一维卷积计算，功能原理与 Convolution2D 相同。这里设置的过滤器数量为<code>32</code>，过滤器大小为<code>3</code>，边缘处理模式为<code>same</code>，激活函数类型为<code>relu</code>；<br>卷积层之后我们添加的是 MaxPooling1D 层，对上一层提取到的特征图谱进行取最大汇集操作，汇集长度为<code>2</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">model.add(Flatten())</div><div class="line">model.add(Dense(<span class="number">250</span>, activation=<span class="string">'relu'</span>))</div><div class="line">model.add(Dense(outputs, activation=<span class="string">'softmax'</span>))</div></pre></td></tr></table></figure>
+<p>数据有卷积结构汇集层输出后，我们添加了 Flatten 层将2维矩阵转换为1维向量，之后传递给全连接神经网络结构（隐含层：250个隐含神经元，输出层：<code>outputs</code>个神经元）。因为我们这里是要对输入结果做分类判断，所以输出的激活函数类型选择的是<code>softmax</code>。<br>下面是运行结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">Epoch <span class="number">28</span>/<span class="number">30</span></div><div class="line"><span class="number">68</span>/<span class="number">68</span> [==============================] - <span class="number">0</span>s - loss: <span class="number">5.9754e-04</span> - acc: <span class="number">1.0000</span> - val_loss: <span class="number">0.3522</span> - val_acc: <span class="number">0.8824</span></div><div class="line">Epoch <span class="number">29</span>/<span class="number">30</span></div><div class="line"><span class="number">68</span>/<span class="number">68</span> [==============================] - <span class="number">0</span>s - loss: <span class="number">5.4314e-04</span> - acc: <span class="number">1.0000</span> - val_loss: <span class="number">0.3508</span> - val_acc: <span class="number">0.8824</span></div><div class="line">Epoch <span class="number">30</span>/<span class="number">30</span></div><div class="line"><span class="number">68</span>/<span class="number">68</span> [==============================] - <span class="number">0</span>s - loss: <span class="number">5.0137e-04</span> - acc: <span class="number">1.0000</span> - val_loss: <span class="number">0.3527</span> - val_acc: <span class="number">0.8824</span></div><div class="line">Accuracy: <span class="number">88.24</span>%</div><div class="line"><span class="comment">############## Test logs:  [ 'Mar 29 2004 09:55:23: %PIX-6-302005: Built UDP connection for faddr 193.192.160.244/3053 gaddr 10.0.0.187/53 laddr 192.168.0.2/53'</span></div><div class="line"> <span class="string">'64.242.88.10 - - [07/Mar/2004:16:20:55 -0800] "GET /twiki/bin/view/Main/DCCAndPostFix HTTP/1.1" 200 5253'</span></div><div class="line"> <span class="string">'Sun, 2004-03-28 15:31:39 - TCP packet - Source:80.5.99.100,4662 ,WAN - Destination:217.224.147.21,4788 ,LAN [Drop] - [TCP preconnect traffic dropped]'</span></div><div class="line"> <span class="string">'Feb 2 09:00:14 avas.example.com amavisd[11568]: Module Archive::Zip 1.08'</span></div><div class="line"> <span class="string">'(II) PCI: 00:1d:1: chip 8086,24c4 card 174b,174b rev 02 class 0c,03,00 hdr 00'</span></div><div class="line"> <span class="string">'Mar 16 00:01:28 evita postfix/smtpd[1713]: EA11834022: client=camomile.cloud9.net[168.100.1.3]'</span></div><div class="line"> <span class="string">'Sun, 2004-03-28 15:36:10 - TCP packet - Source:140.112.243.228,5442 ,WAN - Destination:217.224.147.21,3283 ,LAN [Drop] - [TCP preconnect traffic dropped]'</span></div><div class="line"> <span class="string">'64.242.88.10 - - [07/Mar/2004:16:10:02 -0800] "GET /mailman/listinfo/hsdivision HTTP/1.1" 200 6291'</span></div><div class="line"> <span class="string">'[Sun Mar 7 05:39:40 2004] up2date Opening rpmdb in /var/lib/rpm/ with option 0'</span></div><div class="line"> <span class="string">'(II) PCI: 00:00:0: chip 8086,2560 card 174b,174b rev 03 class 06,00,00 hdr 00'</span></div><div class="line"> <span class="string">'Mar 12 12:20:00 server2 /USR/SBIN/CRON[6837]: (root) CMD ( /usr/lib/sa/sa1 )'</span></div><div class="line"> <span class="string">'Mar 6 19:01:12 avas dccd[13284]: no incoming flood connection from dcc1.example.no, server-ID XXXX'</span></div><div class="line"> <span class="string">'Mar 12 09:27:20 server5 syslog: su : - ttyp1 user-informix'</span></div><div class="line"> <span class="string">'[13:35:15] [13:35:15] Scanning for directory /usr/lib/.bkit-... [13:35:15] OK. Not found.'</span></div><div class="line"> <span class="string">'Mar 12 08:24:51 server6 sshd[24742]: Accepted password for netscape from 111.222.333.444 port 1420 ssh2'</span></div><div class="line"> <span class="string">'[13:35:15] [13:35:15] Scanning for directory /tmp/.bkp... [13:35:15] OK. Not found.'</span></div><div class="line"> <span class="string">'Feb 2 09:00:14 avas.example.com amavisd[11568]: Module Archive::Tar 1.07'</span>]</div><div class="line"><span class="comment">############## Log types:  ['Cisco PIX' 'Apache' 'NetGear FWG114P' 'Amavis-New' 'X Free 86' 'Postfix'</span></div><div class="line"> <span class="string">'NetGear FWG114P'</span> <span class="string">'Apache'</span> <span class="string">'Up 2 Date'</span> <span class="string">'X Free 86'</span> <span class="string">'SuSE SLES 8'</span></div><div class="line"> <span class="string">'Distributed Checksum Clearinghouse Server'</span> <span class="string">'HP-UX B.10.20'</span> <span class="string">'RK Hunter'</span></div><div class="line"> <span class="string">'HP UX B.11.00'</span> <span class="string">'RK Hunter'</span> <span class="string">'Amavis-New'</span>]</div><div class="line"><span class="comment">############## Prediction types:  ['Cisco PIX', 'Apache', 'NetGear FWG114P', 'Amavis-New', 'X Free 86', 'RedHat Enterprise Linux', 'NetGear FWG114P', 'SuSE SLES 8', 'Up 2 Date', 'X Free 86', 'SuSE SLES 8', 'Distributed Checksum Clearinghouse Server', 'HP-UX B.10.20', 'RK Hunter', 'HP UX B.11.00', 'RK Hunter', 'Amavis-New']</span></div></pre></td></tr></table></figure>
+<p>测评的识别准确率为88.24%，结下来我们将对本模型进行扩展，看一下多层卷积结构模型的表现如何。</p>
+<h1 id="多层卷积结构"><a href="#多层卷积结构" class="headerlink" title="多层卷积结构"></a>多层卷积结构</h1><p>多层卷积结构模型扩展代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">model = Sequential()</div><div class="line">model.add(Embedding(top_words, <span class="number">32</span>, input_length=max_words))</div><div class="line">model.add(Convolution1D(nb_filter=<span class="number">32</span>, filter_length=<span class="number">3</span>, border_mode=<span class="string">'same'</span>, activation=<span class="string">'relu'</span>))</div><div class="line">model.add(MaxPooling1D(pool_length=<span class="number">2</span>))</div><div class="line">model.add(Convolution1D(nb_filter=<span class="number">32</span>, filter_length=<span class="number">3</span>, border_mode=<span class="string">'same'</span>, activation=<span class="string">'relu'</span>))</div><div class="line">model.add(MaxPooling1D(pool_length=<span class="number">2</span>))</div><div class="line">model.add(Flatten())</div><div class="line">model.add(Dense(<span class="number">250</span>, activation=<span class="string">'relu'</span>))</div><div class="line">model.add(Dense(outputs, activation=<span class="string">'softmax'</span>))</div></pre></td></tr></table></figure>
+<p>我们在上例的基础上又增添了一层 Convolution1D 层和 MaxPooling1D 层。<br>下面是运行结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">Epoch <span class="number">18</span>/<span class="number">20</span></div><div class="line"><span class="number">68</span>/<span class="number">68</span> [==============================] - <span class="number">0</span>s - loss: <span class="number">0.0143</span> - acc: <span class="number">1.0000</span> - val_loss: <span class="number">0.6617</span> - val_acc: <span class="number">0.9412</span></div><div class="line">Epoch <span class="number">19</span>/<span class="number">20</span></div><div class="line"><span class="number">68</span>/<span class="number">68</span> [==============================] - <span class="number">0</span>s - loss: <span class="number">0.0095</span> - acc: <span class="number">1.0000</span> - val_loss: <span class="number">0.6646</span> - val_acc: <span class="number">0.8824</span></div><div class="line">Epoch <span class="number">20</span>/<span class="number">20</span></div><div class="line"><span class="number">68</span>/<span class="number">68</span> [==============================] - <span class="number">0</span>s - loss: <span class="number">0.0045</span> - acc: <span class="number">1.0000</span> - val_loss: <span class="number">0.6602</span> - val_acc: <span class="number">0.9412</span></div><div class="line">Accuracy: <span class="number">94.12</span>%</div><div class="line"><span class="comment">############## Test logs:  [ 'Mar 29 2004 09:55:23: %PIX-6-302005: Built UDP connection for faddr 193.192.160.244/3053 gaddr 10.0.0.187/53 laddr 192.168.0.2/53'</span></div><div class="line"> <span class="string">'64.242.88.10 - - [07/Mar/2004:16:20:55 -0800] "GET /twiki/bin/view/Main/DCCAndPostFix HTTP/1.1" 200 5253'</span></div><div class="line"> <span class="string">'Sun, 2004-03-28 15:31:39 - TCP packet - Source:80.5.99.100,4662 ,WAN - Destination:217.224.147.21,4788 ,LAN [Drop] - [TCP preconnect traffic dropped]'</span></div><div class="line"> <span class="string">'Feb 2 09:00:14 avas.example.com amavisd[11568]: Module Archive::Zip 1.08'</span></div><div class="line"> <span class="string">'(II) PCI: 00:1d:1: chip 8086,24c4 card 174b,174b rev 02 class 0c,03,00 hdr 00'</span></div><div class="line"> <span class="string">'Mar 16 00:01:28 evita postfix/smtpd[1713]: EA11834022: client=camomile.cloud9.net[168.100.1.3]'</span></div><div class="line"> <span class="string">'Sun, 2004-03-28 15:36:10 - TCP packet - Source:140.112.243.228,5442 ,WAN - Destination:217.224.147.21,3283 ,LAN [Drop] - [TCP preconnect traffic dropped]'</span></div><div class="line"> <span class="string">'64.242.88.10 - - [07/Mar/2004:16:10:02 -0800] "GET /mailman/listinfo/hsdivision HTTP/1.1" 200 6291'</span></div><div class="line"> <span class="string">'[Sun Mar 7 05:39:40 2004] up2date Opening rpmdb in /var/lib/rpm/ with option 0'</span></div><div class="line"> <span class="string">'(II) PCI: 00:00:0: chip 8086,2560 card 174b,174b rev 03 class 06,00,00 hdr 00'</span></div><div class="line"> <span class="string">'Mar 12 12:20:00 server2 /USR/SBIN/CRON[6837]: (root) CMD ( /usr/lib/sa/sa1 )'</span></div><div class="line"> <span class="string">'Mar 6 19:01:12 avas dccd[13284]: no incoming flood connection from dcc1.example.no, server-ID XXXX'</span></div><div class="line"> <span class="string">'Mar 12 09:27:20 server5 syslog: su : - ttyp1 user-informix'</span></div><div class="line"> <span class="string">'[13:35:15] [13:35:15] Scanning for directory /usr/lib/.bkit-... [13:35:15] OK. Not found.'</span></div><div class="line"> <span class="string">'Mar 12 08:24:51 server6 sshd[24742]: Accepted password for netscape from 111.222.333.444 port 1420 ssh2'</span></div><div class="line"> <span class="string">'[13:35:15] [13:35:15] Scanning for directory /tmp/.bkp... [13:35:15] OK. Not found.'</span></div><div class="line"> <span class="string">'Feb 2 09:00:14 avas.example.com amavisd[11568]: Module Archive::Tar 1.07'</span>]</div><div class="line"><span class="comment">############## Log types:  ['Cisco PIX' 'Apache' 'NetGear FWG114P' 'Amavis-New' 'X Free 86' 'Postfix'</span></div><div class="line"> <span class="string">'NetGear FWG114P'</span> <span class="string">'Apache'</span> <span class="string">'Up 2 Date'</span> <span class="string">'X Free 86'</span> <span class="string">'SuSE SLES 8'</span></div><div class="line"> <span class="string">'Distributed Checksum Clearinghouse Server'</span> <span class="string">'HP-UX B.10.20'</span> <span class="string">'RK Hunter'</span></div><div class="line"> <span class="string">'HP UX B.11.00'</span> <span class="string">'RK Hunter'</span> <span class="string">'Amavis-New'</span>]</div><div class="line"><span class="comment">############## Prediction types:  ['Cisco PIX', 'Apache', 'NetGear FWG114P', 'Amavis-New', 'X Free 86', 'Up 2 Date', 'NetGear FWG114P', 'Apache', 'Up 2 Date', 'X Free 86', 'SuSE SLES 8', 'Distributed Checksum Clearinghouse Server', 'HP-UX B.10.20', 'RK Hunter', 'HP UX B.11.00', 'RK Hunter', 'Amavis-New']</span></div></pre></td></tr></table></figure>
+<p>本例中多层卷积模型的测试准确率相对有所提高。需要注意的是我们这里主要是用于介绍多层卷积结构的构建方法，至于具体测试结果是否相对单层结构有所改进还是要具体问题具体分析。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>通过本篇的阅读，您知道了 CNN 在系统日志识别分类上的具体实现方法。本篇的示例代码还有很大的改进空间，希望您可以在此基础上继续改进取得更好的效果。同时也希望本篇所介绍的方法能应用到您的具体工作中去，让我们一同向世界展示深度学习的魅力：）</p>
+<h1 id="更多参考"><a href="#更多参考" class="headerlink" title="更多参考"></a>更多参考</h1><ul>
+<li><a href="http://machinelearningmastery.com/predict-sentiment-movie-reviews-using-deep-learning/" target="_blank" rel="external">Predict Sentiment From Movie Reviews Using Deep Learning</a></li>
+<li><a href="https://arxiv.org/pdf/1602.00367v1.pdf" target="_blank" rel="external">Efficient Character-level Document Classification by Combining Convolution and Recurrent Layers</a></li>
+<li><a href="http://colah.github.io/posts/2014-07-NLP-RNNs-Representations/" target="_blank" rel="external">Deep Learning, NLP, and Representations</a></li>
+<li><a href="https://keras.io/layers/embeddings/" target="_blank" rel="external">Docs » Layers » Embedding Layers</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+<! -- 添加捐赠图标 -->
+    
+    
+
+    <div class ="post-donate">
+      <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="Donate 打赏"></a>
+        <span class="donate_txt">
+           &uarr;<br>
+           
+            豪赏本篇文章（¥ 0.99）
+           
+        </span>
+        <br>
+      </div>
+
+      <div id="donate_guide" class="donate_bar center hidden">
+        
+
+      
+       <a href="/images/wechat.png" title="微信打赏（¥ 0.99）" class="fancybox" rel="article0">
+         <img src="/images/wechat.png" title="微信打赏（¥ 0.99）" height="164px" width="164px">
+       </a>
+      
+
+      </div>
+
+      <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+          $('#donate_board').addClass('hidden');
+          $('#donate_guide').removeClass('hidden');
+        }
+      </script>
+    </div>
+
+    
+
+<! -- end 添加捐赠图标 --> 
+
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag">#深度学习</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/15/deeplearning/time-series-prediction-with-LSTM-RNN/" rel="next" title="基于 LSTM RNN 的序列数据预测">
+                <i class="fa fa-chevron-left"></i> 基于 LSTM RNN 的序列数据预测
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/default_avatar.jpg"
+               alt="Yangguang" />
+          <p class="site-author-name" itemprop="name">Yangguang</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yangguang2009" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://stackoverflow.com/users/4869784/yangguang" target="_blank">
+                  
+                    <i class="fa fa-stackoverflow"></i> Stackoverflow
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#系统日志"><span class="nav-number">1.</span> <span class="nav-text">系统日志</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题描述"><span class="nav-number">2.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CNN-日志分类"><span class="nav-number">3.</span> <span class="nav-text">CNN 日志分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#多层卷积结构"><span class="nav-number">4.</span> <span class="nav-text">多层卷积结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#更多参考"><span class="nav-number">6.</span> <span class="nav-text">更多参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yangguang</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+
+</body>
+</html>

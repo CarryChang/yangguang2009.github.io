@@ -1,0 +1,858 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="深度学习," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="业精于勤，行成于思" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="本篇将对 Convolutional Neural Networks（CNN，ConvNet）神经网络进行简要的介绍，通过阅读本篇内容您将了解到：- CNN 的特点及网络构成；- CNN 的功能实现原理；- CNN 的一些最佳实践；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Convolutional Neural Networks（CNN）神经网络介绍">
+<meta property="og:url" content="http://yoursite.com/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/index.html">
+<meta property="og:site_name" content="业精于勤，行成于思">
+<meta property="og:description" content="本篇将对 Convolutional Neural Networks（CNN，ConvNet）神经网络进行简要的介绍，通过阅读本篇内容您将了解到：- CNN 的特点及网络构成；- CNN 的功能实现原理；- CNN 的一些最佳实践；">
+<meta property="og:image" content="http://yoursite.com/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/0.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/cnn-demo.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/5x5.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/filter.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/convolution.gif">
+<meta property="og:image" content="http://yoursite.com/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/depth.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/zero-padding.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/max-pooling.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/separately-pooling.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/c-p-fc.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/cnn-mnist.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/car.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/cnn-mechanism-2.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/cnn-mechanism-3.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/feature-map.gif">
+<meta property="og:updated_time" content="2017-02-02T14:10:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Convolutional Neural Networks（CNN）神经网络介绍">
+<meta name="twitter:description" content="本篇将对 Convolutional Neural Networks（CNN，ConvNet）神经网络进行简要的介绍，通过阅读本篇内容您将了解到：- CNN 的特点及网络构成；- CNN 的功能实现原理；- CNN 的一些最佳实践；">
+<meta name="twitter:image" content="http://yoursite.com/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/0.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: 'Author'
+    }
+  };
+</script>
+
+  <title> Convolutional Neural Networks（CNN）神经网络介绍 | 业精于勤，行成于思 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">业精于勤，行成于思</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Convolutional Neural Networks（CNN）神经网络介绍
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-12-18T21:15:30+08:00" content="2016-12-18">
+              2016-12-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/《深度学习入门教程》/" itemprop="url" rel="index">
+                    <span itemprop="name">《深度学习入门教程》</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <img src="/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/0.png" alt="0.png" title=""> <br>本篇将对 <a href="https://en.wikipedia.org/wiki/Convolutional_neural_network" target="_blank" rel="external">Convolutional Neural Networks（CNN，ConvNet）</a>神经网络进行简要的介绍，通过阅读本篇内容您将了解到：<br>- CNN 的特点及网络构成；<br>- CNN 的功能实现原理；<br>- CNN 的一些最佳实践；<br><a id="more"></a>
+<h1 id="CNN-简介"><a href="#CNN-简介" class="headerlink" title="CNN 简介"></a>CNN 简介</h1><p>CNN 是当前能强大的深度学习神经网络之一，特别是在图像识别应用上已经取得了惊人的表现。CNN 的设计原型最早起源于<a href="http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf" target="_blank" rel="external">LeNet5</a>，当时主要用于文本识别，后经人们不断对网络在结构和性能上的优化形成了今天我们广泛使用的 CNN。<br>CNN 在图像识别上的优势主要体现为：</p>
+<ul>
+<li>可以缩减计算过程中的权重（weights）数量；</li>
+<li>在物体识别上能够抵轻微的扭曲，形变等干扰；</li>
+<li>具有自动学习，特征归纳的特性；</li>
+<li>对物体的识别不受该物体在图片中位置变动的影响；</li>
+</ul>
+<h1 id="CNN-网络结构"><a href="#CNN-网络结构" class="headerlink" title="CNN 网络结构"></a>CNN 网络结构</h1><p>CNN 的神经层主要有3种：</p>
+<ul>
+<li>卷积层（Convolutional Layer）；</li>
+<li>汇集层（Pooling Layer）；</li>
+<li>全连接层（Fully-Connected Layer）；</li>
+</ul>
+<p>在处理数据时3种神经层主要作用各不相同，下面是一个简要的 CNN 示例，对图片中可能包含的物体（dog，cat，boat，bird）进行识别判断：<br><img src="/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/cnn-demo.png" alt="cnn-demo.png" title=""> 我们可以看到整个识别的过程是由3种神经层共同协作完成的，接下来我们将对它们进行一一介绍。</p>
+<h2 id="卷积层（Convolutional-Layer）"><a href="#卷积层（Convolutional-Layer）" class="headerlink" title="卷积层（Convolutional Layer）"></a>卷积层（Convolutional Layer）</h2><p>卷积层主要包含过滤器（filter）和特征图谱（feature map）两部分，是数据流经 CNN 网络最先到达的神经层。<br>“卷积”名称源自于在该层主要进行的矩阵卷积计算<a href="https://en.wikipedia.org/wiki/Convolution" target="_blank" rel="external">（Convolution）</a>。下面我们来看一下卷积操作在图片上具体执行的过程。<br>假设我们需要处理的是一个5x5像素大小的单通道灰度图片，每个像素值只有0或1（灰度图片的每个像素值一般在0到255之间），转换为2维矩阵如下图所示：<br><img src="/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/5x5.png" alt="5x5.png" title=""> 同时，我们生成另一个3x3大小矩阵：<br><img src="/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/filter.png" alt="filter.png" title=""> 我们所称的在图片上执行的卷积操作即可简化为如下动画所示：<br><img src="/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/convolution.gif" alt="convolution.gif" title=""> 橙色矩阵在绿色矩阵每次移动1像素，每移动一个新的位置即与所在绿色区域进行对应元素相乘，乘积之和作为一个新的粉色矩阵的子元素。<br>在 CNN 中我们称橙色矩阵为过滤器（filter），也有称为核（kernel）或特征检测器（feature detector）。粉色矩阵称为特征图谱（Feature Map），也有称为卷积特征（Convolved Feature）或激活图谱（Activation Map）都是一个意思。橙色矩阵在绿色矩阵每次移动的像素大小我们称为步幅（stride）。<br>同一张图片上使用不同的过滤矩阵进行卷积操作，得到的特征图谱显然也是不一样的，即提取到的特征不同。特征图谱矩阵对应输出的图片效果也是不一样的，这在图片处理软件中经常见到，更多可以参考<a href="https://docs.gimp.org/en/plug-in-convmatrix.html" target="_blank" rel="external">这里</a>。<br>CNN 在实际训练时过滤矩阵的元素值是通过学习自动调整的，使用的过滤器越多提取到的特征也就越多。<br>特征图谱矩阵的大小主要与以下因素有关：</p>
+<ol>
+<li>深度（Depth）：即过滤矩阵的个数，如下图所示，在处理图片时使用了3个过滤矩阵，因此生成了3个特征图谱矩阵。<img src="/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/depth.png" alt="depth.png" title=""></li>
+<li>步幅（Stride）：即过滤矩阵在图片矩阵上进行卷积操作时每次移动的像素个数。步幅越大则生成的特征图谱矩阵越小。</li>
+<li>0填充（Zero-padding）：0填充指的是在图片矩阵的周围填充值为0的元素，如下图所示：<img src="/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/zero-padding.png" alt="zero-padding.png" title=""> 
+0填充的作用主要体现在：一是可以解决“整除”问题，即过滤矩阵在图片矩阵上移动时确保所有图片矩阵元素都能覆盖到，应用中可以理解为能够更好的支持处于图片边缘的物体的识别；二是便于控制特征图谱矩阵的大小；</li>
+</ol>
+<h2 id="汇集层（Pooling-Layer）"><a href="#汇集层（Pooling-Layer）" class="headerlink" title="汇集层（Pooling Layer）"></a>汇集层（Pooling Layer）</h2><p>汇集（Pooling）也称为空间汇集（Spatial Pooling）或二次抽样（subsampling）或降采（downsampling），主要作用是缩聚特征图谱矩阵，同时保留特征图谱矩阵内的关键信息。<br>常用方法包括：取最大（Max）, 取平均（Average）, 取加和（Sum）等。<br>以取最大汇集为例，如下图所示：<br><img src="/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/max-pooling.png" alt="max-pooling.png" title=""> 我们定义的汇集窗口大小为2x2，取其中的最大值，在特征图谱矩阵上依次汇集后生成了一个新的矩阵。同样我们也可以使用取平均或取加和的方式进行汇集，但通常情况下使用取最大方法获得的效果相对更好一些。<br>需要强调的是，汇集操作是对每个特征图谱矩阵分别进行的，如下图所示：<br><img src="/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/separately-pooling.png" alt="separately-pooling.png" title=""> 这里从原始图片获得了3个特征图谱矩阵，分别通过汇集操作后生成了3个新矩阵。<br>汇集操作对特征图谱矩阵进行缩聚的作用主要为：</p>
+<ul>
+<li>减小矩阵大小便于操作；</li>
+<li>减少计算参数，控制过拟合<a href="https://en.wikipedia.org/wiki/Overfitting" target="_blank" rel="external">（Overfitting）</a>；</li>
+<li>增强物体识别的抗干扰能力，包括轻微的扭曲，变形等等。</li>
+<li>对物体的识别不受该物体在图片中位置变动的影响；</li>
+</ul>
+<h2 id="全连接层（Fully-Connected-Layer）"><a href="#全连接层（Fully-Connected-Layer）" class="headerlink" title="全连接层（Fully-Connected Layer）"></a>全连接层（Fully-Connected Layer）</h2><p>全连接层一般采用的是通常的多层感知神经网络，主要作用是基于之前经过卷积层和汇集层提取到的特征集对所处理的图片进行分类。<br><img src="/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/c-p-fc.png" alt="c-p-fc.png" title=""></p>
+<h2 id="一个直观的例子"><a href="#一个直观的例子" class="headerlink" title="一个直观的例子"></a>一个直观的例子</h2><p>这里我们将介绍由<a href="http://scs.ryerson.ca/~aharley/" target="_blank" rel="external">Adam Harley</a>制作的一个非常直观的 CNN 用于手写数字识别的<a href="http://scs.ryerson.ca/~aharley/vis/conv/flat.html" target="_blank" rel="external">例子</a>，如下图：<br><img src="/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/cnn-mnist.png" alt="cnn-mnist.png" title=""> 该网络的输入图片大小为32x32，1024像素。<br>卷积层1具有6个过滤器，大小为5x5，步幅为1，对输入图片矩阵进行卷积操作后生成了6个特征图谱矩阵（深度为6）。<br>汇集层1紧接着分别对6个特征图谱矩阵进行取最大汇集操作，汇集窗口大小为2x2，步幅为2。<br>卷积层2具有16个过滤器，大小为5x5，步幅为1，对汇集层1继续进行卷积操作，生成16个特征图谱矩阵。<br>汇集层2分别对16个特征图谱矩阵进行取最大汇集操作，汇集窗口大小为2x2，步幅为2。<br>全连接层由3层构成：第一层包含120个神经元，第二次包含100个神经元，第三层（CNN 输出层）包含10个神经元，与所识别的10个数字相对应。输出层10个节点的亮度代表了所识别的手写数字属于该类别可能性的大小。<br>通过该例子的介绍，相信您对 CNN 的内部结构一定有了进一步的认识。<a href="http://scs.ryerson.ca/~aharley/vis/conv/" target="_blank" rel="external">这里</a>是该例子的3D版本。</p>
+<h2 id="几点说明"><a href="#几点说明" class="headerlink" title="几点说明"></a>几点说明</h2><ol>
+<li>这部分主要是对 CNN 构成的概要介绍，更多关于具体的技术实现细节可以参考文后的相关链接；</li>
+<li>在上文的 CNN 示例图中参与的是两套卷积层和汇集层的组合，实际上组合的具体形式是不固定的，可以根据具体问题和调优效果而定，如下面的应用例子中使用的多层组合：<img src="/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/car.png" alt="car.png" title="">
+</li>
+</ol>
+<h1 id="CNN-功能原理浅析"><a href="#CNN-功能原理浅析" class="headerlink" title="CNN 功能原理浅析"></a>CNN 功能原理浅析</h1><p>前文我们提到了 CNN 在图片识别上有诸多的优点，包括对物体的识别不受该物体在图片中位置变动的影响，在这一部分我们将着重介绍 CNN 的功能实现原理。</p>
+<h2 id="目标识别"><a href="#目标识别" class="headerlink" title="目标识别"></a>目标识别</h2><p>以下面一个简单的 CNN 模型为例：<br> 蓝色平板代表图片，绿色块和黄色块代表两层特征图谱矩阵汇集后的输出，灰色圆链区代表全连接层。<br>假设我们对图片中的人物进行识别，如下图所示：<br><img src="/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/cnn-mechanism-2.png" alt="cnn-mechanism-2.png" title=""> 图片中标示的两个红色圆点代表眼睛，一个粉色圆点代表鼻子。<br>在第一个卷积层操作中，我们先对与人物相关的局部“低级”特征进行检测，使用的过滤器包括：负责检测类眼睛特征的，负责检测类鼻子特征的等等。每个过滤器的检测结果（过滤器与图片矩阵进行卷积操作后生成的特征图谱矩阵）经过汇集操作后生成绿块部分的“低级”特征输出。<br>在第二个卷积层操作中，我们加入了更多与人物相关的“高级”特征过滤器，包括：人脸特征过滤器，腿特征过滤器等等。“高级”过滤器与绿块的各矩阵进行卷积操作后，再经过汇集操作就生成了黄块部分的“高级”特征输出。<br>灰色圆链区的全连接层根据黄块部分输出的“高级”特征即可对图片中所包含人物进行识别。</p>
+<h2 id="位置变动后的识别"><a href="#位置变动后的识别" class="headerlink" title="位置变动后的识别"></a>位置变动后的识别</h2><p>CNN 特点之一是对物体的识别不受该物体在图片中位置变动的影响。继续我们上面的例子，假设这次我们要识别的对象改变了在图片中的位置：<br><img src="/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/cnn-mechanism-3.png" alt="cnn-mechanism-3.png" title=""> 重复上述从“低级”到“高级”特征提检测再到判断输出的过程，我们依然能够识别出变换了位置的目标对象！CNN 的这个特性是由其包含的3类网络层共同协作实现的。<br>CNN 采用层层归纳特征提取的方式对图片进行识别的机制与<a href="https://en.wikipedia.org/wiki/Visual_system" target="_blank" rel="external">生物视觉系统</a>的实现原理有一定的相似性，如有兴趣不妨了解一下。</p>
+<h2 id="几点说明-1"><a href="#几点说明-1" class="headerlink" title="几点说明"></a>几点说明</h2><ol>
+<li>为简化原理的描述，我们这里定义的“低级”特征在实际网络中已经算是很“高级”的特征了。实际网络的“低级”特征一般都是从图片中最细微的线条走向（类似边缘检测）等最基本特征开始提取的，如下图所示：<br><img src="/2016/12/18/deeplearning/convolutional-neural-networks-for-machine-learning/feature-map.gif" alt="feature-map.gif" title=""> 这里直观地展示了两种基本线条特征的提取过程。</li>
+<li>这里我们所说的“低级”和“高级”是相对而言的，同时在实际训练中各级特征并非都是形象直观的，大多所提取的特征对我们人类而言是没有直接意义的。</li>
+</ol>
+<h1 id="CNN-最佳实践"><a href="#CNN-最佳实践" class="headerlink" title="CNN 最佳实践"></a>CNN 最佳实践</h1><p>现在我们已经知道了 CNN 的构造及原理，接下来我们将介绍 CNN 在实际应用的一些最佳实践：</p>
+<ul>
+<li>过滤器矩阵大小：处理小图片通常设置为3x3，大图片会设置为5x5或7x7;</li>
+<li>步幅大小：通常设置为1。处理较大图片时会设置为2或者更大；</li>
+<li>过滤器数量：通常输入层过滤器的数量相对较少，越往后的层设置的数量越多；</li>
+<li>汇集层：汇集窗口通常设置为2x2；</li>
+<li>数据预处理：通常会对输入数据进行标准化处理，包括图片大小和像素值；</li>
+<li>抽稀（Dropout）：CNN 网络比较容易出现过拟合情况，可以在汇集层后和全连接层中适当添加抽稀层；</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本篇我们主要介绍了 CNN 的网络结构和主要特点，同时我们对 CNN 各层的功能及概念进行了详细的介绍。我们对 CNN 功能特性的实现原理进行了简要的的分析。在实际应用中我们介绍了一些 CNN 最佳实践以供参考。<br>希望本篇对您在深度学习中关于 CNN 的认识和了解有所帮助。</p>
+<h1 id="更多参考"><a href="#更多参考" class="headerlink" title="更多参考"></a>更多参考</h1><ul>
+<li><a href="https://ujjwalkarn.me/2016/08/11/intuitive-explanation-convnets/" target="_blank" rel="external">An Intuitive Explanation of Convolutional Neural Networks</a></li>
+<li><a href="http://xrds.acm.org/blog/2016/06/convolutional-neural-networks-cnns-illustrated-explanation/" target="_blank" rel="external">Convolutional Neural Networks (CNNs): An Illustrated Explanation</a></li>
+<li><a href="http://cs231n.github.io/convolutional-networks/" target="_blank" rel="external">CS231n Convolutional Neural Networks for Visual Recognition, Stanford</a></li>
+<li><a href="https://www.quora.com/How-is-a-convolutional-neural-network-able-to-learn-invariant-features" target="_blank" rel="external">How is a convolutional neural network able to learn invariant features?</a></li>
+<li><a href="http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf" target="_blank" rel="external">Gradient-Based Learning Applied to Document Recognition</a></li>
+<li><a href="http://machinelearningmastery.com/crash-course-convolutional-neural-networks/" target="_blank" rel="external">Crash Course in Convolutional Neural Networks for Machine Learning</a></li>
+<li><a href="http://neuralnetworksanddeeplearning.com/chap6.html" target="_blank" rel="external">Chapter 6 in Michael Nielsen’s open Deep Learning book</a></li>
+<li><a href="http://www.wildml.com/2015/11/understanding-convolutional-neural-networks-for-nlp/" target="_blank" rel="external">UNDERSTANDING CONVOLUTIONAL NEURAL NETWORKS FOR NLP</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+<! -- 添加捐赠图标 -->
+    
+    
+
+    <div class ="post-donate">
+      <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="Donate 打赏"></a>
+        <span class="donate_txt">
+           &uarr;<br>
+           
+            豪赏本篇文章（¥ 0.99）
+           
+        </span>
+        <br>
+      </div>
+
+      <div id="donate_guide" class="donate_bar center hidden">
+        
+
+      
+       <a href="/images/wechat.png" title="微信打赏（¥ 0.99）" class="fancybox" rel="article0">
+         <img src="/images/wechat.png" title="微信打赏（¥ 0.99）" height="164px" width="164px">
+       </a>
+      
+
+      </div>
+
+      <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+          $('#donate_board').addClass('hidden');
+          $('#donate_guide').removeClass('hidden');
+        }
+      </script>
+    </div>
+
+    
+
+<! -- end 添加捐赠图标 --> 
+
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag">#深度学习</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/18/deeplearning/recurrent-neural-networks-for-deep-learning/" rel="next" title="Recurrent Neural Networks（RNN）神经网络介绍">
+                <i class="fa fa-chevron-left"></i> Recurrent Neural Networks（RNN）神经网络介绍
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/01/deeplearning/handwritten-digit-recognition-using-CNN-with-keras/" rel="prev" title="CNN 实现基于 MNIST 数据集的手写识别">
+                CNN 实现基于 MNIST 数据集的手写识别 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/default_avatar.jpg"
+               alt="Yangguang" />
+          <p class="site-author-name" itemprop="name">Yangguang</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yangguang2009" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://stackoverflow.com/users/4869784/yangguang" target="_blank">
+                  
+                    <i class="fa fa-stackoverflow"></i> Stackoverflow
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CNN-简介"><span class="nav-number">1.</span> <span class="nav-text">CNN 简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CNN-网络结构"><span class="nav-number">2.</span> <span class="nav-text">CNN 网络结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#卷积层（Convolutional-Layer）"><span class="nav-number">2.1.</span> <span class="nav-text">卷积层（Convolutional Layer）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#汇集层（Pooling-Layer）"><span class="nav-number">2.2.</span> <span class="nav-text">汇集层（Pooling Layer）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全连接层（Fully-Connected-Layer）"><span class="nav-number">2.3.</span> <span class="nav-text">全连接层（Fully-Connected Layer）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一个直观的例子"><span class="nav-number">2.4.</span> <span class="nav-text">一个直观的例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#几点说明"><span class="nav-number">2.5.</span> <span class="nav-text">几点说明</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CNN-功能原理浅析"><span class="nav-number">3.</span> <span class="nav-text">CNN 功能原理浅析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#目标识别"><span class="nav-number">3.1.</span> <span class="nav-text">目标识别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#位置变动后的识别"><span class="nav-number">3.2.</span> <span class="nav-text">位置变动后的识别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#几点说明-1"><span class="nav-number">3.3.</span> <span class="nav-text">几点说明</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CNN-最佳实践"><span class="nav-number">4.</span> <span class="nav-text">CNN 最佳实践</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#更多参考"><span class="nav-number">6.</span> <span class="nav-text">更多参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yangguang</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+
+</body>
+</html>

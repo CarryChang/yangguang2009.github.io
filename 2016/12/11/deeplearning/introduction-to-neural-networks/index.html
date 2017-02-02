@@ -1,0 +1,828 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="深度学习," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="业精于勤，行成于思" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="本篇将对深度学习基础神经网络的构成及相关概念进行简要介绍，通过阅读本篇内容您将了解到：- 神经网络的基本组成元素；- 多层感知神经网络（MLP）的构成；- 反向传播算法的功能实现原理；- MLP 的具体应用场景；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深度学习神经网络基础介绍">
+<meta property="og:url" content="http://yoursite.com/2016/12/11/deeplearning/introduction-to-neural-networks/index.html">
+<meta property="og:site_name" content="业精于勤，行成于思">
+<meta property="og:description" content="本篇将对深度学习基础神经网络的构成及相关概念进行简要介绍，通过阅读本篇内容您将了解到：- 神经网络的基本组成元素；- 多层感知神经网络（MLP）的构成；- 反向传播算法的功能实现原理；- MLP 的具体应用场景；">
+<meta property="og:image" content="http://yoursite.com/2016/12/11/deeplearning/introduction-to-neural-networks/0.jpeg">
+<meta property="og:image" content="http://yoursite.com/2016/12/11/deeplearning/introduction-to-neural-networks/single-neuron.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/11/deeplearning/introduction-to-neural-networks/activation-functions.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/11/deeplearning/introduction-to-neural-networks/feedforward-neural-network.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/11/deeplearning/introduction-to-neural-networks/mlp.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/11/deeplearning/introduction-to-neural-networks/student-marks-1.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/11/deeplearning/introduction-to-neural-networks/student-marks-2.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/11/deeplearning/introduction-to-neural-networks/back-prop-1.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/11/deeplearning/introduction-to-neural-networks/back-prop-2.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/11/deeplearning/introduction-to-neural-networks/back-prop-3.png">
+<meta property="og:image" content="http://yoursite.com/2016/12/11/deeplearning/introduction-to-neural-networks/mlp-demo-3d.png">
+<meta property="og:updated_time" content="2017-02-02T14:08:43.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深度学习神经网络基础介绍">
+<meta name="twitter:description" content="本篇将对深度学习基础神经网络的构成及相关概念进行简要介绍，通过阅读本篇内容您将了解到：- 神经网络的基本组成元素；- 多层感知神经网络（MLP）的构成；- 反向传播算法的功能实现原理；- MLP 的具体应用场景；">
+<meta name="twitter:image" content="http://yoursite.com/2016/12/11/deeplearning/introduction-to-neural-networks/0.jpeg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: 'Author'
+    }
+  };
+</script>
+
+  <title> 深度学习神经网络基础介绍 | 业精于勤，行成于思 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">业精于勤，行成于思</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                深度学习神经网络基础介绍
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-12-11T20:57:19+08:00" content="2016-12-11">
+              2016-12-11
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/《深度学习入门教程》/" itemprop="url" rel="index">
+                    <span itemprop="name">《深度学习入门教程》</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <img src="/2016/12/11/deeplearning/introduction-to-neural-networks/0.jpeg" alt="0.jpeg" title=""> <br>本篇将对深度学习基础神经网络的构成及相关概念进行简要介绍，通过阅读本篇内容您将了解到：<br>- 神经网络的基本组成元素；<br>- 多层感知神经网络（MLP）的构成；<br>- 反向传播算法的功能实现原理；<br>- MLP 的具体应用场景；<br><a id="more"></a>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>深度学习的理论基础是其背后的数学推导计算，深度学习神经网络是该理论的一种具体实现技术，包括权重计算，结果输出等。深度学习神经网络的实现受启发于生物大脑神经系统的研究理论（有相应专用名词的借用，但具体概念和功能实现不完全相同）。本篇将为您详细介绍深度学习神经网络的基础构成和相关常用的技术实现算法，如未特殊说明则本篇提到的“神经”相关名词均特指深度学习范畴内的概念。</p>
+<h1 id="神经元"><a href="#神经元" class="headerlink" title="神经元"></a>神经元</h1><p>神经网络的基础计算单元是神经元（neuron），也称节点（node）或单元（unit）。如下图所示：<br><img src="/2016/12/11/deeplearning/introduction-to-neural-networks/single-neuron.png" alt="single-neuron.png" title=""> 神经元可以接收输入（来自其他神经元的输出或外部数据），经过计算（f()）后产生输出（输出给其它神经元或外部结果）。权重（weight，w）表示输出神经元与接收神经元之间联系的强弱，值的大小在神经网络的训练过程中会自动调整直到趋于稳定（理想目标），也是训练的主要对象。<br>上图中的神经元接收输入数据<code>X1</code>（权重为<code>w1</code>），<code>X2</code>（权重为<code>w2</code>）和大小为1的偏差（Bias）（权重为<code>b</code>），经过函数<code>f()</code>计算后产生输出<code>Y</code>。</p>
+<p><strong><code>f()</code></strong>：称为激活函数（Activation Function），一般是非线性的，主要作用是为神经元的输出加入非线性特性，增强神经网络对训练数据的学习能力。实践中较常用的激活函数主要有以下几种：<br><img src="/2016/12/11/deeplearning/introduction-to-neural-networks/activation-functions.png" alt="activation-functions.png" title=""> </p>
+<ul>
+<li><strong>Sigmoid</strong>：将输入转换为0到1的输出：<br><code>σ(x) = 1 / (1 + exp(−x))</code></li>
+<li><strong>tanh</strong>：将输入转换为-1到1的输出：<br><code>tanh(x) = 2σ(2x) − 1</code></li>
+<li><strong>ReLU</strong>：Rectified Linear Unit 的缩写，将输入与0取最大：<br><code>f(x) = max(0, x)</code></li>
+</ul>
+<p><strong>偏差（Bias）</strong>：在神经元中的作用主要是为激活函数的计算增加一个常数，具体大小由训练确定。偏差的详细功能介绍可以参考<a href="http://stackoverflow.com/questions/2480650/role-of-bias-in-neural-networks" target="_blank" rel="external">这里</a>。</p>
+<h1 id="前馈神经网络（Feedforward-Neural-Network）"><a href="#前馈神经网络（Feedforward-Neural-Network）" class="headerlink" title="前馈神经网络（Feedforward Neural Network）"></a>前馈神经网络（Feedforward Neural Network）</h1><p>前馈神经网络是最早出现的人工神经网络，主要结构如下图：<br><img src="/2016/12/11/deeplearning/introduction-to-neural-networks/feedforward-neural-network.png" alt="feedforward-neural-network.png" title=""><br>前馈神经网络主要包含3种神经元：</p>
+<ul>
+<li>输入神经元（输入节点）：输入神经元的作用是接收外部数据，之后传递给隐含神经元，输入神经元不对数据进行计算处理。输入神经元组成的神经层通常称为输入层（Input Layer）；</li>
+<li>隐含神经元（隐含节点）：隐含神经元不与外部数据直接接触，处在输入层与输出层之间。隐含神经元将接收到的数据经过激活函数计算后会传递给输出神经元，或下一隐含层种的隐含神经元。隐含神经元所组成的神经层通常称为隐含层（Hidden Layer）。前馈神经网络中只有一个输入层和一个输出层，但可以有多个隐含层或没有隐含层。</li>
+<li>输出神经元（输出节点）：输出神经元将接收的数据经过激活函数计算后输出到神经网络外部。输出神经元组成的神经层通常称为输出层（Output Layer）；<br>前馈神经网络中数据的流经方向只有一个，即输入层 -&gt; [隐含层] -&gt; 输出层。</li>
+</ul>
+<p>前馈神经网络在实践应用中的类型主要有两种：</p>
+<ul>
+<li>单层感知神经网络（Single Layer Perceptron）：没有隐含层，是最简单的一种前馈神经网络；</li>
+<li>多层感知神经网络（Multi Layer Perceptron）：具有一个或多个隐含层，功能相对单层感知神经网络更强大，应用也更广泛；</li>
+</ul>
+<p>接下来我们将主要介绍多层感知神经网络。</p>
+<h1 id="多层感知神经网络（Multi-Layer-Perceptron，MLP）"><a href="#多层感知神经网络（Multi-Layer-Perceptron，MLP）" class="headerlink" title="多层感知神经网络（Multi Layer Perceptron，MLP）"></a>多层感知神经网络（Multi Layer Perceptron，MLP）</h1><p>MLP 除了输入层和输出层外，还具有一个或多个隐含层。我们将介绍的 MLP 示例如下：<br><img src="/2016/12/11/deeplearning/introduction-to-neural-networks/mlp.png" alt="mlp.png" title=""> 每个连接之间均有权重，我们这里暂标3个（w0, w1, w2）。<br><strong>输入层</strong>：本例的输入层有3个神经元（节点），偏差神经元的输入值大小为1，其它两个神经元的输入值分别为X1，X2    。输入层主要负责接收数据，不对数据进行计算，所以1，X1，X2分别被传递到隐含层。<br><strong>隐含层</strong>：本例的隐含层同样有3个神经元，一个值为1的偏差神经元，两个隐含神经元。隐含神经元接收来自输入层的输出，经过激活函数计算后输出到输出层。计算过程如图中高亮所示，激活函数的入参为各节点的输入值与权重乘积的加和。<br><strong>输出层</strong>：本例的输出层有2个神经元，接收到来自隐含层的输出后，经过激活函数计算后输出结果Y1，Y2，也是整个网络本次的计算结果。激活函数的计算原理与隐含层相同（激活函数有可能不同）。</p>
+<h1 id="MLP-应用"><a href="#MLP-应用" class="headerlink" title="MLP 应用"></a>MLP 应用</h1><p>给定输入数据集和目标数据集，经过训练后的 MLP 可以自动找到它们之间的联系。因此 MLP 在实践中有着广泛的应用，如分类问题，统计回归问题等。<br>我们这里举一个在分类问题中的应用，下表是一个简单的学生成绩单：<br><img src="/2016/12/11/deeplearning/introduction-to-neural-networks/student-marks-1.png" alt="student-marks-1.png" title=""> 前两列分别表示的是学生学习时间和期中考试成绩，最后一列表示的是期末考试是否通过（1：通过，0：未通过）。假设有一位学生的学习时间和期中考试的情况如下：<br><img src="/2016/12/11/deeplearning/introduction-to-neural-networks/student-marks-2.png" alt="student-marks-2.png" title=""> 那么我们如何根据已有的成绩单来判断这位学能否在期末考试中通过呢？这就是 MLP 经常处理的二值分类预测问题，经过训练学习已有的数据（成绩单）后，MLP 可以对新数据（这位学生的期末考试）做出预测判断。<br>接下来我们将详细介绍 MLP 训练学习的具体过程。</p>
+<h1 id="MLP-训练算法－反向传播（Back-Propagation）介绍"><a href="#MLP-训练算法－反向传播（Back-Propagation）介绍" class="headerlink" title="MLP 训练算法－反向传播（Back-Propagation）介绍"></a>MLP 训练算法－反向传播（Back-Propagation）介绍</h1><p>MLP 的训练方法当前的通常采用的是反向传播算法<a href="https://en.wikipedia.org/wiki/Backpropagation" target="_blank" rel="external">（Backward Propagation of Errors，BackProp）</a>，通俗的解释可以参考<a href="https://www.quora.com/How-do-you-explain-back-propagation-algorithm-to-a-beginner-in-neural-network/answer/Hemanth-Kumar-Mantri" target="_blank" rel="external">这里</a>，数学推导可以参考<a href="http://home.agh.edu.pl/~vlsi/AI/backp_t_en/backprop.html" target="_blank" rel="external">这里</a>。我们这里将继续结合上文的应用示例对反向传播算法的功能实现原理进行简要的介绍。</p>
+<h2 id="正向计算"><a href="#正向计算" class="headerlink" title="正向计算"></a>正向计算</h2><p><img src="/2016/12/11/deeplearning/introduction-to-neural-networks/back-prop-1.png" alt="back-prop-1.png" title=""> 上图是我们这里用于学生成绩预测的一个简单的 MLP 网络结构。输入层接收的数据分别是大小为1的偏差，学生学习时间和期中考试成绩。输出层的结果是对应学生的期末考试情况，[1, 0]：通过，[0, 1]：未通过。<br>这里我们首现输入的数据是[35, 67]，训练的输出目标是[1, 0]。数据正向流经隐含层，输出层，各连接权重在初始化时是随机设置的（一般在0到1之间），各节点的具体计算过程我们在上文已经介绍过了，这里我们来重点看一下输出层数据输出时的具体处理情况。<br>我们本次计算的输入数据是[35, 67]，输出结果是[0.4, 0.6]，期望的输出目标是[1, 0]，误差为[0.6, -0.4]，我们可以看到输出结果与目标是有很大误差的，因此我们需要回过来对各连接权重做调整。<br>这里需要说明的是我们对输出结果的处理是通过 <a href="http://cs231n.github.io/linear-classify/#softmax" target="_blank" rel="external">Softmax</a> 函数完成的，更多关于 Softmax 函数的功能特点可以参考文后的资源连接。</p>
+<h2 id="反向调整"><a href="#反向调整" class="headerlink" title="反向调整"></a>反向调整</h2><p><img src="/2016/12/11/deeplearning/introduction-to-neural-networks/back-prop-2.png" alt="back-prop-2.png" title=""> 上图示意的是各权重调整过程，3个示意标示的连接权重值由原先的w1，w2，w3更新成了w4，w5，w6。权重调整后，我们再次输入[35, 67]，进行计算：<br><img src="/2016/12/11/deeplearning/introduction-to-neural-networks/back-prop-3.png" alt="back-prop-3.png" title=""> 这次的输出结果为[0.8, 0.2]，误差为[0.2, -0.2]，相对上一次来误差明显缩小了许多。之后我们重复上述整个过程：结果计算，误差比较，权重调整，直到误差缩小到满意的范围为止。这一权重调整的训练过程即是反向传播算法功能实现的主要原理。<br>这时如果我们要预测一位学习时间为25，期中考试成绩为70的学生在期末考试的成绩，那么只需将数据[25, 70]输入刚训练好的网络即可得出预测结果。</p>
+<h1 id="来一个酷炫的例子"><a href="#来一个酷炫的例子" class="headerlink" title="来一个酷炫的例子"></a>来一个酷炫的例子</h1><p>下面是由 Adam Harley 制作的一个手写识别 MLP 实现的可视化<a href="http://scs.ryerson.ca/~aharley/vis/fc/" target="_blank" rel="external">例子</a>：<br><img src="/2016/12/11/deeplearning/introduction-to-neural-networks/mlp-demo-3d.png" alt="mlp-demo-3d.png" title=""> 这里识别对象是28x28大小的图片，共784像素，因此网络的输入层设置了784个输入神经元与各像素一一对应。网络共有两个隐含层，第一隐含层包含300个神经元，第二隐含层包含100个神经元。网络的输入层包含10个神经元，与所预测的10个数字一一对应。在输出层各节点的亮度的大小代表了预测结果属于该数字的可能性。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本篇主要介绍了神经网络的相关基础概念，同时对 MLP 的构成以及反向传播算法功能实现原理等进行了进一步的讲解。我们结合具体示例描述了 MLP 的具体应用场景和训练过程。关于 MLP 数学实现原理的学习您可以进一步参考下面的连接资源。<br>希望本篇对您在深度学习中关于 MLP 的认识和了解有所帮助。</p>
+<h1 id="更多参考"><a href="#更多参考" class="headerlink" title="更多参考"></a>更多参考</h1><ul>
+<li><a href="https://ujjwalkarn.me/2016/08/09/quick-intro-neural-networks/" target="_blank" rel="external">A Quick Introduction to Neural Networks</a></li>
+<li><a href="https://www.zhihu.com/question/22334626" target="_blank" rel="external">神经网络激活函数的作用解答</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/Softmax%E5%87%BD%E6%95%B0" target="_blank" rel="external">Softmax函数</a></li>
+<li><a href="http://blog.csdn.net/supercally/article/details/54234115" target="_blank" rel="external">Softmax的理解与应用</a></li>
+<li><a href="http://cs231n.github.io/neural-networks-1/" target="_blank" rel="external">CS231n Convolutional Neural Networks for Visual Recognition</a></li>
+<li><a href="http://neuralnetworksanddeeplearning.com/index.html" target="_blank" rel="external">Neural Networks and Deep Learning</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+<! -- 添加捐赠图标 -->
+    
+    
+
+    <div class ="post-donate">
+      <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="Donate 打赏"></a>
+        <span class="donate_txt">
+           &uarr;<br>
+           
+            豪赏本篇文章（¥ 0.99）
+           
+        </span>
+        <br>
+      </div>
+
+      <div id="donate_guide" class="donate_bar center hidden">
+        
+
+      
+       <a href="/images/wechat.png" title="微信打赏（¥ 0.99）" class="fancybox" rel="article0">
+         <img src="/images/wechat.png" title="微信打赏（¥ 0.99）" height="164px" width="164px">
+       </a>
+      
+
+      </div>
+
+      <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+          $('#donate_board').addClass('hidden');
+          $('#donate_guide').removeClass('hidden');
+        }
+      </script>
+    </div>
+
+    
+
+<! -- end 添加捐赠图标 --> 
+
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag">#深度学习</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/27/deeplearning/develop-neural-network-model-with-keras-step-by-step/" rel="next" title="使用 Keras 手把手介绍神经网络构建">
+                <i class="fa fa-chevron-left"></i> 使用 Keras 手把手介绍神经网络构建
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/18/deeplearning/recurrent-neural-networks-for-deep-learning/" rel="prev" title="Recurrent Neural Networks（RNN）神经网络介绍">
+                Recurrent Neural Networks（RNN）神经网络介绍 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/default_avatar.jpg"
+               alt="Yangguang" />
+          <p class="site-author-name" itemprop="name">Yangguang</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yangguang2009" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://stackoverflow.com/users/4869784/yangguang" target="_blank">
+                  
+                    <i class="fa fa-stackoverflow"></i> Stackoverflow
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#神经元"><span class="nav-number">2.</span> <span class="nav-text">神经元</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#前馈神经网络（Feedforward-Neural-Network）"><span class="nav-number">3.</span> <span class="nav-text">前馈神经网络（Feedforward Neural Network）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#多层感知神经网络（Multi-Layer-Perceptron，MLP）"><span class="nav-number">4.</span> <span class="nav-text">多层感知神经网络（Multi Layer Perceptron，MLP）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MLP-应用"><span class="nav-number">5.</span> <span class="nav-text">MLP 应用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MLP-训练算法－反向传播（Back-Propagation）介绍"><span class="nav-number">6.</span> <span class="nav-text">MLP 训练算法－反向传播（Back-Propagation）介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#正向计算"><span class="nav-number">6.1.</span> <span class="nav-text">正向计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#反向调整"><span class="nav-number">6.2.</span> <span class="nav-text">反向调整</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#来一个酷炫的例子"><span class="nav-number">7.</span> <span class="nav-text">来一个酷炫的例子</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#更多参考"><span class="nav-number">9.</span> <span class="nav-text">更多参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yangguang</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+
+</body>
+</html>

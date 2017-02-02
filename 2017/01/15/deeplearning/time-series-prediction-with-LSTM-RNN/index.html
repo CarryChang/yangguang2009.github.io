@@ -1,0 +1,820 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="深度学习," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="业精于勤，行成于思" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="循环神经网络（RNN）是当前广泛应用的深度学习神经网络类型之一，特点是对训练数据具有记忆特性，在处理序列数据预测问题上相对优势明显。本篇将结合示例介绍 LSTM RNN 模型的具体构建和使用。在通过阅读本篇内容您将了解到：- LSTM 网络的构建与使用；- 序列数据预测的具体实现方法；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于 LSTM RNN 的序列数据预测">
+<meta property="og:url" content="http://yoursite.com/2017/01/15/deeplearning/time-series-prediction-with-LSTM-RNN/index.html">
+<meta property="og:site_name" content="业精于勤，行成于思">
+<meta property="og:description" content="循环神经网络（RNN）是当前广泛应用的深度学习神经网络类型之一，特点是对训练数据具有记忆特性，在处理序列数据预测问题上相对优势明显。本篇将结合示例介绍 LSTM RNN 模型的具体构建和使用。在通过阅读本篇内容您将了解到：- LSTM 网络的构建与使用；- 序列数据预测的具体实现方法；">
+<meta property="og:image" content="http://yoursite.com/2017/01/15/deeplearning/time-series-prediction-with-LSTM-RNN/0.jpg">
+<meta property="og:image" content="http://yoursite.com/2017/01/15/deeplearning/time-series-prediction-with-LSTM-RNN/demo-data.png">
+<meta property="og:image" content="http://yoursite.com/2017/01/15/deeplearning/time-series-prediction-with-LSTM-RNN/lstm-1.png">
+<meta property="og:image" content="http://yoursite.com/2017/01/15/deeplearning/time-series-prediction-with-LSTM-RNN/lstm-2.png">
+<meta property="og:updated_time" content="2017-02-02T14:15:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于 LSTM RNN 的序列数据预测">
+<meta name="twitter:description" content="循环神经网络（RNN）是当前广泛应用的深度学习神经网络类型之一，特点是对训练数据具有记忆特性，在处理序列数据预测问题上相对优势明显。本篇将结合示例介绍 LSTM RNN 模型的具体构建和使用。在通过阅读本篇内容您将了解到：- LSTM 网络的构建与使用；- 序列数据预测的具体实现方法；">
+<meta name="twitter:image" content="http://yoursite.com/2017/01/15/deeplearning/time-series-prediction-with-LSTM-RNN/0.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: 'Author'
+    }
+  };
+</script>
+
+  <title> 基于 LSTM RNN 的序列数据预测 | 业精于勤，行成于思 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">业精于勤，行成于思</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                基于 LSTM RNN 的序列数据预测
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2017-01-15T21:32:01+08:00" content="2017-01-15">
+              2017-01-15
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/《深度学习入门教程》/" itemprop="url" rel="index">
+                    <span itemprop="name">《深度学习入门教程》</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <img src="/2017/01/15/deeplearning/time-series-prediction-with-LSTM-RNN/0.jpg" alt="0.jpg" title=""> <br>循环神经网络（RNN）是当前广泛应用的深度学习神经网络类型之一，特点是对训练数据具有记忆特性，在处理序列数据预测问题上相对优势明显。本篇将结合示例介绍 LSTM RNN 模型的具体构建和使用。在通过阅读本篇内容您将了解到：<br>- LSTM 网络的构建与使用；<br>- 序列数据预测的具体实现方法；<br><a id="more"></a>
+<h1 id="LSTM-介绍"><a href="#LSTM-介绍" class="headerlink" title="LSTM 介绍"></a>LSTM 介绍</h1><p>短时记忆循环神经网络（Long Short-Term Memory network，LSTM）是经过改进的 RNN 神经网络。在网络训练中 LSTM 有效的解决了梯度消失问题，因此常被用于大型 RNN 网络构建，也是当前应用最广的 RNN 网络类型之一。LSTM 对结果的预测可以根据前序输入数据（前文环境）的基础上进行判断输出。<br>我们接下来将结合具体示例对 LSTM 网络模型的具体构建和使用进行介绍。</p>
+<h1 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h1><p>我们本次示例所处理的数据样本是模拟网络服务每秒接到 HTTP 请求的次数，时长为100s。我们将构建 LSTM 网络模型对这100s范围内的请求数据进行训练学习，然后对紧接着后续时间内的 HTTP 请求情况进行预测。<br>样本数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div></pre></td><td class="code"><pre><div class="line">timestamp,count</div><div class="line">1485773733123,1139</div><div class="line">1485773734123,1760</div><div class="line">1485773735123,1888</div><div class="line">1485773736123,1880</div><div class="line">1485773737123,1601</div><div class="line">1485773738123,1317</div><div class="line">1485773739123,1097</div><div class="line">1485773740123,1526</div><div class="line">1485773741123,1413</div><div class="line">1485773742123,1211</div><div class="line">1485773743123,1466</div><div class="line">1485773744123,1178</div><div class="line">1485773745123,1873</div><div class="line">1485773746123,1108</div><div class="line">1485773747123,1331</div><div class="line">1485773748123,1944</div><div class="line">1485773749123,1760</div><div class="line">1485773750123,1255</div><div class="line">1485773751123,1717</div><div class="line">1485773752123,1597</div><div class="line">1485773753123,1301</div><div class="line">1485773754123,1445</div><div class="line">1485773755123,1950</div><div class="line">1485773756123,1552</div><div class="line">1485773757123,1277</div><div class="line">1485773758123,1619</div><div class="line">1485773759123,1801</div><div class="line">1485773760123,1218</div><div class="line">1485773761123,1372</div><div class="line">1485773762123,1254</div><div class="line">1485773763123,1494</div><div class="line">1485773764123,1916</div><div class="line">1485773765123,1949</div><div class="line">1485773766123,1277</div><div class="line">1485773767123,1009</div><div class="line">1485773768123,1423</div><div class="line">1485773769123,1015</div><div class="line">1485773770123,1300</div><div class="line">1485773771123,1476</div><div class="line">1485773772123,1697</div><div class="line">1485773773123,1424</div><div class="line">1485773774123,1530</div><div class="line">1485773775123,1359</div><div class="line">1485773776123,1275</div><div class="line">1485773777123,1108</div><div class="line">1485773778123,1509</div><div class="line">1485773779123,1368</div><div class="line">1485773780123,1872</div><div class="line">1485773781123,1846</div><div class="line">1485773782123,1374</div><div class="line">1485773783123,1726</div><div class="line">1485773784123,1482</div><div class="line">1485773785123,1668</div><div class="line">1485773786123,1887</div><div class="line">1485773787123,1308</div><div class="line">1485773788123,1307</div><div class="line">1485773789123,1452</div><div class="line">1485773790123,1482</div><div class="line">1485773791123,1893</div><div class="line">1485773792123,1804</div><div class="line">1485773793123,1012</div><div class="line">1485773794123,1445</div><div class="line">1485773795123,1282</div><div class="line">1485773796123,1978</div><div class="line">1485773797123,1247</div><div class="line">1485773798123,1045</div><div class="line">1485773799123,1415</div><div class="line">1485773800123,1350</div><div class="line">1485773801123,1373</div><div class="line">1485773802123,1792</div><div class="line">1485773803123,1190</div><div class="line">1485773804123,1678</div><div class="line">1485773805123,1087</div><div class="line">1485773806123,1612</div><div class="line">1485773807123,1706</div><div class="line">1485773808123,1262</div><div class="line">1485773809123,1472</div><div class="line">1485773810123,1695</div><div class="line">1485773811123,1055</div><div class="line">1485773733123,1155</div><div class="line">1485773734123,1766</div><div class="line">1485773735123,1893</div><div class="line">1485773736123,1886</div><div class="line">1485773737123,1607</div><div class="line">1485773738123,1322</div><div class="line">1485773739123,1102</div><div class="line">1485773740123,1533</div><div class="line">1485773741123,1418</div><div class="line">1485773742123,1216</div><div class="line">1485773743123,1470</div><div class="line">1485773744123,1183</div><div class="line">1485773745123,1880</div><div class="line">1485773746123,1112</div><div class="line">1485773747123,1336</div><div class="line">1485773748123,1950</div><div class="line">1485773749123,1766</div><div class="line">1485773750123,1258</div><div class="line">1485773751123,1725</div><div class="line">1485773752123,1601</div></pre></td></tr></table></figure></p>
+<h1 id="数据预览"><a href="#数据预览" class="headerlink" title="数据预览"></a>数据预览</h1><p>我们先用 matplotlib 库对样本数据进行绘图，对整体数据有个概览。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> pandas</div><div class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div><div class="line">dataset = pandas.read_csv(<span class="string">'http-request.csv'</span>, usecols=[<span class="number">1</span>], engine=<span class="string">'python'</span>)</div><div class="line">plt.plot(dataset)</div><div class="line">plt.show()</div></pre></td></tr></table></figure></p>
+<p>运行示例代码前，请先保存上文样本数据到与示例代码相同的目录下，命名为“http-request.csv”。<br>我们通过 <a href="http://pandas.pydata.org/" target="_blank" rel="external">pandas</a> 库对数据进行加载，这里只选取 CSV 文件内容的第二列数据。数据绘图如下：<br><img src="/2017/01/15/deeplearning/time-series-prediction-with-LSTM-RNN/demo-data.png" alt="demo-data.png" title=""></p>
+<h1 id="LSTM-学习预测"><a href="#LSTM-学习预测" class="headerlink" title="LSTM 学习预测"></a>LSTM 学习预测</h1><p>示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># LSTM DEMO</span></div><div class="line"><span class="keyword">import</span> numpy</div><div class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div><div class="line"><span class="keyword">import</span> pandas</div><div class="line"><span class="keyword">import</span> math</div><div class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</div><div class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense</div><div class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> LSTM</div><div class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> MinMaxScaler</div><div class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_squared_error</div><div class="line"><span class="comment"># convert an array of values into a dataset matrix</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_dataset</span><span class="params">(dataset, look_back=<span class="number">1</span>)</span>:</span></div><div class="line">	dataX, dataY = [], []</div><div class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(dataset)-look_back<span class="number">-1</span>):</div><div class="line">		a = dataset[i:(i+look_back), <span class="number">0</span>]</div><div class="line">		dataX.append(a)</div><div class="line">		dataY.append(dataset[i + look_back, <span class="number">0</span>])</div><div class="line">	<span class="keyword">return</span> numpy.array(dataX), numpy.array(dataY)</div><div class="line"><span class="comment"># fix random seed for reproducibility</span></div><div class="line">numpy.random.seed(<span class="number">7</span>)</div><div class="line"><span class="comment"># load the dataset</span></div><div class="line">dataframe = pandas.read_csv(<span class="string">'http-request.csv'</span>, usecols=[<span class="number">1</span>], engine=<span class="string">'python'</span>)</div><div class="line">dataset = dataframe.values</div><div class="line">dataset = dataset.astype(<span class="string">'float32'</span>)</div><div class="line"><span class="comment"># normalize the dataset</span></div><div class="line">scaler = MinMaxScaler(feature_range=(<span class="number">0</span>, <span class="number">1</span>))</div><div class="line">dataset = scaler.fit_transform(dataset)</div><div class="line"><span class="comment"># split into train and test sets</span></div><div class="line">train_size = int(len(dataset) * <span class="number">0.8</span>)</div><div class="line">test_size = len(dataset) - train_size</div><div class="line">train, test = dataset[<span class="number">0</span>:train_size,:], dataset[train_size:len(dataset),:]</div><div class="line"><span class="comment"># reshape into X=t and Y=t+1</span></div><div class="line">look_back = <span class="number">3</span></div><div class="line">trainX, trainY = create_dataset(train, look_back)</div><div class="line">testX, testY = create_dataset(test, look_back)</div><div class="line"><span class="comment"># reshape input to be [samples, time steps, features]</span></div><div class="line">trainX = numpy.reshape(trainX, (trainX.shape[<span class="number">0</span>], trainX.shape[<span class="number">1</span>], <span class="number">1</span>))</div><div class="line">testX = numpy.reshape(testX, (testX.shape[<span class="number">0</span>], testX.shape[<span class="number">1</span>], <span class="number">1</span>))</div><div class="line"><span class="comment"># create and fit the LSTM network</span></div><div class="line">model = Sequential()</div><div class="line">model.add(LSTM(<span class="number">128</span>, input_shape=(trainX.shape[<span class="number">1</span>], trainX.shape[<span class="number">2</span>])))</div><div class="line">model.add(Dense(<span class="number">1</span>))</div><div class="line">model.compile(loss=<span class="string">'mean_squared_error'</span>, optimizer=<span class="string">'adam'</span>)</div><div class="line">model.fit(trainX, trainY, nb_epoch=<span class="number">100</span>, batch_size=<span class="number">1</span>, verbose=<span class="number">2</span>)</div><div class="line"><span class="comment"># make predictions</span></div><div class="line">trainPredict = model.predict(trainX)</div><div class="line">testPredict = model.predict(testX)</div><div class="line"><span class="comment"># invert predictions</span></div><div class="line">trainPredict = scaler.inverse_transform(trainPredict)</div><div class="line">trainY = scaler.inverse_transform([trainY])</div><div class="line">testPredict = scaler.inverse_transform(testPredict)</div><div class="line">testY = scaler.inverse_transform([testY])</div><div class="line"><span class="comment"># calculate root mean squared error</span></div><div class="line">trainScore = math.sqrt(mean_squared_error(trainY[<span class="number">0</span>], trainPredict[:,<span class="number">0</span>]))</div><div class="line">print(<span class="string">'Train Score: %.2f RMSE'</span> % (trainScore))</div><div class="line">testScore = math.sqrt(mean_squared_error(testY[<span class="number">0</span>], testPredict[:,<span class="number">0</span>]))</div><div class="line">print(<span class="string">'Test Score: %.2f RMSE'</span> % (testScore))</div><div class="line"><span class="comment"># shift train predictions for plotting</span></div><div class="line">trainPredictPlot = numpy.empty_like(dataset)</div><div class="line">trainPredictPlot[:, :] = numpy.nan</div><div class="line">trainPredictPlot[look_back:len(trainPredict)+look_back, :] = trainPredict</div><div class="line"><span class="comment"># shift test predictions for plotting</span></div><div class="line">testPredictPlot = numpy.empty_like(dataset)</div><div class="line">testPredictPlot[:, :] = numpy.nan</div><div class="line">testPredictPlot[len(trainPredict)+(look_back*<span class="number">2</span>)+<span class="number">1</span>:len(dataset)<span class="number">-1</span>, :] = testPredict</div><div class="line"><span class="comment"># plot baseline and predictions</span></div><div class="line">plt.plot(scaler.inverse_transform(dataset))</div><div class="line">plt.plot(trainPredictPlot)</div><div class="line">plt.plot(testPredictPlot)</div><div class="line">plt.show()</div></pre></td></tr></table></figure>
+<p>接下来我们将对上例代码进行详细讲解。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> numpy</div><div class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</div><div class="line"><span class="keyword">import</span> pandas</div><div class="line"><span class="keyword">import</span> math</div><div class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</div><div class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense</div><div class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> LSTM</div><div class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> MinMaxScaler</div><div class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_squared_error</div></pre></td></tr></table></figure>
+<p>函数库导入。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_dataset</span><span class="params">(dataset, look_back=<span class="number">1</span>)</span>:</span></div><div class="line">	dataX, dataY = [], []</div><div class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(len(dataset)-look_back<span class="number">-1</span>):</div><div class="line">		a = dataset[i:(i+look_back), <span class="number">0</span>]</div><div class="line">		dataX.append(a)</div><div class="line">		dataY.append(dataset[i + look_back, <span class="number">0</span>])</div><div class="line">	<span class="keyword">return</span> numpy.array(dataX), numpy.array(dataY)</div></pre></td></tr></table></figure>
+<p><code>create_dataset</code>用于生成不同类型的数据集。<code>dataset</code>为传入的原始数据集，<code>look_back</code>设定的是“步次”（timesteps）的大小。<br><strong>timesteps</strong> 是 LSTM 认为每个输入数据与前多少个陆续输入的数据有联系，是 LSTM 输入数据格式中需要指定的一项。例如具有这样用段序列数据“…A<strong>BCD</strong>B<strong>CED</strong>F…”，当 timesteps 为3时，在模型预测中如果输入数据为“D”，那么之前接收的数据如果为“B”和“C”则此时的预测输出为B的概率更大，之前接收的数据如果为“C”和“E”则此时的预测输出为F的概率更大。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">scaler = MinMaxScaler(feature_range=(<span class="number">0</span>, <span class="number">1</span>))</div><div class="line">dataset = scaler.fit_transform(dataset)</div></pre></td></tr></table></figure>
+<p>数据标准化转换（0到1）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">train_size = int(len(dataset) * <span class="number">0.8</span>)</div><div class="line">test_size = len(dataset) - train_size</div><div class="line">train, test = dataset[<span class="number">0</span>:train_size,:], dataset[train_size:len(dataset),:]</div></pre></td></tr></table></figure>
+<p>划分样本数据的80%作为训练数据集，20%作为测试数据集。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">look_back = <span class="number">3</span></div><div class="line">trainX, trainY = create_dataset(train, look_back)</div><div class="line">testX, testY = create_dataset(test, look_back)</div><div class="line"><span class="comment"># reshape input to be [samples, time steps, features]</span></div><div class="line">trainX = numpy.reshape(trainX, (trainX.shape[<span class="number">0</span>], trainX.shape[<span class="number">1</span>], <span class="number">1</span>))</div><div class="line">testX = numpy.reshape(testX, (testX.shape[<span class="number">0</span>], testX.shape[<span class="number">1</span>], <span class="number">1</span>))</div></pre></td></tr></table></figure>
+<p>转换数据格式，timesteps 大小为3，准备输入给 LSTM 模型。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">model = Sequential()</div><div class="line">model.add(LSTM(<span class="number">128</span>, input_shape=(trainX.shape[<span class="number">1</span>], trainX.shape[<span class="number">2</span>])))</div><div class="line">model.add(Dense(<span class="number">1</span>))</div></pre></td></tr></table></figure>
+<p>本部分实现的是 LSTM 模型的具体构建：输入层包含1个输入神经元，隐含层包含256个隐含神经元，输出层包含1个输出神经元。<br><code>input_shape</code>是 LSTM 构建在模型第一层时必须提供的参数，用于指定输入数据的具体定义。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">trainPredict = scaler.inverse_transform(trainPredict)</div><div class="line">trainY = scaler.inverse_transform([trainY])</div><div class="line">testPredict = scaler.inverse_transform(testPredict)</div><div class="line">testY = scaler.inverse_transform([testY])</div></pre></td></tr></table></figure>
+<p>将训练、测试预测数据和训练、测试目标数据从标准化的形式（0到1）转换回原先的数据形式。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">trainScore = math.sqrt(mean_squared_error(trainY[<span class="number">0</span>], trainPredict[:,<span class="number">0</span>]))</div><div class="line">print(<span class="string">'Train Score: %.2f RMSE'</span> % (trainScore))</div><div class="line">testScore = math.sqrt(mean_squared_error(testY[<span class="number">0</span>], testPredict[:,<span class="number">0</span>]))</div><div class="line">print(<span class="string">'Test Score: %.2f RMSE'</span> % (testScore))</div><div class="line"><span class="comment"># shift train predictions for plotting</span></div><div class="line">trainPredictPlot = numpy.empty_like(dataset)</div><div class="line">trainPredictPlot[:, :] = numpy.nan</div><div class="line">trainPredictPlot[look_back:len(trainPredict)+look_back, :] = trainPredict</div><div class="line"><span class="comment"># shift test predictions for plotting</span></div><div class="line">testPredictPlot = numpy.empty_like(dataset)</div><div class="line">testPredictPlot[:, :] = numpy.nan</div><div class="line">testPredictPlot[len(trainPredict)+(look_back*<span class="number">2</span>)+<span class="number">1</span>:len(dataset)<span class="number">-1</span>, :] = testPredict</div><div class="line"><span class="comment"># plot baseline and predictions</span></div><div class="line">plt.plot(scaler.inverse_transform(dataset))</div><div class="line">plt.plot(trainPredictPlot)</div><div class="line">plt.plot(testPredictPlot)</div><div class="line">plt.show()</div></pre></td></tr></table></figure>
+<p>结果输出，绘图。<br>下面是本例的运行结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">Epoch <span class="number">98</span>/<span class="number">100</span></div><div class="line"><span class="number">1</span>s - loss: <span class="number">0.0660</span></div><div class="line">Epoch <span class="number">99</span>/<span class="number">100</span></div><div class="line"><span class="number">1</span>s - loss: <span class="number">0.0662</span></div><div class="line">Epoch <span class="number">100</span>/<span class="number">100</span></div><div class="line"><span class="number">1</span>s - loss: <span class="number">0.0649</span></div><div class="line">Train Score: <span class="number">241.16</span> RMSE</div><div class="line">Test Score: <span class="number">276.33</span> RMSE</div></pre></td></tr></table></figure>
+<img src="/2017/01/15/deeplearning/time-series-prediction-with-LSTM-RNN/lstm-1.png" alt="lstm-1.png" title=""> 蓝色为实际数据，绿色为对训练数据的预测，红色为对新数据的预测。可以看到本例构建的简单模型对样本数据的预测结果相对大概有20%的误差，下面我们将看一下如何构建多层的 LSTM 模型来提高预测的准确性。<br><br># LSTM 多层结构模型<br>为提高 LSTM 模型性能，同样可搭建多 LSTM 层模型：<br><br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">model = Sequential()</div><div class="line">model.add(LSTM(<span class="number">256</span>, input_shape=(X.shape[<span class="number">1</span>], X.shape[<span class="number">2</span>]), return_sequences=<span class="keyword">True</span>))</div><div class="line"><span class="comment"># model.add(Dropout(0.2))</span></div><div class="line">model.add(LSTM(<span class="number">128</span>))</div><div class="line"><span class="comment"># model.add(Dropout(0.2))</span></div><div class="line">model.add(Dense(y.shape[<span class="number">1</span>], activation=<span class="string">'softmax'</span>))</div><div class="line">model.compile(loss=<span class="string">'categorical_crossentropy'</span>, optimizer=<span class="string">'adam'</span>)</div><div class="line">model.fit(trainX, trainY, nb_epoch=<span class="number">500</span>, batch_size=<span class="number">1</span>, verbose=<span class="number">2</span>)</div></pre></td></tr></table></figure>
+<p>这里需要注意的是，当多层 LSTM 组合时，前面的 LSTM 层需要将<code>return_sequences</code>参数设置为<code>True</code>，以使输出的数据形式<code>(nb_samples, timesteps, output_dim)</code>可以被后面的 LSTM 层继续接收处理。<br>下面是本例的运行结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Epoch <span class="number">498</span>/<span class="number">500</span></div><div class="line"><span class="number">2</span>s - loss: <span class="number">0.0069</span></div><div class="line">Epoch <span class="number">499</span>/<span class="number">500</span></div><div class="line"><span class="number">2</span>s - loss: <span class="number">0.0067</span></div><div class="line">Epoch <span class="number">500</span>/<span class="number">500</span></div><div class="line"><span class="number">2</span>s - loss: <span class="number">0.0065</span></div><div class="line">Train Score: <span class="number">74.14</span> RMSE</div><div class="line">Test Score: <span class="number">83.58</span> RMSE</div></pre></td></tr></table></figure>
+<p><img src="/2017/01/15/deeplearning/time-series-prediction-with-LSTM-RNN/lstm-2.png" alt="lstm-2.png" title=""> 经过扩展的 LSTM 模型明显降低了数据预测的错误率，希望您可以自己也尝试继续对模型进行优化，争取获得更高的预测准确度：）</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本篇想您介绍了 LSTM 模型的具体构建方法和使用，我们通过一个预测模拟网络服务 HTTP 请求的示例为您演示了如何使用 LSTM 对序列数据进行预测的过程。有兴趣的话，您可以根据本篇的扩展实现对序列数据进行预测的多方面应用，如网络服务的智能动态监控，股票价格预测等等。希望本篇对您在深度学习中关于 LSTM RNN 模型的构建和使用有所帮助。</p>
+<h1 id="更多参考"><a href="#更多参考" class="headerlink" title="更多参考"></a>更多参考</h1><ul>
+<li><a href="http://machinelearningmastery.com/time-series-prediction-lstm-recurrent-neural-networks-python-keras/" target="_blank" rel="external">Time Series Prediction with LSTM Recurrent Neural Networks in Python with Keras</a></li>
+<li><a href="http://machinelearningmastery.com/understanding-stateful-lstm-recurrent-neural-networks-python-keras/" target="_blank" rel="external">Understanding Stateful LSTM Recurrent Neural Networks in Python with Keras</a></li>
+<li><a href="http://machinelearningmastery.com/text-generation-lstm-recurrent-neural-networks-python-keras/" target="_blank" rel="external">Text Generation With LSTM Recurrent Neural Networks in Python with Keras</a></li>
+<li><a href="https://keras.io/layers/recurrent/" target="_blank" rel="external">Docs » Layers » Recurrent Layers</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+<! -- 添加捐赠图标 -->
+    
+    
+
+    <div class ="post-donate">
+      <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="Donate 打赏"></a>
+        <span class="donate_txt">
+           &uarr;<br>
+           
+            豪赏本篇文章（¥ 0.99）
+           
+        </span>
+        <br>
+      </div>
+
+      <div id="donate_guide" class="donate_bar center hidden">
+        
+
+      
+       <a href="/images/wechat.png" title="微信打赏（¥ 0.99）" class="fancybox" rel="article0">
+         <img src="/images/wechat.png" title="微信打赏（¥ 0.99）" height="164px" width="164px">
+       </a>
+      
+
+      </div>
+
+      <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+          $('#donate_board').addClass('hidden');
+          $('#donate_guide').removeClass('hidden');
+        }
+      </script>
+    </div>
+
+    
+
+<! -- end 添加捐赠图标 --> 
+
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深度学习/" rel="tag">#深度学习</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/08/deeplearning/save-and-load-keras-deep-learning-model/" rel="next" title="Keras 模型的保存与加载">
+                <i class="fa fa-chevron-left"></i> Keras 模型的保存与加载
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/01/deeplearning/sys-log-classification-by-CNN/" rel="prev" title="基于卷积神经网络的系统日志分类">
+                基于卷积神经网络的系统日志分类 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/default_avatar.jpg"
+               alt="Yangguang" />
+          <p class="site-author-name" itemprop="name">Yangguang</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yangguang2009" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://stackoverflow.com/users/4869784/yangguang" target="_blank">
+                  
+                    <i class="fa fa-stackoverflow"></i> Stackoverflow
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#LSTM-介绍"><span class="nav-number">1.</span> <span class="nav-text">LSTM 介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#问题描述"><span class="nav-number">2.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据预览"><span class="nav-number">3.</span> <span class="nav-text">数据预览</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LSTM-学习预测"><span class="nav-number">4.</span> <span class="nav-text">LSTM 学习预测</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#更多参考"><span class="nav-number">6.</span> <span class="nav-text">更多参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yangguang</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+
+</body>
+</html>
