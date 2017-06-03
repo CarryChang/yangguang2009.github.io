@@ -116,7 +116,7 @@
     <link href="http://yoursite.com/2017/01/15/deeplearning/time-series-prediction-with-LSTM-RNN/"/>
     <id>http://yoursite.com/2017/01/15/deeplearning/time-series-prediction-with-LSTM-RNN/</id>
     <published>2017-01-15T13:32:01.000Z</published>
-    <updated>2017-02-02T14:15:58.000Z</updated>
+    <updated>2017-06-03T09:08:35.000Z</updated>
     
     <content type="html"><![CDATA[<img src="/2017/01/15/deeplearning/time-series-prediction-with-LSTM-RNN/0.jpg" alt="0.jpg" title=""> <br>循环神经网络（RNN）是当前广泛应用的深度学习神经网络类型之一，特点是对训练数据具有记忆特性，在处理序列数据预测问题上相对优势明显。本篇将结合示例介绍 LSTM RNN 模型的具体构建和使用。在通过阅读本篇内容您将了解到：<br>- LSTM 网络的构建与使用；<br>- 序列数据预测的具体实现方法；<br><a id="more"></a>
 <h1 id="LSTM-介绍"><a href="#LSTM-介绍" class="headerlink" title="LSTM 介绍"></a>LSTM 介绍</h1><p>短时记忆循环神经网络（Long Short-Term Memory network，LSTM）是经过改进的 RNN 神经网络。在网络训练中 LSTM 有效的解决了梯度消失问题，因此常被用于大型 RNN 网络构建，也是当前应用最广的 RNN 网络类型之一。LSTM 对结果的预测可以根据前序输入数据（前文环境）的基础上进行判断输出。<br>我们接下来将结合具体示例对 LSTM 网络模型的具体构建和使用进行介绍。</p>
@@ -143,7 +143,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">trainScore = math.sqrt(mean_squared_error(trainY[<span class="number">0</span>], trainPredict[:,<span class="number">0</span>]))</div><div class="line">print(<span class="string">'Train Score: %.2f RMSE'</span> % (trainScore))</div><div class="line">testScore = math.sqrt(mean_squared_error(testY[<span class="number">0</span>], testPredict[:,<span class="number">0</span>]))</div><div class="line">print(<span class="string">'Test Score: %.2f RMSE'</span> % (testScore))</div><div class="line"><span class="comment"># shift train predictions for plotting</span></div><div class="line">trainPredictPlot = numpy.empty_like(dataset)</div><div class="line">trainPredictPlot[:, :] = numpy.nan</div><div class="line">trainPredictPlot[look_back:len(trainPredict)+look_back, :] = trainPredict</div><div class="line"><span class="comment"># shift test predictions for plotting</span></div><div class="line">testPredictPlot = numpy.empty_like(dataset)</div><div class="line">testPredictPlot[:, :] = numpy.nan</div><div class="line">testPredictPlot[len(trainPredict)+(look_back*<span class="number">2</span>)+<span class="number">1</span>:len(dataset)<span class="number">-1</span>, :] = testPredict</div><div class="line"><span class="comment"># plot baseline and predictions</span></div><div class="line">plt.plot(scaler.inverse_transform(dataset))</div><div class="line">plt.plot(trainPredictPlot)</div><div class="line">plt.plot(testPredictPlot)</div><div class="line">plt.show()</div></pre></td></tr></table></figure>
 <p>结果输出，绘图。<br>下面是本例的运行结果：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">Epoch <span class="number">98</span>/<span class="number">100</span></div><div class="line"><span class="number">1</span>s - loss: <span class="number">0.0660</span></div><div class="line">Epoch <span class="number">99</span>/<span class="number">100</span></div><div class="line"><span class="number">1</span>s - loss: <span class="number">0.0662</span></div><div class="line">Epoch <span class="number">100</span>/<span class="number">100</span></div><div class="line"><span class="number">1</span>s - loss: <span class="number">0.0649</span></div><div class="line">Train Score: <span class="number">241.16</span> RMSE</div><div class="line">Test Score: <span class="number">276.33</span> RMSE</div></pre></td></tr></table></figure>
-<img src="/2017/01/15/deeplearning/time-series-prediction-with-LSTM-RNN/lstm-1.png" alt="lstm-1.png" title=""> 蓝色为实际数据，绿色为对训练数据的预测，红色为对新数据的预测。可以看到本例构建的简单模型对样本数据的预测结果相对大概有20%的误差，下面我们将看一下如何构建多层的 LSTM 模型来提高预测的准确性。<br><br># LSTM 多层结构模型<br>为提高 LSTM 模型性能，同样可搭建多 LSTM 层模型：<br><br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">model = Sequential()</div><div class="line">model.add(LSTM(<span class="number">256</span>, input_shape=(X.shape[<span class="number">1</span>], X.shape[<span class="number">2</span>]), return_sequences=<span class="keyword">True</span>))</div><div class="line"><span class="comment"># model.add(Dropout(0.2))</span></div><div class="line">model.add(LSTM(<span class="number">128</span>))</div><div class="line"><span class="comment"># model.add(Dropout(0.2))</span></div><div class="line">model.add(Dense(y.shape[<span class="number">1</span>], activation=<span class="string">'softmax'</span>))</div><div class="line">model.compile(loss=<span class="string">'categorical_crossentropy'</span>, optimizer=<span class="string">'adam'</span>)</div><div class="line">model.fit(trainX, trainY, nb_epoch=<span class="number">500</span>, batch_size=<span class="number">1</span>, verbose=<span class="number">2</span>)</div></pre></td></tr></table></figure>
+<img src="/2017/01/15/deeplearning/time-series-prediction-with-LSTM-RNN/lstm-1.png" alt="lstm-1.png" title=""> 蓝色为实际数据，绿色为对训练数据的预测，红色为对新数据的预测。可以看到本例构建的简单模型对样本数据的预测结果相对大概有20%的误差，下面我们将看一下如何构建多层的 LSTM 模型来提高预测的准确性。<br><br># LSTM 多层结构模型<br>为提高 LSTM 模型性能，同样可搭建多 LSTM 层模型：<br><br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">model = Sequential()</div><div class="line">model.add(LSTM(<span class="number">256</span>, input_shape=(trainX.shape[<span class="number">1</span>], trainX.shape[<span class="number">2</span>]), return_sequences=<span class="keyword">True</span>))</div><div class="line"><span class="comment"># model.add(Dropout(0.2))</span></div><div class="line">model.add(LSTM(<span class="number">128</span>))</div><div class="line"><span class="comment"># model.add(Dropout(0.2))</span></div><div class="line">model.add(Dense(<span class="number">1</span>))</div><div class="line">model.compile(loss=<span class="string">'mean_squared_error'</span>, optimizer=<span class="string">'adam'</span>)</div><div class="line">model.fit(trainX, trainY, nb_epoch=<span class="number">500</span>, batch_size=<span class="number">1</span>, verbose=<span class="number">2</span>)</div></pre></td></tr></table></figure>
 <p>这里需要注意的是，当多层 LSTM 组合时，前面的 LSTM 层需要将<code>return_sequences</code>参数设置为<code>True</code>，以使输出的数据形式<code>(nb_samples, timesteps, output_dim)</code>可以被后面的 LSTM 层继续接收处理。<br>下面是本例的运行结果：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Epoch <span class="number">498</span>/<span class="number">500</span></div><div class="line"><span class="number">2</span>s - loss: <span class="number">0.0069</span></div><div class="line">Epoch <span class="number">499</span>/<span class="number">500</span></div><div class="line"><span class="number">2</span>s - loss: <span class="number">0.0067</span></div><div class="line">Epoch <span class="number">500</span>/<span class="number">500</span></div><div class="line"><span class="number">2</span>s - loss: <span class="number">0.0065</span></div><div class="line">Train Score: <span class="number">74.14</span> RMSE</div><div class="line">Test Score: <span class="number">83.58</span> RMSE</div></pre></td></tr></table></figure>
 <p><img src="/2017/01/15/deeplearning/time-series-prediction-with-LSTM-RNN/lstm-2.png" alt="lstm-2.png" title=""> 经过扩展的 LSTM 模型明显降低了数据预测的错误率，希望您可以自己也尝试继续对模型进行优化，争取获得更高的预测准确度：）</p>
@@ -840,6 +840,61 @@ if __name__ == '__main__':
   </entry>
   
   <entry>
+    <title>《黑客列传》之维基解密－Julian Paul Assange</title>
+    <link href="http://yoursite.com/2016/04/03/%E9%BB%91%E5%AE%A2%E5%88%97%E4%BC%A0/%E3%80%8A%E9%BB%91%E5%AE%A2%E5%88%97%E4%BC%A0%E3%80%8B%E4%B9%8B%E7%BB%B4%E5%9F%BA%E8%A7%A3%E5%AF%86%EF%BC%8DJulian-Paul-Assange/"/>
+    <id>http://yoursite.com/2016/04/03/黑客列传/《黑客列传》之维基解密－Julian-Paul-Assange/</id>
+    <published>2016-04-03T06:56:50.000Z</published>
+    <updated>2016-04-16T07:27:38.000Z</updated>
+    
+    <content type="html"><![CDATA[<img src="/2016/04/03/黑客列传/《黑客列传》之维基解密－Julian-Paul-Assange/0.jpg" alt="0.jpg" title="">
+<p><br></p>
+<blockquote>
+<p>“如果你想造一艘船，不要召集大家搜集木头，不要给他们分配任务，而是要教会他们对浩瀚海洋心生憧憬。”<br>－安托万·德·圣-埃克苏佩里</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="大牛简介"><a href="#大牛简介" class="headerlink" title="大牛简介"></a>大牛简介</h1><p>朱利安·保罗·阿桑奇（Julian Paul Assange，1971年7月3日－），程序员，记者，维基解密创始人、董事、发言人。</p>
+<h1 id="大牛足迹"><a href="#大牛足迹" class="headerlink" title="大牛足迹"></a>大牛足迹</h1><p>阿桑奇出生在澳大利亚昆士兰州东北海岸的汤斯维尔，童年主要在邻近的磁岛上度过。在他一岁时，母亲克里斯蒂娜与剧导演布莱特·阿桑奇结婚，小阿桑奇的姓也是从继父得来。母亲与继父运营一家巡回剧团，总是四处奔波。阿桑奇的继父在描述阿桑奇时，称他是一个“非常有洞察力的孩子”，“对是非黑白有个人的见解”，而且“总是为弱者撑腰，很反感联合起来（欺负他人）的人”。<br>1979年，他的父母离异，母亲之后嫁给了一位暴虐的音乐人，在新的家庭中阿桑奇又有了一位同母异父的弟弟。1982年，母亲再次离异，之后带着阿桑奇与他的弟弟开始了长达五年的逃离生活。在阿桑奇的童年中不知道搬过了多少次家，频繁的迁居使阿桑奇没有机会接受完整的学龄教育，他依靠自学读了大量书籍，后来也参加过函授班以及非正式地跟随一些大学教授学习。</p>
+<p>逃亡中阿桑奇的母亲在一家电子产品商店的对面租了间房子，阿桑奇经常到店里的一台Commodore 64型电脑上编程。后来他母亲把这台电脑买了下来，作为礼物送给了阿桑奇。正是在这台电脑上，阿桑奇学会了如何破解常用程序。在16岁时，阿桑奇得到一个调制解调器，并以门达克斯（Mendax）的名号联上了当时还未成形的互联网，并逐渐建立了自己的声誉，被称为“能够闯进最安全网络的高级程序员”。他甚至和两名黑客组成了一个名为“跨国颠覆”的小组，曾闯入欧洲和北美的保密计算机系统。阿桑奇和他的黑客伙伴们的活动日趋活跃大胆，引起了当局的注意，澳大利亚联邦警察针对他们展开了名为“天气行动”的调查行动。</p>
+<p>1991年的9月，也就是在阿桑奇20岁时，他侵入加拿大电信公司“北方电讯”设在墨尔本的主终端，然后在那里四处刺探。多年后，首席检察官在法庭上描述阿桑奇几乎不受限制地访问那个系统时说道：“他就像万能的上帝那样逛来逛去，可以随心所欲地行事”。某天深夜，阿桑奇侵入系统时发现系统管理员也在线上，便试图联系他：“我已经接管了系统”。但管理员没有搭理他，于是阿桑奇给他留了一条消息“在贵网玩的很开心。我们未作任何破坏，甚至还做了几处改进。请勿致电澳大利亚联邦警局。”系统管理员当然通知了警察。正是由于他们对北电的入侵，使“天气行动”获得了突破性的进展。联邦调查人员开始窃听电话，寻找黑客们的线路。10月29日晚上11点，警官肯·戴伊敲开了他的门，对阿桑奇说：“我想你已在等着我来了吧。”阿桑奇被控31项与黑客有关的犯罪行为。当局花了三年多时间才将此案提交给法庭。他原本可能被判处十年徒刑，最后只是支付了一小笔罚款就息事宁人了。</p>
+<p>在三年的候审期间，阿桑奇还得去争取他儿子抚养权。一定程度上，这比他的黑客案更为痛苦。1991年10月，阿桑奇在被逮捕前夕，他的妻子携子离家出走。直到1999年，经过30多次听证和诉讼，阿桑奇才和妻子达成了监护权协议。法院审理完监护案件后不久，阿桑奇的头发就从黑褐色，变成为失去颜色的灰白色。结案之后的阿桑奇变得疲惫万分。他兼了数份工作，尽最大努力挣钱抚养儿子。</p>
+<p>1993年，阿桑奇参与创建“萨伯比亚公共接入网络”（Suburbia Public Access Network）——澳洲最早的互联网服务提供商之一。1994年起，阿桑奇开始了自由软件的编写，并于次年完成了首个自由开源的端口扫描仪－Strobe。1996年，他为PostgreSQL计划提交了多个补丁。1997年，阿桑奇与他人合著出版了《地下：黑客与疯狂的传奇及对电子前沿的痴迷》（Underground: Tales of Hacking, Madness and Obsession on the Electronic Frontier），书中提到了自己的黑客经历。1997年起，为了给人权工作者提供一个保护敏感数据的工具，阿桑奇与人共同开发了著名的“否认加密系统”－Rubberhose。 此外，他还编写了Usenet缓存软件－NNTPCache，和网络搜索引擎命令行界面Surfraw。</p>
+<p>辗转职场多年，见识了无数的人与事之后，阿桑奇逐渐意识到，人类最关键的斗争，并不是左派与右派之争或信仰与理性之争，而是个体与机构之争。他草拟出一个类似宣言的文件，标题为《阴谋即统治》，旨在应用于政治领域。他认为，当一个政权内部的沟通线路被破坏，那些阴谋家之间的信息交流便注定会缩小，而当这种交流趋近于零的时候，阴谋就会被瓦解。泄密是信息战的一个工具。这些想法不久便催生出了“维基解密”网站。2006年期间，阿桑奇把自己关在大学附近的一所房子里开始工作。网站架设在一家名为PRQse的互联网服务提供商的空间上。提交的资料会首先被送到PRQ上面的网站，然后被传到设在比利时的“维基解密”服务器，然后再传到“在法律方面比较友善的另一个国家”。 这整条渠道以及通过它所传输的资料都是加密的。系统中仍然有薄弱环节，但“它的安全性已经是远远高于任何银行网络了”。2006年12月，“维基解密”公布了它的首份文件：这是一项“秘密决定”，由索马里反政府武装“伊斯兰法院联盟”的领导人谢赫·哈桑·达赫·阿威斯签署，被从通过Tor网络传递的内容中挑了出来。这份文件的真实性始终没有得到确认，而关于“维基解密”的新闻很快取代了对解密文件本身的关注。随着“维基解密”日益引人瞩目，阿桑奇的行踪也越来越难为人掌握。他不时与朋友通过电话和互联网联络一下，但从来没有透露他的确切活动。一个朋友告诉我，“我们总是在问：’阿桑奇在哪里？’永远都难以知道他到底在哪里。就好像他刻意要隐藏起来似的。”对于想要起诉“维基解密”网站的人，阿桑奇通常不屑一顾。2008年，“维基解密”公布了山达基教(Scientology)的保密手册，教会聘请的律师要求它删除这些内容。阿桑奇对此的回应是公布山达基教的更多内部资料，并且宣布，“‘维基解密’将不会屈服于山达基教滥用法律的要求，正如‘维基解密’不曾屈服于来自瑞士银行，或俄罗斯境外干细胞中心，或前非洲当权派，或五角大楼的类似要求。”在他的网上作品里，特别在Twitter上，阿桑奇对于他所认定的敌人毫不留情。与此相反，在电视上——他的行为却异乎寻常的冷静。在演播室的灯光下，他灰白的头发，苍白的皮肤，冷静的眼睛和宽阔的前额，使他似乎像是一个骨瘦如柴的外星来客，坐火箭来到地球，向人类揭示一些隐藏的真相。他僵硬的举止和他那缓慢而低沉的男中音，都加强了这种印象。然而私下里，阿桑奇通常却是一个充满活力而又丢三落四的人。他可以长时间心无旁骛地专注于某事，但也会做出忘记预定机票，或预订机票但却忘了付款，或付款买完机票却忘了去机场之类的事情。他周围的人们似乎都愿意照顾他。他们确保他能到达该去的地方，而且在动身之前没有把自己的衣服落在烘干机里。</p>
+<img src="/2016/04/03/黑客列传/《黑客列传》之维基解密－Julian-Paul-Assange/2.jpg" alt="2.jpg" title="">
+<p><br></p>
+<p>自从阿桑奇公布身份后，美国决定追捕这位创始人。2010年12月1日，国际刑警组织发出红色通缉令，以强奸和性骚扰罪名通缉阿桑奇·阿桑奇。这一案件起源于阿桑奇2009年8月在瑞典与两名女性的纠纷。当时，阿桑奇正在申请瑞典居留权，试图利用瑞典保护言论自由的法律保护维基解密网站。据当地媒体报道，这两名女性向检方称，其与阿桑奇的性行为最初是自愿的，但随后演变成为非自愿行为。一名女性称，在安全套破裂之后，她要求阿桑奇暂停，但这一要求被阿桑奇忽略。阿桑奇否认有任何过失，暗示这一案件是美国试图打击维基解密而实施的诬蔑手段。</p>
+<p>凭借着过人的才华，阿桑奇曾做过收入颇丰的计算机安全顾问，他却始终都不满足于墨守成规的工作或学术研究。阿桑奇相信，只有通过“泄密”，才能对抗靠隐瞒真相来维持政权的政府。阿桑奇居无定所，他总是马不停蹄地往来于世界各地，全部家当便是随身携带的一袋衣物和手提电脑，旁人甚至很难从其口音中分辨出他是澳大利亚人。</p>
+<p>对外界而言，“维基解密”本身也是一个充满了神秘色彩的组织，它在伦敦的几个办公室都位于地下室，没有固定的总部，其核心成员是阿桑奇和一小批志同道合的人，此外在全球各地还有800名兼职工作人员。获取信息所需的计算机也隐藏在世界各地各个角落，因此该机构也不受任何国家法律的限制。“维基解密”是阿桑奇个人思想的凝集。阿桑奇对于维基解密创办的宗旨是这样解释的：我们的目标是实现公正的社会文明，这是我们干事情背后的推动力。“透明公开”是公正社会文明的要点，但要点与目标是不可混淆的（意即：目标并非获取“透明公开”的社会文明）。话虽如此，用“透明公开”作为实现公正的途径，亦是甚佳的方法，同时还避免犯下太多错误。我们的意识形态是跨越政治的，非左，非右，其根基在于（对世界的）认知。在给出与“如何处世”、“如何从公民过渡至社会文明”、“如果影响他人”一类问题相关的忠告与观念形态之前，应当对世界上正在发生的事情有较为深刻的认知。在未充分认知这个世界之前提出的建议与观念形态，必然归属于谬解。当今世界上所有的意识形态系统，从某种程度上来讲，都是虚空、缺乏实质的。它们缺乏在认知世界时至关重要，同时在自身面对这个世界时所必需的思想成分。</p>
+<p>阿桑奇称维基解密所发布的机密文件数量，超过世界上其他新闻媒体的加起来的总和。他说道：“我不是想说维基解密有多成功，而是想表示世界媒体危机重重的现状。一个五个人的团队公布了比其他媒体加起来都多的机密文件，这是（媒体业的）耻辱。”阿桑奇说自己无意损害任何一个国家的利益。因维基泄密不断地爆料使维基泄密卷入了大约100多场官司，出于自我保护目的，阿桑奇和一些支持者通信不得不使用加密手机，还要不断更换手机号，住宾馆时用化名，不是睡沙发就是睡地板，而且用现金结账，不能用信用卡。阿桑奇说，“虽然生活过得很艰辛，但自从踏上这条道路，我决心走下去，从来不后悔，也从来不妥协”。</p>
+<img src="/2016/04/03/黑客列传/《黑客列传》之维基解密－Julian-Paul-Assange/1.jpg" alt="1.jpg" title="">
+<p><br></p>
+<h1 id="更多参考"><a href="#更多参考" class="headerlink" title="更多参考"></a>更多参考</h1><ol>
+<li>《阿桑奇自传》</li>
+<li>《第五阶层》</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E6%9C%B1%E5%88%A9%E5%AE%89%C2%B7%E9%98%BF%E6%A1%91%E5%A5%87" target="_blank" rel="external">https://zh.wikipedia.org/wiki/%E6%9C%B1%E5%88%A9%E5%AE%89%C2%B7%E9%98%BF%E6%A1%91%E5%A5%87</a></li>
+<li><a href="http://baike.baidu.com/view/4034352.htm" target="_blank" rel="external">http://baike.baidu.com/view/4034352.htm</a></li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;img src=&quot;/2016/04/03/黑客列传/《黑客列传》之维基解密－Julian-Paul-Assange/0.jpg&quot; alt=&quot;0.jpg&quot; title=&quot;&quot;&gt;
+&lt;p&gt;&lt;br/&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“如果你想造一艘船，不要召集大家搜集木头，不要给他们分配任务，而是要教会他们对浩瀚海洋心生憧憬。”&lt;br&gt;－安托万·德·圣-埃克苏佩里&lt;/p&gt;
+&lt;/blockquote&gt;
+    
+    </summary>
+    
+      <category term="《黑客列传》" scheme="http://yoursite.com/categories/%E3%80%8A%E9%BB%91%E5%AE%A2%E5%88%97%E4%BC%A0%E3%80%8B/"/>
+    
+    
+      <category term="黑客" scheme="http://yoursite.com/tags/%E9%BB%91%E5%AE%A2/"/>
+    
+      <category term="传记" scheme="http://yoursite.com/tags/%E4%BC%A0%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
     <title>《HTML5 iOS App应用开发》之推送通知（Apple Push Notifications）Ionic实现</title>
     <link href="http://yoursite.com/2016/03/20/HTML5%20iOS%20App%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/%E3%80%8AHTML5%20iOS%20App%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E3%80%8B%E4%B9%8B%E6%8E%A8%E9%80%81%E9%80%9A%E7%9F%A5%EF%BC%88Apple-Push-Notifications%EF%BC%89Ionic%E5%AE%9E%E7%8E%B0/"/>
     <id>http://yoursite.com/2016/03/20/HTML5 iOS App应用开发/《HTML5 iOS App应用开发》之推送通知（Apple-Push-Notifications）Ionic实现/</id>
@@ -895,6 +950,165 @@ if __name__ == '__main__':
       <category term="Ionic" scheme="http://yoursite.com/tags/Ionic/"/>
     
       <category term="推送通知" scheme="http://yoursite.com/tags/%E6%8E%A8%E9%80%81%E9%80%9A%E7%9F%A5/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《黑客列传》之互联网之子－Aaron Swartz</title>
+    <link href="http://yoursite.com/2016/03/15/%E9%BB%91%E5%AE%A2%E5%88%97%E4%BC%A0/%E3%80%8A%E9%BB%91%E5%AE%A2%E5%88%97%E4%BC%A0%E3%80%8B%E4%B9%8B%E4%BA%92%E8%81%94%E7%BD%91%E4%B9%8B%E5%AD%90%EF%BC%8DAaron-Swartz/"/>
+    <id>http://yoursite.com/2016/03/15/黑客列传/《黑客列传》之互联网之子－Aaron-Swartz/</id>
+    <published>2016-03-15T11:53:47.000Z</published>
+    <updated>2016-04-04T14:32:58.000Z</updated>
+    
+    <content type="html"><![CDATA[<img src="/2016/03/15/黑客列传/《黑客列传》之互联网之子－Aaron-Swartz/profile.jpg" alt="profile.jpg" title="">
+<p><br></p>
+<blockquote>
+<p>“你真的应该每时每刻都问自己，现在这世界有什么最重要的事是我能参与去做的？如果你没在做那最重要的事，那又是为什么？”<br>－亚伦·斯沃茨</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="大牛简介"><a href="#大牛简介" class="headerlink" title="大牛简介"></a>大牛简介</h1><p>亚伦·斯沃茨（Aaron Hillel Swartz，1986年11月8日－2013年1月11日），软件工程师、作家、政治组织者、互联网活动家、维基百科人。参与开发或制定了RSS、Markdown、知识共享（Creative Commons)、Web.py框架、Reddit，万维网联盟的资源描述框架工作组 (W3C)成员，撰写了RFC，定义了RDF及XML的网际网路媒体类型，创办了求进会（Demand Progress），协助创办了渐进社会变革活动委员会（Progressive Change Campaign Committee）。 </p>
+<h1 id="大牛足迹"><a href="#大牛足迹" class="headerlink" title="大牛足迹"></a>大牛足迹</h1><p>斯沃茨出生在美国芝加哥的伊利诺伊州一个犹太家庭，他是三兄弟里面最大的。斯沃茨的爷爷经营一个广告牌制作公司，后来斯沃茨的爸爸接手发展成一个小型软件公司，因此他家里总是会有电脑。经斯沃茨回忆说那时他们镇里没什么好玩的，所以斯沃茨就经常在家玩电脑。大概是在1992年的时候，斯沃茨家接入了互联网，从那时开始斯沃茨每天大部分的时间基本都是花在了网络上－写邮件、逛讨论组、浏览网页。斯沃茨上学的地方距家大概有六英里多远，而离同学家也并不近，因此，斯沃茨基本上就是在网上交朋友。在斯沃茨12岁那年，他爸爸带上他出差去了一趟麻省理工。斯沃茨一整天都待在了Philip Greenspun教授的堂课里面，听Philip Greenspun教授讲解制作网络应用的规范原则。听完课以后，斯沃茨很激动，迫不及待地回到家尝试大干一场。他最先做了一个所有人都能编辑的线上百科全书，但可惜的是除了斯沃茨的妈妈和一些学校的朋友以外，就没人在上面写东西了。然后他做了第二件东西，就是可以聚合很多网站上面的新闻到一个网页上。这在当时是件比较难实现的事情，因为每个网站都有自己特别的格式，需要针对每一个不同的网站专门设计程序来抓取新闻。而当时正好有一帮人在计划建立一种标准格式，以期实现只需要一个工具就可以抓不同网站的新闻。很自然地斯沃茨开始了与他们的联系。作为一个小孩斯沃茨当时有大把的空余时间，主动负责的工作也越来越多，这样14岁的斯沃茨成为了RSS 1.0 开发组的一员。后来，他又和 John Gruber一起开发了Markdown。15岁时斯沃茨进入了W3C的 RDF 核心工作组，并写了RFC3870（这个文档描述了一个新的media type – “RDF/XML“，用于定义互联网上的“语义网络”）。17岁斯沃茨进入了斯坦福大学，1年半后，因为受不了教条式的教育决定退学。同年斯沃茨通过Y Combinator公司的夏季创办人计划成立Infogami软件公司，在那里，他设想了一个Wiki平台来实现他的Internet Open Library（一个开放的网络图书馆），并写了著名的web.py 开发框架。他觉得自己太年轻，还要有一个合伙人，于是Y Combinator建议他和Reddit合并，于是斯沃茨19岁的时候成了Reddit的创始人。虽然Reddit不挣钱，但是相当火。2006年10月，在斯沃茨20岁的时候，他们把Reddit卖给了康泰纳仕出版社（Condé Nast），据说挣到了百万美金。之后斯沃茨与他的公司搬到了旧金山，在康泰纳仕出版社其下的连接杂志工作。后来由于斯沃茨对公司越来越不满，2007年1月，他辞去了在出版社的职位，同年的9月，斯沃茨与好友西蒙·卡斯特森推出了一个免费的wiki技术工具－Jottit。 </p>
+<p>在互联网时代，斯沃茨被支持者称为“罗宾汉”，和维基解密的阿桑奇一样，享有绿林好汉般的荣誉，或者说，他们都在用破坏性的方式做对的事情。斯沃茨从青少年时期起，就不懈地反抗网络审查，呼吁资源共享和信息交换自由。他在博客里写过，“我总是深入思考，同时希望别人也能这么做、我为理想（观念）而工作。我是个完美主义者。我不会浪费时间在那些不会有影响的事情上。我讨厌人们不把我当回事。我从自身经历中学习，我想让世界变得更美好。“斯沃茨是非常喜欢开放共享的人，不喜欢那些有CopyRight的东西，他喜欢质疑，打破常规。他在YC搞的那个Internet Open Library（互联网开放图书馆）的项目，就是想把那些没有Copyright的书籍和学术期刊放在网上让全世界的人免费查阅。他认为固体的图书馆遮蔽了知识的传播，互联网理应成为连接书籍，读者，作者，纸张与思想的最好载体，同时也非常痛恨任何一家巨型的机构独吞所有书籍的做法。他想把公共存取（Public Access）变成公共领域（Public Domain）。在他的青少年时期，他就在不懈地和一切限制信息自由交换和自由共享的做法做斗争。这是他认为的互联网精神，他同时也觉得这和美国民主自由的宪法的精神是一致的。这其中发生过这样一件事情，美国法院行政办公室有一个叫 PACER（Public Access to Court Electronic Records） 的政府服务。这个服务会把法庭记录的文件放在网上，如果你要看的话，一页要付费8美分，对这个事他非常不能理解，他觉得这些文件本来就属于公众，没有CopyRight，为什么属于公众的东西还要收费。PACER这个服务每年可以为政府带来1.2亿美金的收入。于是斯沃茨在2008年9月4日到20日，他用Perl在AWS上写了一个程序，从PACER上下载了270万的文档（2000万页，纽约时报里说他下载大约是总量的20%，但是也有人不到总量的1%）,于是FBI对他调查了两个多月，但最终没有对他起诉。</p>
+<p>斯沃茨还起草了一份《开放获取游击队宣言》（Guerrilla Open Access Manifesto），下面是节选：</p>
+<blockquote>
+<p>信息就是能源。但就像所有能源一样，有些人只想占为己有。世界上所有的科学和文化遗产，已在书籍和期刊上发布了数个世纪，正渐渐地被少数私有的公司数字化并上锁。想要阅读那些有着最著名研究成果的论文？你必须支付给如 Reed Elsevier 这样的出版商大把钱。 </p>
+<p>…… …… </p>
+<p>我们要夺回信息，无论它们被存在何处，制作我们的副本并和全世界分享。我们要取到版权到期的东西并将它们归档，我们要买下秘密的资料库并将它们放到网上。我们要下载科学期刊并将它们上传到文件分享网络。我们要为游击队开放访问而战。 </p>
+<p>只要全世界有足够多的我们，那就不仅是传达了一个反对知识私有化的强有力信号，我们还将让它成为过去。你愿意和我们一起吗？ </p>
+<p>亚伦·斯沃茨 (Aaron Swartz) 2008 年 7 月，意大利 Eremo </p>
+</blockquote>
+<p>斯沃茨觉得那些对人类有价值的科学和文化遗产属于全人类，美国大学每年需要向那些出版学术期刊、论文的机构（比如 ISI，Jstor）支付许可费用，许可费用极高，他觉得这是这个时代的悲剧。2009年，他成立了进步改变运动委员会，2010年，他又创建了求进会－利用互联网来组织群众与议会和政府对话。 也正因为他不理解政府和这个时代的一些行为，促使他开始学习各种政治上的东西去寻求突破。在2010年到2011年，斯沃茨在哈佛大学Edmond J. Safra研究实验室以Lab Fellow的身份主导了“制度腐败”课题的研究，也因为这个身份，斯沃茨在MIT做访问学者的时候拥有了JSTOR访问帐号，这意味着他可以通过MIT的网络访问大量的学术期刊。于是，他把笔记本放到了地下室网络交换机的机房中，直接插上网线全天后地从JSTOR下载学术期刊，还因此导致JSTOR一度瘫痪。由于他不断变换IP和MAC地址，躲过封锁，JSTOR无计可施，被迫禁止所有MIT用户访问长达四天。JSTOR报告了警方，美国国家安全警察找到了那间楼道里的机房，然后在那间机房里安了摄像头，拍摄到了斯沃茨去换硬盘时的录像，之后斯沃茨被捕了。在斯沃茨被捕后的第三天，一个用户名为Greg Maxwell的声援者，在海盗湾上传了一个BT种子，里面包含18,592篇来自JSTOR的论文，共计32.48GB。这位声援者说：“学术论文本应该允许自由获得，但是大多数论文都被像JSTOR这样的守门员，以高额收费的形式阻止传播。”同年的7月11日，检查官以通信欺诈、计算机欺诈、非法获得信息，以及破坏被保护的电脑罪名来起诉他，若罪名成立，斯沃茨将可能面临35年的监禁。事后JSTOR发表声明表示，他们无意牵扯入此案，他们已经和斯沃茨在2011年6月就相关事务达成一致，斯沃茨归还了相关文件，他们也即时撤销了所有民事指控，随后是否控告的决定由美国政府做出。而MIT方面虽然也放弃起诉，发表了保持中立相关的说明，但这种保持中立被舆论认为是一种“坐视不理”的行为，同时也违背了MIT一贯鼓吹的黑客文化，MIT一时间声名狼藉成了千夫所指。 美国政府的检查官坚持以重罪起诉斯沃茨，当时放在他前有两条路：1）认罪，承认犯下重罪，35年的判决会变成3个月入狱+1年的居家监禁（不得使用电脑），2）不认罪，那就有可能接受35年监禁的最坏结果，而斯沃茨选择了后者。在此期间，斯沃茨还通过他的求进会网聚众反对SOPA法案（Stop Online Piracy Act，网络审查制度）和政府做斗争，最终导致了整个社会都在反对SOPA，也导致了那些议员纷纷改变自己的想法，并导致了白宫最终放弃了这个法案。而在次年9月，政府对斯沃茨进行了更为严厉的起诉，新加入了另外9条起诉，如果成立，斯沃茨最多会获刑50年外加100万美金的罚款。同样，检察官给出了优惠条件，只要斯沃茨认罪，那就只起诉他6个月的监禁，然而，斯沃茨再次拒绝。 </p>
+<p>2013年1月11日上午，斯沃茨自杀了，这就是斯沃茨传奇的一生，他用生命捍卫了互联网的开放和自由。在斯沃茨的纪念网站上这样写着，“作为一个程序员和技术人员，他不是用惊人的技巧使自己富足，而是使网际网路和世界成为一个更公平，更美好的地方。”</p>
+<img src="/2016/03/15/黑客列传/《黑客列传》之互联网之子－Aaron-Swartz/2.jpg" alt="2.jpg" title="">
+<p><br></p>
+<p>斯沃茨的葬礼于2013年1月15日举行，万维网的发明者蒂姆·伯纳斯-李在葬礼上发表了悼词。匿名者组织（Anonymous）攻击了麻省理工学院网站并更改了首页，以示向斯沃茨致敬。</p>
+<img src="/2016/03/15/黑客列传/《黑客列传》之互联网之子－Aaron-Swartz/1.jpg" alt="1.jpg" title="">
+<p><br></p>
+<p>有一个叫 Jack Andraka的14岁男孩，来自巴尔的摩，因为阅读了斯沃茨推广的JSTOR免费学术论文，而想出了一种提早检测胰腺癌的方法。之后他去了约翰霍普金斯大学做继续研究。Jack说：“我之所以上了新闻，是因为我们的实验成功了，而这就是为什么斯沃茨做的事有那么重要……这个宇宙中的真理不是只有那些政策制定者曾经弄清楚过的，比如应该限速多少，它还包括那些能让你的孩子，不会因胰腺癌而死的研究。如果没有访问阅读权，那个能解决你的问题的人，可能就永远找不到答案。”</p>
+<img src="/2016/03/15/黑客列传/《黑客列传》之互联网之子－Aaron-Swartz/3.jpg" alt="3.jpg" title="">
+<p><br></p>
+<h1 id="更多参考"><a href="#更多参考" class="headerlink" title="更多参考"></a>更多参考</h1><ol>
+<li><a href="http://www.aaronsw.com/" target="_blank" rel="external">http://www.aaronsw.com/</a></li>
+<li>纪录片－《互联网之子》</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E4%BA%9A%E4%BC%A6%C2%B7%E6%96%AF%E6%B2%83%E8%8C%A8" target="_blank" rel="external">https://zh.wikipedia.org/wiki/%E4%BA%9A%E4%BC%A6%C2%B7%E6%96%AF%E6%B2%83%E8%8C%A8</a></li>
+<li><a href="http://baike.baidu.com/view/7854319.htm" target="_blank" rel="external">http://baike.baidu.com/view/7854319.htm</a></li>
+<li><a href="http://coolshell.cn/articles/11928.html" target="_blank" rel="external">http://coolshell.cn/articles/11928.html</a></li>
+<li><a href="https://www.zhihu.com/question/20711220/answer/15950812" target="_blank" rel="external">https://www.zhihu.com/question/20711220/answer/15950812</a> </li>
+<li><a href="https://www.zhihu.com/question/24928691/answer/29478342" target="_blank" rel="external">https://www.zhihu.com/question/24928691/answer/29478342</a></li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;img src=&quot;/2016/03/15/黑客列传/《黑客列传》之互联网之子－Aaron-Swartz/profile.jpg&quot; alt=&quot;profile.jpg&quot; title=&quot;&quot;&gt;
+&lt;p&gt;&lt;br/&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“你真的应该每时每刻都问自己，现在这世界有什么最重要的事是我能参与去做的？如果你没在做那最重要的事，那又是为什么？”&lt;br&gt;－亚伦·斯沃茨&lt;/p&gt;
+&lt;/blockquote&gt;
+    
+    </summary>
+    
+      <category term="《黑客列传》" scheme="http://yoursite.com/categories/%E3%80%8A%E9%BB%91%E5%AE%A2%E5%88%97%E4%BC%A0%E3%80%8B/"/>
+    
+    
+      <category term="黑客" scheme="http://yoursite.com/tags/%E9%BB%91%E5%AE%A2/"/>
+    
+      <category term="传记" scheme="http://yoursite.com/tags/%E4%BC%A0%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《黑客列传》之天才程序员－John D. Carmack II</title>
+    <link href="http://yoursite.com/2016/03/12/%E9%BB%91%E5%AE%A2%E5%88%97%E4%BC%A0/%E3%80%8A%E9%BB%91%E5%AE%A2%E5%88%97%E4%BC%A0%E3%80%8B%E4%B9%8B%E5%A4%A9%E6%89%8D%E7%A8%8B%E5%BA%8F%E5%91%98%EF%BC%8DJohn-D-Carmack-II/"/>
+    <id>http://yoursite.com/2016/03/12/黑客列传/《黑客列传》之天才程序员－John-D-Carmack-II/</id>
+    <published>2016-03-12T07:04:40.000Z</published>
+    <updated>2016-04-04T14:32:25.000Z</updated>
+    
+    <content type="html"><![CDATA[<img src="/2016/03/12/黑客列传/《黑客列传》之天才程序员－John-D-Carmack-II/0.jpg" alt="0.jpg" title="">
+<p><br></p>
+<blockquote>
+<p>“现今程序员的情况好多了，只要有一台便宜的二手电脑，一张Linux光盘和一个互联网帐户，你就已经拥有了把自己提升到任何级别的编程水平所需的全部工具。”<br>“在信息时代，进入编程领域的壁垒完全不存在了。即使有也是自我强加的。如果你想着手去开发一些全新的东西，你不需要数百万美元的资本。你只需要足够的比萨和健怡可乐存在你的冰箱里，有一台便宜的PC用于工作，以及让你坚持下来的奉献精神。我们睡在地板上。我们跋山涉水。”<br>－约翰·卡马克 </p>
+</blockquote>
+<a id="more"></a>
+<h1 id="大牛简介"><a href="#大牛简介" class="headerlink" title="大牛简介"></a>大牛简介</h1><p>约翰·D·卡马克二世（John D. Carmack II，1970年8月20日－），3D引擎之父，第一人称射击游戏之父，游戏内部命令行指令发明者、卷轴游戏背缓冲技术发明者和3D图形加速技术奠基人，发明世界第一款3D射击游戏《重返德军（Wolfenstein 3D）》，id Software的创始人之一，1999年刊登美国时代杂志评选科技领域50大影响力人物榜单第10位，2001年成为第四位进入互动艺术和科学学院名人堂的人物。 </p>
+<h1 id="大牛足迹"><a href="#大牛足迹" class="headerlink" title="大牛足迹"></a>大牛足迹</h1><p>卡马克小名约迪，成长于美国堪萨斯城中心区的一个家庭。他父母工作都很勤奋，所以他们家境很好。还晋升为一家电视台的晚间新闻主播，这家电视台是密苏里州堪萨斯城最大的三家电视台之一，他们随后搬迁到了郊外的富人区。在那里，约翰有了个小弟弟，彼得。同年，约翰进了圣母玛利亚天主教小学，这是当地最好的学校之一。这个从一岁起就戴上眼镜，长着一头凌乱金发的瘦小男孩在学校里很快就显示出了与众不同。二年级的时候，只有七岁的他几乎在所有标准化测验里都得到了满分，这相当于九年级的水平。约翰还养成了一种很独特的口吃习惯：在每句话后面加上简短的类似机器人那样的嗡嗡声，就像一台计算机在处理数据一样：“12乘以12等于144……嗯嗯。”卡马克的父母在他十二岁的时候突然离婚了，他们在如何抚养孩子的事情上还闹的很紧张。茵戈觉得这给卡马克造成了无法弥补的创伤。就当卡马克开始在学校里找到点乐趣的时候，他和弟弟彼得又不得不在双亲之间来回轮换，不停地转学。卡马克不喜欢和父亲分开，更糟糕的是，当他和母亲住在一起的时候，他得自己照顾自己。 </p>
+<p>尚在就读高中时，卡马克就被认为是“怪才”，他还因此被学校视为有心理问题，并停课一年。复课后，卡马克还是拿到了毕业证书，并考入了当地著名的Kansas大学。在编程方面，卡马克几乎是无师自通。大一还没读完，他编写的一些小游戏就被不少软件公司买走，他本人也成为了几家软件公司的兼职程序员，并逐渐在游戏软件领域小有名气。 </p>
+<p>1990年，正值计算机技术的黄金发展时期，IBM个人电脑为整个软件业带来了前所未有的机遇。但这时的软件多以商业用途为目的，游戏软件却少人问津。当时一家名为Softdisk的软件公司找到了在读大二的卡马克，希望他加入公司，一起开发游戏软件。出于对游戏软件的热爱，他毫不犹豫的同意了对方的邀请。卡马克首先遇到的问题是如何将游戏程序移植到个人电脑上，经过一番考虑，他选择了IBM PC作为最早的游戏运行平台，游戏软件就是任天堂公司风靡全球的《超级马里奥兄弟3》。经过实验，他开发出了一种名为EGA(增强型图形适配器，3D图形加速卡的雏形)的PC显示技术，这是一种16色的显示模式。之后，他又设计出屏幕刷新技术以提高游戏图形显示的速度。不久，IBM PC的第一款2D游戏成功问世，迈出了游戏软件历史性的一步。一年后，他决定自己创业，与他人共同创办了ID Software游戏公司。在id Software公司里，卡马克和他的同事通过一部又一部血腥暴力的作品创造并不断革新着这一游戏类别。id所获得的无数荣誉应当归属于它的全体员工，而约翰·卡马克无疑是将整个公司凝聚在一起的粘合剂。雄心勃勃的卡马克当然不会停留在人人都能设计的2D游戏上，他把目标锁定在了3D游戏的研发上。如果是在几年前，他的“3D计划”可能很难实现，好在那时的计算机硬件技术已发展到了相当的水平—高分辨率显示器、大容量硬盘和内存、高速运算的CPU和图形加速卡等等，这些都是他实现梦想的绝好基础。两年后，他与另一个游戏软件天才John Romero共同开发出了全球首款3D射击游戏《德军总部3D》，这款3D游戏采用了他独创的3D游戏引擎。紧接着，他又开发出了《Doom》和《Quake》两款3D游戏。一时间，所有的电脑用户都争相购买这些游戏，人们甚至为了能玩上3D游戏而去购买昂贵的PC。不到一年的时间，仅《Doom》一款游戏就售出了几百万张拷贝，带来了上亿美元的商业利润。 </p>
+<img src="/2016/03/12/黑客列传/《黑客列传》之天才程序员－John-D-Carmack-II/1.jpg" alt="1.jpg" title="">
+<p><br></p>
+<p>卡马克是一名技术天才，id公司出品的每一款游戏都是围绕他所编写的引擎制作而成的，卡马克不断把引擎技术推向新的高度。他为游戏业作出的第一个贡献是实现了卷轴游戏背景图像的流畅性，这一技术在1990年的《指挥官基恩》（Commander Keen）中得到了应用，此前电脑平台上的横向卷轴游戏的背景图像都很不稳定，根本无法同当时游戏机平台上的横向卷轴游戏相比。尽管这一技术在今天看来算不上什么，但它足以显示出卡马克高超的编程能力。《雷神之锤》刚刚问世的时候，3D加速卡在人们眼里还只是一个可笑的空想而已，只有卡马克对3D技术的威力深信不疑，他为《雷神之锤》制作了一个专门在Verite显卡上运行的特别版本，画面看上去非常漂亮，可惜的是Verite显卡未能在市场上站稳脚跟。随后卡马克又采用OpenGL标准为《雷神之锤》制作了一个新的版本，使所有具备3D加速能力的显卡都能以更快的速度、更高的分辨率渲染出更华丽的图像。 </p>
+<p>卡马克喜欢在电脑图像领域尝试新的技术，比如他在Doom上第一次使用了二叉树分区技术，表面缓存技术则在Quake中第一次出现。还有就是后来在Doom3里面使用的“卡马克反转”（即shadow volume的z-fail方法，虽然并不是首创，但是是由他独立研究出来的） 。卡马克创造的游戏引擎被用来制作其他的第一人称射击游戏，比如《半条命》（Half-life）和《荣誉勋章》（Medal of Honor）。在2007年苹果全球开发者会议（WWDC, Apple Worldwide Developers Conference）上，Carmack宣布了id Tech 5，它实际上消除了过去对美工和设计人员的纹理内存限制，允许在像素级别上对整个游戏世界实现独特的定制设计，并提供了几乎无限的视觉真实性。”该技术可以允许”广袤的户外场景，而室内场景则具有前所未见的艺术细节。除了3D方面的成就外，约翰·卡马克还为游戏业带来了许多其它的技术革新，例如网络代码中的客户端侦测、多重纹理、便于修改和可扩展的游戏代码、游戏内部的命令行指令等等。 </p>
+<p>卡马克同时也是一位积极的的开源软件的倡导者，他也再三强调反对“软件专利”，但是他一直处于势单力孤的状态。卡马克在1995年放出了德军总部3D的源代码，之后的1997年又放出了毁灭战士的代码。1996年时候，他放出了雷神之锤的源代码，Quake社区中的一名不太出名的程序员将其改写成了Linux版本，并且将修改后的游戏发给了卡马克。卡马克没有认为这是侵权行为然后付诸法律，而是要求id Software的员工们用这个补丁作为雷神之锤linux版本的基础。id Software在后来的日子里也同样公布了雷神之锤II的代码，雷神之锤III的代码也于2005年8月19日公布，这些代码的公布全遵循了GPL准则。毁灭战士的代码也使用GPL准则在1999年重新公布。2012年，卡马克将id Software工作室旗下的所有开源软件进驻了Github (<a href="https://github.com/id-Software)，开源的游戏包括著名的德军总部（Wolfenstein）3D" target="_blank" rel="external">https://github.com/id-Software)，开源的游戏包括著名的德军总部（Wolfenstein）3D</a> iOS版、重返德军总部（Return to Castle Wolfenstein）、DOOM 3（GPL许可证发布）、Quake Ⅰ/Ⅱ/Ⅲ及相关工具，以及雷神战争（Enemy Territory）等。 </p>
+<p>卡马克不仅仅是一个3D图像领域的程序员，和Elon Musk、Jeff Bezos一样，也醉心于太空技术。他创建了Armadillo Aerospace公司，研究宇宙航行技术，先后参加过几届NASA举办的登月挑战赛。可惜的是，在“可复用亚轨道航空器项目”失败，无法争取到NASA的合同后，Carmack认为继续投入这项事业并不是一个明智的决定，卡马克在达拉斯QuakeCon 2013发表主题演讲后不久，他本人在台下向Arstechnica的记者证实，他决定了放弃自己投入12年精力的私人项目“可复用亚轨道航空器”，这么多年来他“不务正业”的日子业已结束。 </p>
+<img src="/2016/03/12/黑客列传/《黑客列传》之天才程序员－John-D-Carmack-II/2.jpg" alt="2.jpg" title="">
+<p><br></p>
+<p>2013年8月7日，卡马克以首席技术官（CTO）身份加入Oculus VR公司，并在同年11月22日正式从id Software辞职以全职供职于Oculus VR。卡马克辞职的原因是id的母公司ZeniMax Media不赞成id在Oculus Rift这个平台上发展游戏。对于加盟Oculus Rift虚拟现实头盔的原因，约翰·卡马克（John Caramack）也给出了这样的回答“是三星的Gear VR让我下定决心，我要集中注意力专注在Oculus上。” 卡马克宣布加入Oculus公司的当天，Oculus官方博客发生系统宕机，就是因为“一个新成员加入导致的大规模访问行为”。 </p>
+<img src="/2016/03/12/黑客列传/《黑客列传》之天才程序员－John-D-Carmack-II/3.jpg" alt="3.jpg" title="">
+<p><br></p>
+<p>卡马克被称作有史以来最伟大的程序员，他是比尔·盖茨心中为数不多的天才。他是图形编程领域的教父，又是地球上最勤奋的程序员。从一个穷小子到腰缠万贯，拥有20多辆豪华法拉利跑车，却仍然如同普通员工一样每每加班到深夜。从一个普通程序员到3D引擎之父，卡马克一直执著地追求着自己的理想，在不断地自我挑战中最终使那些原来认为不可能的事情变成了可能。 </p>
+<h1 id="更多参考"><a href="#更多参考" class="headerlink" title="更多参考"></a>更多参考</h1><ol>
+<li><a href="https://twitter.com/ID_AA_Carmack" target="_blank" rel="external">https://twitter.com/ID_AA_Carmack</a></li>
+<li>《DOOM启世录》</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E7%B4%84%E7%BF%B0%C2%B7%E5%8D%A1%E9%A6%AC%E5%85%8B" target="_blank" rel="external">https://zh.wikipedia.org/wiki/%E7%B4%84%E7%BF%B0%C2%B7%E5%8D%A1%E9%A6%AC%E5%85%8B</a> </li>
+<li><a href="http://baike.baidu.com/view/59118.htm" target="_blank" rel="external">http://baike.baidu.com/view/59118.htm</a> </li>
+<li><a href="http://blog.jobbole.com/51434/" target="_blank" rel="external">http://blog.jobbole.com/51434/</a> </li>
+<li><a href="https://en.wikiquote.org/wiki/John_D._Carmack" target="_blank" rel="external">https://en.wikiquote.org/wiki/John_D._Carmack</a> </li>
+<li><a href="http://www.jegqin.cn/?a=url&amp;k=91193629&amp;u=aHR0cDovL3BjLmt1YWk4LmNvbS9uZXdzLzk2NjUyLmh0bWw=&amp;t=5ri45oiP55WM55qE5Lyg5aWH5Lq654mpOue6pue@sMK35Y2h6ams5YWLKEpvaG4gQ2FybWFjaylf5b!r5ZCn5ri45oiP&amp;s=57qm57!wLuWNoemprOWFiw==" target="_blank" rel="external">http://www.jegqin.cn/?a=url&amp;k=91193629&amp;u=aHR0cDovL3BjLmt1YWk4LmNvbS9uZXdzLzk2NjUyLmh0bWw=&amp;t=5ri45oiP55WM55qE5Lyg5aWH5Lq654mpOue6pue@sMK35Y2h6ams5YWLKEpvaG4gQ2FybWFjaylf5b!r5ZCn5ri45oiP&amp;s=57qm57!wLuWNoemprOWFiw==</a> </li>
+<li><a href="http://www.shiziduo.com/job/jy/content-145004.html" target="_blank" rel="external">http://www.shiziduo.com/job/jy/content-145004.html</a> </li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;img src=&quot;/2016/03/12/黑客列传/《黑客列传》之天才程序员－John-D-Carmack-II/0.jpg&quot; alt=&quot;0.jpg&quot; title=&quot;&quot;&gt;
+&lt;p&gt;&lt;br/&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“现今程序员的情况好多了，只要有一台便宜的二手电脑，一张Linux光盘和一个互联网帐户，你就已经拥有了把自己提升到任何级别的编程水平所需的全部工具。”&lt;br&gt;“在信息时代，进入编程领域的壁垒完全不存在了。即使有也是自我强加的。如果你想着手去开发一些全新的东西，你不需要数百万美元的资本。你只需要足够的比萨和健怡可乐存在你的冰箱里，有一台便宜的PC用于工作，以及让你坚持下来的奉献精神。我们睡在地板上。我们跋山涉水。”&lt;br&gt;－约翰·卡马克 &lt;/p&gt;
+&lt;/blockquote&gt;
+    
+    </summary>
+    
+      <category term="《黑客列传》" scheme="http://yoursite.com/categories/%E3%80%8A%E9%BB%91%E5%AE%A2%E5%88%97%E4%BC%A0%E3%80%8B/"/>
+    
+    
+      <category term="黑客" scheme="http://yoursite.com/tags/%E9%BB%91%E5%AE%A2/"/>
+    
+      <category term="传记" scheme="http://yoursite.com/tags/%E4%BC%A0%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《黑客列传》之首卷语</title>
+    <link href="http://yoursite.com/2016/03/12/%E9%BB%91%E5%AE%A2%E5%88%97%E4%BC%A0/%E3%80%8A%E9%BB%91%E5%AE%A2%E5%88%97%E4%BC%A0%E3%80%8B%E4%B9%8B%E9%A6%96%E5%8D%B7%E8%AF%AD/"/>
+    <id>http://yoursite.com/2016/03/12/黑客列传/《黑客列传》之首卷语/</id>
+    <published>2016-03-12T04:16:33.000Z</published>
+    <updated>2016-04-04T15:13:33.000Z</updated>
+    
+    <content type="html"><![CDATA[<img src="/2016/03/12/黑客列传/《黑客列传》之首卷语/0.jpg" alt="0.jpg" title="">
+<p><br></p>
+<blockquote>
+<p>“Every man dies, not every man really lives”<br>（任何人都将会死去，然而并不是每个人都真真正正的活过。）<br>－William Wallace</p>
+</blockquote>
+<a id="more"></a>
+<p>“黑客精神”正像照亮夜空的星辰，璀璨而不耀眼，历久而更显弥新。<br>本系列将与大家一同走近大牛生活，感悟黑客人生。。。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;img src=&quot;/2016/03/12/黑客列传/《黑客列传》之首卷语/0.jpg&quot; alt=&quot;0.jpg&quot; title=&quot;&quot;&gt;
+&lt;p&gt;&lt;br/&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“Every man dies, not every man really lives”&lt;br&gt;（任何人都将会死去，然而并不是每个人都真真正正的活过。）&lt;br&gt;－William Wallace&lt;/p&gt;
+&lt;/blockquote&gt;
+    
+    </summary>
+    
+      <category term="《黑客列传》" scheme="http://yoursite.com/categories/%E3%80%8A%E9%BB%91%E5%AE%A2%E5%88%97%E4%BC%A0%E3%80%8B/"/>
+    
+    
+      <category term="黑客" scheme="http://yoursite.com/tags/%E9%BB%91%E5%AE%A2/"/>
+    
+      <category term="传记" scheme="http://yoursite.com/tags/%E4%BC%A0%E8%AE%B0/"/>
     
   </entry>
   

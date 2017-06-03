@@ -1,0 +1,818 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="黑客,传记," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="业精于勤，行成于思" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="“现今程序员的情况好多了，只要有一台便宜的二手电脑，一张Linux光盘和一个互联网帐户，你就已经拥有了把自己提升到任何级别的编程水平所需的全部工具。”“在信息时代，进入编程领域的壁垒完全不存在了。即使有也是自我强加的。如果你想着手去开发一些全新的东西，你不需要数百万美元的资本。你只需要足够的比萨和健怡可乐存在你的冰箱里，有一台便宜的PC用于工作，以及让你坚持下来的奉献精神。我们睡在地板上。我">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《黑客列传》之天才程序员－John D. Carmack II">
+<meta property="og:url" content="http://yoursite.com/2016/03/12/黑客列传/《黑客列传》之天才程序员－John-D-Carmack-II/index.html">
+<meta property="og:site_name" content="业精于勤，行成于思">
+<meta property="og:description" content="“现今程序员的情况好多了，只要有一台便宜的二手电脑，一张Linux光盘和一个互联网帐户，你就已经拥有了把自己提升到任何级别的编程水平所需的全部工具。”“在信息时代，进入编程领域的壁垒完全不存在了。即使有也是自我强加的。如果你想着手去开发一些全新的东西，你不需要数百万美元的资本。你只需要足够的比萨和健怡可乐存在你的冰箱里，有一台便宜的PC用于工作，以及让你坚持下来的奉献精神。我们睡在地板上。我">
+<meta property="og:image" content="http://yoursite.com/2016/03/12/黑客列传/《黑客列传》之天才程序员－John-D-Carmack-II/0.jpg">
+<meta property="og:image" content="http://yoursite.com/2016/03/12/黑客列传/《黑客列传》之天才程序员－John-D-Carmack-II/1.jpg">
+<meta property="og:image" content="http://yoursite.com/2016/03/12/黑客列传/《黑客列传》之天才程序员－John-D-Carmack-II/2.jpg">
+<meta property="og:image" content="http://yoursite.com/2016/03/12/黑客列传/《黑客列传》之天才程序员－John-D-Carmack-II/3.jpg">
+<meta property="og:updated_time" content="2016-04-04T14:32:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《黑客列传》之天才程序员－John D. Carmack II">
+<meta name="twitter:description" content="“现今程序员的情况好多了，只要有一台便宜的二手电脑，一张Linux光盘和一个互联网帐户，你就已经拥有了把自己提升到任何级别的编程水平所需的全部工具。”“在信息时代，进入编程领域的壁垒完全不存在了。即使有也是自我强加的。如果你想着手去开发一些全新的东西，你不需要数百万美元的资本。你只需要足够的比萨和健怡可乐存在你的冰箱里，有一台便宜的PC用于工作，以及让你坚持下来的奉献精神。我们睡在地板上。我">
+<meta name="twitter:image" content="http://yoursite.com/2016/03/12/黑客列传/《黑客列传》之天才程序员－John-D-Carmack-II/0.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: 'Author'
+    }
+  };
+</script>
+
+  <title> 《黑客列传》之天才程序员－John D. Carmack II | 业精于勤，行成于思 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">业精于勤，行成于思</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                《黑客列传》之天才程序员－John D. Carmack II
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-03-12T15:04:40+08:00" content="2016-03-12">
+              2016-03-12
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/《黑客列传》/" itemprop="url" rel="index">
+                    <span itemprop="name">《黑客列传》</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <img src="/2016/03/12/黑客列传/《黑客列传》之天才程序员－John-D-Carmack-II/0.jpg" alt="0.jpg" title="">
+<p><br></p>
+<blockquote>
+<p>“现今程序员的情况好多了，只要有一台便宜的二手电脑，一张Linux光盘和一个互联网帐户，你就已经拥有了把自己提升到任何级别的编程水平所需的全部工具。”<br>“在信息时代，进入编程领域的壁垒完全不存在了。即使有也是自我强加的。如果你想着手去开发一些全新的东西，你不需要数百万美元的资本。你只需要足够的比萨和健怡可乐存在你的冰箱里，有一台便宜的PC用于工作，以及让你坚持下来的奉献精神。我们睡在地板上。我们跋山涉水。”<br>－约翰·卡马克 </p>
+</blockquote>
+<a id="more"></a>
+<h1 id="大牛简介"><a href="#大牛简介" class="headerlink" title="大牛简介"></a>大牛简介</h1><p>约翰·D·卡马克二世（John D. Carmack II，1970年8月20日－），3D引擎之父，第一人称射击游戏之父，游戏内部命令行指令发明者、卷轴游戏背缓冲技术发明者和3D图形加速技术奠基人，发明世界第一款3D射击游戏《重返德军（Wolfenstein 3D）》，id Software的创始人之一，1999年刊登美国时代杂志评选科技领域50大影响力人物榜单第10位，2001年成为第四位进入互动艺术和科学学院名人堂的人物。 </p>
+<h1 id="大牛足迹"><a href="#大牛足迹" class="headerlink" title="大牛足迹"></a>大牛足迹</h1><p>卡马克小名约迪，成长于美国堪萨斯城中心区的一个家庭。他父母工作都很勤奋，所以他们家境很好。还晋升为一家电视台的晚间新闻主播，这家电视台是密苏里州堪萨斯城最大的三家电视台之一，他们随后搬迁到了郊外的富人区。在那里，约翰有了个小弟弟，彼得。同年，约翰进了圣母玛利亚天主教小学，这是当地最好的学校之一。这个从一岁起就戴上眼镜，长着一头凌乱金发的瘦小男孩在学校里很快就显示出了与众不同。二年级的时候，只有七岁的他几乎在所有标准化测验里都得到了满分，这相当于九年级的水平。约翰还养成了一种很独特的口吃习惯：在每句话后面加上简短的类似机器人那样的嗡嗡声，就像一台计算机在处理数据一样：“12乘以12等于144……嗯嗯。”卡马克的父母在他十二岁的时候突然离婚了，他们在如何抚养孩子的事情上还闹的很紧张。茵戈觉得这给卡马克造成了无法弥补的创伤。就当卡马克开始在学校里找到点乐趣的时候，他和弟弟彼得又不得不在双亲之间来回轮换，不停地转学。卡马克不喜欢和父亲分开，更糟糕的是，当他和母亲住在一起的时候，他得自己照顾自己。 </p>
+<p>尚在就读高中时，卡马克就被认为是“怪才”，他还因此被学校视为有心理问题，并停课一年。复课后，卡马克还是拿到了毕业证书，并考入了当地著名的Kansas大学。在编程方面，卡马克几乎是无师自通。大一还没读完，他编写的一些小游戏就被不少软件公司买走，他本人也成为了几家软件公司的兼职程序员，并逐渐在游戏软件领域小有名气。 </p>
+<p>1990年，正值计算机技术的黄金发展时期，IBM个人电脑为整个软件业带来了前所未有的机遇。但这时的软件多以商业用途为目的，游戏软件却少人问津。当时一家名为Softdisk的软件公司找到了在读大二的卡马克，希望他加入公司，一起开发游戏软件。出于对游戏软件的热爱，他毫不犹豫的同意了对方的邀请。卡马克首先遇到的问题是如何将游戏程序移植到个人电脑上，经过一番考虑，他选择了IBM PC作为最早的游戏运行平台，游戏软件就是任天堂公司风靡全球的《超级马里奥兄弟3》。经过实验，他开发出了一种名为EGA(增强型图形适配器，3D图形加速卡的雏形)的PC显示技术，这是一种16色的显示模式。之后，他又设计出屏幕刷新技术以提高游戏图形显示的速度。不久，IBM PC的第一款2D游戏成功问世，迈出了游戏软件历史性的一步。一年后，他决定自己创业，与他人共同创办了ID Software游戏公司。在id Software公司里，卡马克和他的同事通过一部又一部血腥暴力的作品创造并不断革新着这一游戏类别。id所获得的无数荣誉应当归属于它的全体员工，而约翰·卡马克无疑是将整个公司凝聚在一起的粘合剂。雄心勃勃的卡马克当然不会停留在人人都能设计的2D游戏上，他把目标锁定在了3D游戏的研发上。如果是在几年前，他的“3D计划”可能很难实现，好在那时的计算机硬件技术已发展到了相当的水平—高分辨率显示器、大容量硬盘和内存、高速运算的CPU和图形加速卡等等，这些都是他实现梦想的绝好基础。两年后，他与另一个游戏软件天才John Romero共同开发出了全球首款3D射击游戏《德军总部3D》，这款3D游戏采用了他独创的3D游戏引擎。紧接着，他又开发出了《Doom》和《Quake》两款3D游戏。一时间，所有的电脑用户都争相购买这些游戏，人们甚至为了能玩上3D游戏而去购买昂贵的PC。不到一年的时间，仅《Doom》一款游戏就售出了几百万张拷贝，带来了上亿美元的商业利润。 </p>
+<img src="/2016/03/12/黑客列传/《黑客列传》之天才程序员－John-D-Carmack-II/1.jpg" alt="1.jpg" title="">
+<p><br></p>
+<p>卡马克是一名技术天才，id公司出品的每一款游戏都是围绕他所编写的引擎制作而成的，卡马克不断把引擎技术推向新的高度。他为游戏业作出的第一个贡献是实现了卷轴游戏背景图像的流畅性，这一技术在1990年的《指挥官基恩》（Commander Keen）中得到了应用，此前电脑平台上的横向卷轴游戏的背景图像都很不稳定，根本无法同当时游戏机平台上的横向卷轴游戏相比。尽管这一技术在今天看来算不上什么，但它足以显示出卡马克高超的编程能力。《雷神之锤》刚刚问世的时候，3D加速卡在人们眼里还只是一个可笑的空想而已，只有卡马克对3D技术的威力深信不疑，他为《雷神之锤》制作了一个专门在Verite显卡上运行的特别版本，画面看上去非常漂亮，可惜的是Verite显卡未能在市场上站稳脚跟。随后卡马克又采用OpenGL标准为《雷神之锤》制作了一个新的版本，使所有具备3D加速能力的显卡都能以更快的速度、更高的分辨率渲染出更华丽的图像。 </p>
+<p>卡马克喜欢在电脑图像领域尝试新的技术，比如他在Doom上第一次使用了二叉树分区技术，表面缓存技术则在Quake中第一次出现。还有就是后来在Doom3里面使用的“卡马克反转”（即shadow volume的z-fail方法，虽然并不是首创，但是是由他独立研究出来的） 。卡马克创造的游戏引擎被用来制作其他的第一人称射击游戏，比如《半条命》（Half-life）和《荣誉勋章》（Medal of Honor）。在2007年苹果全球开发者会议（WWDC, Apple Worldwide Developers Conference）上，Carmack宣布了id Tech 5，它实际上消除了过去对美工和设计人员的纹理内存限制，允许在像素级别上对整个游戏世界实现独特的定制设计，并提供了几乎无限的视觉真实性。”该技术可以允许”广袤的户外场景，而室内场景则具有前所未见的艺术细节。除了3D方面的成就外，约翰·卡马克还为游戏业带来了许多其它的技术革新，例如网络代码中的客户端侦测、多重纹理、便于修改和可扩展的游戏代码、游戏内部的命令行指令等等。 </p>
+<p>卡马克同时也是一位积极的的开源软件的倡导者，他也再三强调反对“软件专利”，但是他一直处于势单力孤的状态。卡马克在1995年放出了德军总部3D的源代码，之后的1997年又放出了毁灭战士的代码。1996年时候，他放出了雷神之锤的源代码，Quake社区中的一名不太出名的程序员将其改写成了Linux版本，并且将修改后的游戏发给了卡马克。卡马克没有认为这是侵权行为然后付诸法律，而是要求id Software的员工们用这个补丁作为雷神之锤linux版本的基础。id Software在后来的日子里也同样公布了雷神之锤II的代码，雷神之锤III的代码也于2005年8月19日公布，这些代码的公布全遵循了GPL准则。毁灭战士的代码也使用GPL准则在1999年重新公布。2012年，卡马克将id Software工作室旗下的所有开源软件进驻了Github (<a href="https://github.com/id-Software)，开源的游戏包括著名的德军总部（Wolfenstein）3D" target="_blank" rel="external">https://github.com/id-Software)，开源的游戏包括著名的德军总部（Wolfenstein）3D</a> iOS版、重返德军总部（Return to Castle Wolfenstein）、DOOM 3（GPL许可证发布）、Quake Ⅰ/Ⅱ/Ⅲ及相关工具，以及雷神战争（Enemy Territory）等。 </p>
+<p>卡马克不仅仅是一个3D图像领域的程序员，和Elon Musk、Jeff Bezos一样，也醉心于太空技术。他创建了Armadillo Aerospace公司，研究宇宙航行技术，先后参加过几届NASA举办的登月挑战赛。可惜的是，在“可复用亚轨道航空器项目”失败，无法争取到NASA的合同后，Carmack认为继续投入这项事业并不是一个明智的决定，卡马克在达拉斯QuakeCon 2013发表主题演讲后不久，他本人在台下向Arstechnica的记者证实，他决定了放弃自己投入12年精力的私人项目“可复用亚轨道航空器”，这么多年来他“不务正业”的日子业已结束。 </p>
+<img src="/2016/03/12/黑客列传/《黑客列传》之天才程序员－John-D-Carmack-II/2.jpg" alt="2.jpg" title="">
+<p><br></p>
+<p>2013年8月7日，卡马克以首席技术官（CTO）身份加入Oculus VR公司，并在同年11月22日正式从id Software辞职以全职供职于Oculus VR。卡马克辞职的原因是id的母公司ZeniMax Media不赞成id在Oculus Rift这个平台上发展游戏。对于加盟Oculus Rift虚拟现实头盔的原因，约翰·卡马克（John Caramack）也给出了这样的回答“是三星的Gear VR让我下定决心，我要集中注意力专注在Oculus上。” 卡马克宣布加入Oculus公司的当天，Oculus官方博客发生系统宕机，就是因为“一个新成员加入导致的大规模访问行为”。 </p>
+<img src="/2016/03/12/黑客列传/《黑客列传》之天才程序员－John-D-Carmack-II/3.jpg" alt="3.jpg" title="">
+<p><br></p>
+<p>卡马克被称作有史以来最伟大的程序员，他是比尔·盖茨心中为数不多的天才。他是图形编程领域的教父，又是地球上最勤奋的程序员。从一个穷小子到腰缠万贯，拥有20多辆豪华法拉利跑车，却仍然如同普通员工一样每每加班到深夜。从一个普通程序员到3D引擎之父，卡马克一直执著地追求着自己的理想，在不断地自我挑战中最终使那些原来认为不可能的事情变成了可能。 </p>
+<h1 id="更多参考"><a href="#更多参考" class="headerlink" title="更多参考"></a>更多参考</h1><ol>
+<li><a href="https://twitter.com/ID_AA_Carmack" target="_blank" rel="external">https://twitter.com/ID_AA_Carmack</a></li>
+<li>《DOOM启世录》</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E7%B4%84%E7%BF%B0%C2%B7%E5%8D%A1%E9%A6%AC%E5%85%8B" target="_blank" rel="external">https://zh.wikipedia.org/wiki/%E7%B4%84%E7%BF%B0%C2%B7%E5%8D%A1%E9%A6%AC%E5%85%8B</a> </li>
+<li><a href="http://baike.baidu.com/view/59118.htm" target="_blank" rel="external">http://baike.baidu.com/view/59118.htm</a> </li>
+<li><a href="http://blog.jobbole.com/51434/" target="_blank" rel="external">http://blog.jobbole.com/51434/</a> </li>
+<li><a href="https://en.wikiquote.org/wiki/John_D._Carmack" target="_blank" rel="external">https://en.wikiquote.org/wiki/John_D._Carmack</a> </li>
+<li><a href="http://www.jegqin.cn/?a=url&amp;k=91193629&amp;u=aHR0cDovL3BjLmt1YWk4LmNvbS9uZXdzLzk2NjUyLmh0bWw=&amp;t=5ri45oiP55WM55qE5Lyg5aWH5Lq654mpOue6pue@sMK35Y2h6ams5YWLKEpvaG4gQ2FybWFjaylf5b!r5ZCn5ri45oiP&amp;s=57qm57!wLuWNoemprOWFiw==" target="_blank" rel="external">http://www.jegqin.cn/?a=url&amp;k=91193629&amp;u=aHR0cDovL3BjLmt1YWk4LmNvbS9uZXdzLzk2NjUyLmh0bWw=&amp;t=5ri45oiP55WM55qE5Lyg5aWH5Lq654mpOue6pue@sMK35Y2h6ams5YWLKEpvaG4gQ2FybWFjaylf5b!r5ZCn5ri45oiP&amp;s=57qm57!wLuWNoemprOWFiw==</a> </li>
+<li><a href="http://www.shiziduo.com/job/jy/content-145004.html" target="_blank" rel="external">http://www.shiziduo.com/job/jy/content-145004.html</a> </li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+<! -- 添加捐赠图标 -->
+    
+    
+
+    <div class ="post-donate">
+      <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="Donate 打赏"></a>
+        <span class="donate_txt">
+           &uarr;<br>
+           
+            豪赏本篇文章（¥ 0.99）
+           
+        </span>
+        <br>
+      </div>
+
+      <div id="donate_guide" class="donate_bar center hidden">
+        
+
+      
+       <a href="/images/wechat.png" title="微信打赏（¥ 0.99）" class="fancybox" rel="article0">
+         <img src="/images/wechat.png" title="微信打赏（¥ 0.99）" height="164px" width="164px">
+       </a>
+      
+
+      </div>
+
+      <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+          $('#donate_board').addClass('hidden');
+          $('#donate_guide').removeClass('hidden');
+        }
+      </script>
+    </div>
+
+    
+
+<! -- end 添加捐赠图标 --> 
+
+      
+        <div class="post-tags">
+          
+            <a href="/tags/黑客/" rel="tag">#黑客</a>
+          
+            <a href="/tags/传记/" rel="tag">#传记</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/12/黑客列传/《黑客列传》之首卷语/" rel="next" title="《黑客列传》之首卷语">
+                <i class="fa fa-chevron-left"></i> 《黑客列传》之首卷语
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/15/黑客列传/《黑客列传》之互联网之子－Aaron-Swartz/" rel="prev" title="《黑客列传》之互联网之子－Aaron Swartz">
+                《黑客列传》之互联网之子－Aaron Swartz <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/default_avatar.jpg"
+               alt="Yangguang" />
+          <p class="site-author-name" itemprop="name">Yangguang</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">18</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yangguang2009" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://stackoverflow.com/users/4869784/yangguang" target="_blank">
+                  
+                    <i class="fa fa-stackoverflow"></i> Stackoverflow
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#大牛简介"><span class="nav-number">1.</span> <span class="nav-text">大牛简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#大牛足迹"><span class="nav-number">2.</span> <span class="nav-text">大牛足迹</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#更多参考"><span class="nav-number">3.</span> <span class="nav-text">更多参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yangguang</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+
+</body>
+</html>
