@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-06-25T14:35:41.000Z</updated>
+  <updated>2017-09-10T14:27:13.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,49 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Choir3 App</title>
+    <link href="http://yoursite.com/2017/09/10/others/choir3/"/>
+    <id>http://yoursite.com/2017/09/10/others/choir3/</id>
+    <published>2017-09-10T02:27:31.000Z</published>
+    <updated>2017-09-10T14:27:13.000Z</updated>
+    
+    <content type="html"><![CDATA[<img src="/2017/09/10/others/choir3/0.png" alt="0.png" title=""> <br>Choir3 is an easy App for creating a harmonized song just by one person, which often been called “One Person Choir” or “One Man Choir”.<br>The design is inspired by the videos that harmonize a song just by one singer, which are very wonderful. But creating a harmonized song like that often needs professional video editing softwares and corresponding skills on them. To make it easy for most people who want to have a try, Choir3 is created!<br><a id="more"></a>
+<p>With Choir3 you can easily enjoy the following features:</p>
+<ul>
+<li>Recording current track while playing preceding recordings, so you can harmonize with yourselves. With earphone connecting will make it more better.</li>
+<li>Harmonizing just with the selected recordings.</li>
+<li>Deleting the selected recordings.</li>
+<li>Combining all recordings into one video, which you can then save on phone or share with friends.</li>
+</ul>
+<p>I hope you will enjoy it, and enjoy singing : )</p>
+<h1 id="Download"><a href="#Download" class="headerlink" title="Download"></a>Download</h1><p>iOS：<br><a href="https://itunes.apple.com/us/app/choir3/id1275995274?ls=1&amp;mt=8" target="_blank" rel="external"><img src="/2017/09/10/others/choir3/download_icon_ios.png" alt="download_icon_ios.png" title=""></a></p>
+<h1 id="Acknowledgement"><a href="#Acknowledgement" class="headerlink" title="Acknowledgement"></a>Acknowledgement</h1><p>Thanks <a href="https://www.flaticon.com/" target="_blank" rel="external">flaticon</a> provide the free icons:</p>
+<div>Icons made by <a href="https://www.flaticon.com/authors/madebyoliver" title="Madebyoliver" target="_blank" rel="external">Madebyoliver</a> from <a href="https://www.flaticon.com/" title="Flaticon" target="_blank" rel="external">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
+<div>Icons made by <a href="http://www.freepik.com" title="Freepik" target="_blank" rel="external">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon" target="_blank" rel="external">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
+<div>Icons made by <a href="https://www.flaticon.com/authors/pixel-perfect" title="Pixel perfect" target="_blank" rel="external">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon" target="_blank" rel="external">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
+<div>Icons made by <a href="http://www.freepik.com" title="Freepik" target="_blank" rel="external">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon" target="_blank" rel="external">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
+<div>Icons made by <a href="https://www.flaticon.com/authors/eleonor-wang" title="Eleonor Wang" target="_blank" rel="external">Eleonor Wang</a> from <a href="https://www.flaticon.com/" title="Flaticon" target="_blank" rel="external">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;img src=&quot;/2017/09/10/others/choir3/0.png&quot; alt=&quot;0.png&quot; title=&quot;&quot;&gt; &lt;br/&gt;Choir3 is an easy App for creating a harmonized song just by one person, which often been called “One Person Choir” or “One Man Choir”.&lt;br&gt;The design is inspired by the videos that harmonize a song just by one singer, which are very wonderful. But creating a harmonized song like that often needs professional video editing softwares and corresponding skills on them. To make it easy for most people who want to have a try, Choir3 is created!&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Others" scheme="http://yoursite.com/categories/Others/"/>
+    
+    
+      <category term="App" scheme="http://yoursite.com/tags/App/"/>
+    
+  </entry>
   
   <entry>
     <title>读《人类简史》</title>
@@ -966,11 +1009,11 @@ if __name__ == '__main__':
       <category term="《HTML5 iOS App应用开发》" scheme="http://yoursite.com/categories/%E3%80%8AHTML5-iOS-App%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E3%80%8B/"/>
     
     
+      <category term="App" scheme="http://yoursite.com/tags/App/"/>
+    
       <category term="HTML5" scheme="http://yoursite.com/tags/HTML5/"/>
     
       <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
-    
-      <category term="App" scheme="http://yoursite.com/tags/App/"/>
     
       <category term="应用开发" scheme="http://yoursite.com/tags/%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/"/>
     
