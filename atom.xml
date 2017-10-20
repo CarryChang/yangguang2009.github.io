@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-09-27T13:15:02.000Z</updated>
+  <updated>2017-10-20T13:59:31.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -14,6 +14,72 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>在 Swift 中使用 OpenCV</title>
+    <link href="http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/"/>
+    <id>http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/</id>
+    <published>2017-10-16T12:00:17.000Z</published>
+    <updated>2017-10-20T13:59:31.000Z</updated>
+    
+    <content type="html"><![CDATA[<img src="/2017/10/16/programming/use-opencv-in-swift/0.gif" alt="0.gif" title=""> <br>通过阅读本篇内容您将了解到：<br>- 如何在 iOS 项目项目中添加 OpenCV 库；<br>- Objective-C++ 与 Swift 的结合使用，及桥接文件的添加；<br>- Swift 中对摄像头图像的获取方法及展现；<br>- Swift 与 OpenCV 的交互；<br><a id="more"></a>
+<h1 id="环境介绍"><a href="#环境介绍" class="headerlink" title="环境介绍"></a>环境介绍</h1><ol>
+<li>Xcode 9.0;</li>
+<li>Swift 4.0;</li>
+<li>OpenCV iOS pack 3.3.0;</li>
+</ol>
+<h1 id="OpenCV-Package-添加"><a href="#OpenCV-Package-添加" class="headerlink" title="OpenCV Package 添加"></a>OpenCV Package 添加</h1><p>OpenCV Package 可以通过以下两种方式添加到 iOS 项目当中：</p>
+<ol>
+<li><p>使用 <a href="https://cocoapods.org/" target="_blank" rel="external">CocoaPods</a> 添加<br>Profile 中添加 OpenCV：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">target &apos;OpenCVTest&apos; do</div><div class="line">  use_frameworks!</div><div class="line">  pod &apos;OpenCV&apos;</div><div class="line">end</div></pre></td></tr></table></figure>
+</li>
+<li><p>直接下载<br>在官网的 <a href="https://opencv.org/releases.html" target="_blank" rel="external">Releases</a> 列表中直接下载相应版本的 iOS pack。<br>解压下载后的 zip 文件，得到一个 opencv2.framework 库，右键点击项目选择添加文件，进行添加即可：</p>
+<img src="/2017/10/16/programming/use-opencv-in-swift/1.png" alt="1.png" title="">
+<p>同时在 <code>Project／General／Linked Frameworks and Libraies</code> 中也请添加一份 opencv2.framework。<br>这里需要注意的是请不要以直接拖拽的方式添加，容易产生找不到<code>opencv2/opencv.hpp file not found</code>的错误。<br>以上是两种简单的添加 OpenCV 的方法。</p>
+</li>
+</ol>
+<p>需要注意的是如果在编译时产生如下错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">Undefined symbols for architecture arm64:</div><div class="line">  &quot;_OBJC_CLASS_$_ALAssetsLibrary&quot;, referenced from:</div><div class="line">      objc-class-ref in opencv2(cap_ios_video_camera.o)</div><div class="line">  &quot;_CMSampleBufferGetPresentationTimeStamp&quot;, referenced from:</div><div class="line">      -[CvVideoCamera captureOutput:didOutputSampleBuffer:fromConnection:] in opencv2(cap_ios_video_camera.o)</div><div class="line">  &quot;_CMTimeMake&quot;, referenced from:</div><div class="line">      -[CvVideoCamera createVideoDataOutput] in opencv2(cap_ios_video_camera.o)</div><div class="line">  &quot;_CMSampleBufferGetImageBuffer&quot;, referenced from:</div><div class="line">      -[CaptureDelegate captureOutput:didOutputSampleBuffer:fromConnection:] in opencv2(cap_avfoundation.o)</div><div class="line">      -[CvVideoCamera captureOutput:didOutputSampleBuffer:fromConnection:] in opencv2(cap_ios_video_camera.o)</div><div class="line">ld: symbol(s) not found for architecture arm64</div><div class="line">clang: error: linker command failed with exit code 1 (use -v to see invocation)</div></pre></td></tr></table></figure></p>
+<p>或<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">Undefined symbols for architecture arm64:</div><div class="line">  &quot;cv::String::deallocate()&quot;, referenced from:</div><div class="line">      cv::String::~String() in OpenCVMethods.o</div><div class="line">      cv::String::operator=(cv::String const&amp;) in OpenCVMethods.o</div><div class="line">  &quot;cv::fastFree(void*)&quot;, referenced from:</div><div class="line">      cv::Mat::~Mat() in OpenCVMethods.o</div><div class="line">  &quot;UIImageToMat(UIImage const*, cv::Mat&amp;, bool)&quot;, referenced from:</div><div class="line">      +[ImageConverter getBinaryImage:] in OpenCVMethods.o</div><div class="line">  &quot;cv::Mat::deallocate()&quot;, referenced from:</div><div class="line">      cv::Mat::release() in OpenCVMethods.o</div><div class="line">  &quot;cv::cvtColor(cv::_InputArray const&amp;, cv::_OutputArray const&amp;, int, int)&quot;, referenced from:</div><div class="line">      +[ImageConverter getBinaryImage:] in OpenCVMethods.o</div><div class="line">  &quot;cv::threshold(cv::_InputArray const&amp;, cv::_OutputArray const&amp;, double, double, int)&quot;, referenced from:</div><div class="line">      +[ImageConverter getBinaryImage:] in OpenCVMethods.o</div><div class="line">  &quot;MatToUIImage(cv::Mat const&amp;)&quot;, referenced from:</div><div class="line">      +[ImageConverter getBinaryImage:] in OpenCVMethods.o</div><div class="line">ld: symbol(s) not found for architecture arm64</div><div class="line">clang: error: linker command failed with exit code 1 (use -v to see invocation)</div></pre></td></tr></table></figure></p>
+<p>请在项目中再添加以下 framework 即可解决：<br><code>AssetsLibrary.framework</code>、<code>CoreMedia.framework</code>、<code>CoreVideo.framework</code>。<br>具体添加方法：<code>Project／General／Linked Frameworks and Libraies</code>：<img src="/2017/10/16/programming/use-opencv-in-swift/2.png" alt="2.png" title=""></p>
+<h1 id="OpenCV-使用准备"><a href="#OpenCV-使用准备" class="headerlink" title="OpenCV 使用准备"></a>OpenCV 使用准备</h1><p>我们添加的 OpenCV 是由 C++ 编码的，在 Swift 中可以通过添加 Objective-C++ 文件实现对 OpenCV 的使用。<br>原理示意如下：<br><img src="/2017/10/16/programming/use-opencv-in-swift/3.png" alt="3.png" title=""><br>具体步骤：</p>
+<ol>
+<li>添加一个 Objective-C 文件到项目中，这里命名为 OpenCVMethods（如果有自动提示是否添加 Bridging-Header 文件的话，选择添加。如果没有提示，则由第2步进行手动添加），将文件扩展名“m”改为“mm”。</li>
+<li>手动添加一个 Bridging-Header 文件：在添加一个头文件（Header file），重命名为“项目名-Bridging-Header.h”（本例中为：UseOpenCVInSwiftDemo-Bridging-Header.h）。</li>
+</ol>
+<h1 id="视频获取"><a href="#视频获取" class="headerlink" title="视频获取"></a>视频获取</h1><p>我们将在 <code>ViewController.swift</code> 中实现视频获取及展现的主要功能逻辑，视频处理主要在 <code>OpenCVMethods.mm</code> 由 OpenCV 完成。<br>下面是 <code>ViewController.swift</code> 中对视频获取及展现的实现代码：<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// ViewController.swift</span></div><div class="line"><span class="keyword">import</span> UIKit</div><div class="line"><span class="keyword">import</span> AVFoundation</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span>, <span class="title">AVCaptureVideoDataOutputSampleBufferDelegate</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">var</span> session = <span class="type">AVCaptureSession</span>()</div><div class="line">    <span class="keyword">var</span> previewImage = <span class="type">UIImage</span>()</div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">weak</span> <span class="keyword">var</span> imageView: <span class="type">UIImageView</span>!</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.viewDidLoad()</div><div class="line">        </div><div class="line">        startLiveVideo()</div><div class="line">        <span class="number">_</span> = <span class="type">Timer</span>.scheduledTimer(timeInterval: <span class="number">0.1</span>, target: <span class="keyword">self</span>, selector: #selector(<span class="keyword">self</span>.setPreviewImage), userInfo: <span class="literal">nil</span>, repeats: <span class="literal">true</span>)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">didReceiveMemoryWarning</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.didReceiveMemoryWarning()</div><div class="line">        <span class="comment">// Dispose of any resources that can be recreated.</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">startLiveVideo</span><span class="params">()</span></span> &#123;</div><div class="line">        session.sessionPreset = <span class="type">AVCaptureSession</span>.<span class="type">Preset</span>.photo</div><div class="line">        <span class="keyword">let</span> captureDevice = <span class="type">AVCaptureDevice</span>.<span class="keyword">default</span>(<span class="keyword">for</span>: <span class="type">AVMediaType</span>.video)</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> deviceInput = <span class="keyword">try</span>! <span class="type">AVCaptureDeviceInput</span>(device: captureDevice!)</div><div class="line">        <span class="keyword">let</span> deviceOutput = <span class="type">AVCaptureVideoDataOutput</span>()</div><div class="line">        deviceOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey <span class="keyword">as</span> <span class="type">String</span>: <span class="type">Int</span>(kCVPixelFormatType_32BGRA)]</div><div class="line">        deviceOutput.setSampleBufferDelegate(<span class="keyword">self</span>, queue: <span class="type">DispatchQueue</span>.global(qos: <span class="type">DispatchQoS</span>.<span class="type">QoSClass</span>.<span class="keyword">default</span>))</div><div class="line">        session.addInput(deviceInput)</div><div class="line">        session.addOutput(deviceOutput)</div><div class="line">        session.startRunning()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">captureOutput</span><span class="params">(<span class="number">_</span> output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)</span></span> &#123;</div><div class="line">    </div><div class="line">        connection.videoOrientation = <span class="type">AVCaptureVideoOrientation</span>.portrait;</div><div class="line">        updatePreviewImage(sampleBuffer:sampleBuffer)</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">updatePreviewImage</span><span class="params">(sampleBuffer: CMSampleBuffer)</span></span>&#123;</div><div class="line">        <span class="keyword">let</span> imageBuffer: <span class="type">CVPixelBuffer</span> = <span class="type">CMSampleBufferGetImageBuffer</span>(sampleBuffer)!</div><div class="line">        <span class="keyword">let</span> ciimage : <span class="type">CIImage</span> = <span class="type">CIImage</span>(cvPixelBuffer: imageBuffer)</div><div class="line">        previewImage = <span class="keyword">self</span>.convertCIImageToUIImage(cmage: ciimage)</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">convertCIImageToUIImage</span><span class="params">(cmage:CIImage)</span></span> -&gt; <span class="type">UIImage</span> &#123;</div><div class="line">        <span class="keyword">let</span> context:<span class="type">CIContext</span> = <span class="type">CIContext</span>.<span class="keyword">init</span>(options: <span class="literal">nil</span>)</div><div class="line">        <span class="keyword">let</span> cgImage:<span class="type">CGImage</span> = context.createCGImage(cmage, from: cmage.extent)!</div><div class="line">        <span class="keyword">let</span> image:<span class="type">UIImage</span> = <span class="type">UIImage</span>.<span class="keyword">init</span>(cgImage: cgImage, scale: <span class="number">1.0</span>, orientation: <span class="type">UIImageOrientation</span>.<span class="keyword">right</span>)</div><div class="line">        <span class="keyword">return</span> image</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="meta">@objc</span> <span class="function"><span class="keyword">func</span> <span class="title">setPreviewImage</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">let</span> image = <span class="type">ImageConverter</span>.getBinaryImage(previewImage)</div><div class="line">        imageView.image = image</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>session</code>：主要用于处理摄像头的视频流；<br><code>previewImage</code>：用于存储由视频帧（frame）转换得到的 UIImage；<br><code>imageView</code>：用于展示视频的处理结果，这里需要您在 storyboard 中创建一个 UIImageView 控件并与 <code>imageView</code> 建立连接；<br><code>startLiveVideo</code>: 建立并开始摄像头视频流；<br><code>Timer.scheduledTimer</code>：循环调用 <code>setPreviewImage</code> 函数，更新输入图像；<br><code>captureOutput</code>：当摄像头每输出每一帧图像时，该函数即会被调用一次；<br><code>connection.videoOrientation</code>：用于调整视频图像的朝向，我们这里是定为“竖直”方向；<br><code>updatePreviewImage</code>：将获取的 <code>sampleBuffer</code> 转换为 UIImage，保存在 <code>previewImage</code> 中；<br><code>setPreviewImage</code>：将获取的图像经 <code>ImageConverter.convert</code> 二值化处理后，更新到 <code>imageView</code> 中；</p>
+<h1 id="视频处理"><a href="#视频处理" class="headerlink" title="视频处理"></a>视频处理</h1><p>视频图像的处理工作我们主要交由 <code>OpenCVMethods.mm</code> 来完成，代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">// UseOpenCVInSwiftDemo-Bridging-Header.h</div><div class="line">#import &lt;Foundation/Foundation.h&gt;</div><div class="line">#import &lt;UIKit/UIKit.h&gt;</div><div class="line"></div><div class="line">@interface ImageConverter : NSObject</div><div class="line">+(UIImage *)getBinaryImage:(UIImage *)image;</div><div class="line">@end</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">// OpenCVMethods.mm</div><div class="line">#import &lt;opencv2/opencv.hpp&gt;</div><div class="line">#import &lt;opencv2/imgcodecs/ios.h&gt;</div><div class="line">#import &quot;UseOpenCVInSwiftDemo-Bridging-Header.h&quot;</div><div class="line"></div><div class="line">@implementation ImageConverter : NSObject</div><div class="line"></div><div class="line">+(UIImage *)getBinaryImage:(UIImage *)image &#123;</div><div class="line">    cv::Mat mat;</div><div class="line">    UIImageToMat(image, mat);</div><div class="line">    </div><div class="line">    cv::Mat gray;</div><div class="line">    cv::cvtColor(mat, gray, CV_RGB2GRAY);</div><div class="line">    </div><div class="line">    cv::Mat bin;</div><div class="line">    cv::threshold(gray, bin, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);</div><div class="line">    </div><div class="line">    UIImage *binImg = MatToUIImage(bin);</div><div class="line">    return binImg;</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
+<p><code>UseOpenCVInSwiftDemo-Bridging-Header.h</code>：是对 Objective-C++ 类及方法进行定义；<br><code>OpenCVMethods.mm</code>：用于对具体定义的类及方法实现；<br><code>getBinaryImage</code>：实现了对输入图像的二值化处理，方法与 OpenCV 在 C++ 中的使用时一样的，需要注意的是 Mat 与 UIImage 数据类型的转换；  </p>
+<p>至此我们便完成了 OpenCV 在 Swift 中的简单实用过程，接下来 OpenCV 如何在 Swift 中大显身手就任由您的自由发挥了：）</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>通过阅读本篇文章，您应该已经掌握了如何在 Swift 中使用 OpenCV，主要包括：</p>
+<ol>
+<li>OpenCV 载入；</li>
+<li>Objective-C++ 文件及桥接文件添加；</li>
+<li>Swift 中对摄像头图像的获取；</li>
+<li>Swift 中图像处理时与 OpenCV 的交互；</li>
+<li>处理后的图像的简单展示； </li>
+</ol>
+<p>文章使用的项目代码可以在<a href="https://github.com/yangguang2009/opencv_in_swift" target="_blank" rel="external">这里</a>下载。</p>
+<h1 id="更多参考"><a href="#更多参考" class="headerlink" title="更多参考"></a>更多参考</h1><ol>
+<li><a href="https://developer.apple.com/library/content/documentation/Swift/Conceptual/BuildingCocoaApps/MixandMatch.html" target="_blank" rel="external">Swift and Objective-C in the Same Project</a></li>
+<li><a href="https://opencv.org/releases.html" target="_blank" rel="external">OpenCV Releases</a></li>
+<li><a href="https://docs.opencv.org/master/" target="_blank" rel="external">OpenCV 示例文档</a></li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;img src=&quot;/2017/10/16/programming/use-opencv-in-swift/0.gif&quot; alt=&quot;0.gif&quot; title=&quot;&quot;&gt; &lt;br&gt;通过阅读本篇内容您将了解到：&lt;br&gt;- 如何在 iOS 项目项目中添加 OpenCV 库；&lt;br&gt;- Objective-C++ 与 Swift 的结合使用，及桥接文件的添加；&lt;br&gt;- Swift 中对摄像头图像的获取方法及展现；&lt;br&gt;- Swift 与 OpenCV 的交互；&lt;br&gt;
+    
+    </summary>
+    
+      <category term="programming" scheme="http://yoursite.com/categories/programming/"/>
+    
+    
+      <category term="OpenCV" scheme="http://yoursite.com/tags/OpenCV/"/>
+    
+  </entry>
   
   <entry>
     <title>W3 App</title>
@@ -1135,41 +1201,6 @@ if __name__ == '__main__':
 &lt;p&gt;&lt;br/&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;“现今程序员的情况好多了，只要有一台便宜的二手电脑，一张Linux光盘和一个互联网帐户，你就已经拥有了把自己提升到任何级别的编程水平所需的全部工具。”&lt;br&gt;“在信息时代，进入编程领域的壁垒完全不存在了。即使有也是自我强加的。如果你想着手去开发一些全新的东西，你不需要数百万美元的资本。你只需要足够的比萨和健怡可乐存在你的冰箱里，有一台便宜的PC用于工作，以及让你坚持下来的奉献精神。我们睡在地板上。我们跋山涉水。”&lt;br&gt;－约翰·卡马克 &lt;/p&gt;
-&lt;/blockquote&gt;
-    
-    </summary>
-    
-      <category term="《黑客列传》" scheme="http://yoursite.com/categories/%E3%80%8A%E9%BB%91%E5%AE%A2%E5%88%97%E4%BC%A0%E3%80%8B/"/>
-    
-    
-      <category term="黑客" scheme="http://yoursite.com/tags/%E9%BB%91%E5%AE%A2/"/>
-    
-      <category term="传记" scheme="http://yoursite.com/tags/%E4%BC%A0%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《黑客列传》之首卷语</title>
-    <link href="http://yoursite.com/2016/03/12/%E9%BB%91%E5%AE%A2%E5%88%97%E4%BC%A0/%E3%80%8A%E9%BB%91%E5%AE%A2%E5%88%97%E4%BC%A0%E3%80%8B%E4%B9%8B%E9%A6%96%E5%8D%B7%E8%AF%AD/"/>
-    <id>http://yoursite.com/2016/03/12/黑客列传/《黑客列传》之首卷语/</id>
-    <published>2016-03-12T04:16:33.000Z</published>
-    <updated>2016-04-04T15:13:33.000Z</updated>
-    
-    <content type="html"><![CDATA[<img src="/2016/03/12/黑客列传/《黑客列传》之首卷语/0.jpg" alt="0.jpg" title="">
-<p><br></p>
-<blockquote>
-<p>“Every man dies, not every man really lives”<br>（任何人都将会死去，然而并不是每个人都真真正正的活过。）<br>－William Wallace</p>
-</blockquote>
-<a id="more"></a>
-<p>“黑客精神”正像照亮夜空的星辰，璀璨而不耀眼，历久而更显弥新。<br>本系列将与大家一同走近大牛生活，感悟黑客人生。。。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;img src=&quot;/2016/03/12/黑客列传/《黑客列传》之首卷语/0.jpg&quot; alt=&quot;0.jpg&quot; title=&quot;&quot;&gt;
-&lt;p&gt;&lt;br/&gt;&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;“Every man dies, not every man really lives”&lt;br&gt;（任何人都将会死去，然而并不是每个人都真真正正的活过。）&lt;br&gt;－William Wallace&lt;/p&gt;
 &lt;/blockquote&gt;
     
     </summary>

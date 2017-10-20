@@ -1,0 +1,824 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="OpenCV," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="业精于勤，行成于思" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0" />
+
+
+
+
+
+
+<meta name="description" content="通过阅读本篇内容您将了解到：- 如何在 iOS 项目项目中添加 OpenCV 库；- Objective-C++ 与 Swift 的结合使用，及桥接文件的添加；- Swift 中对摄像头图像的获取方法及展现；- Swift 与 OpenCV 的交互；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在 Swift 中使用 OpenCV">
+<meta property="og:url" content="http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/index.html">
+<meta property="og:site_name" content="业精于勤，行成于思">
+<meta property="og:description" content="通过阅读本篇内容您将了解到：- 如何在 iOS 项目项目中添加 OpenCV 库；- Objective-C++ 与 Swift 的结合使用，及桥接文件的添加；- Swift 中对摄像头图像的获取方法及展现；- Swift 与 OpenCV 的交互；">
+<meta property="og:image" content="http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/0.gif">
+<meta property="og:image" content="http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/1.png">
+<meta property="og:image" content="http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/2.png">
+<meta property="og:image" content="http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/3.png">
+<meta property="og:updated_time" content="2017-10-20T13:59:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在 Swift 中使用 OpenCV">
+<meta name="twitter:description" content="通过阅读本篇内容您将了解到：- 如何在 iOS 项目项目中添加 OpenCV 库；- Objective-C++ 与 Swift 的结合使用，及桥接文件的添加；- Swift 中对摄像头图像的获取方法及展现；- Swift 与 OpenCV 的交互；">
+<meta name="twitter:image" content="http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/0.gif">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: 'Author'
+    }
+  };
+</script>
+
+  <title> 在 Swift 中使用 OpenCV | 业精于勤，行成于思 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">业精于勤，行成于思</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-user fa-fw"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                在 Swift 中使用 OpenCV
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2017-10-16T20:00:17+08:00" content="2017-10-16">
+              2017-10-16
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/programming/" itemprop="url" rel="index">
+                    <span itemprop="name">programming</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <img src="/2017/10/16/programming/use-opencv-in-swift/0.gif" alt="0.gif" title=""> <br>通过阅读本篇内容您将了解到：<br>- 如何在 iOS 项目项目中添加 OpenCV 库；<br>- Objective-C++ 与 Swift 的结合使用，及桥接文件的添加；<br>- Swift 中对摄像头图像的获取方法及展现；<br>- Swift 与 OpenCV 的交互；<br><a id="more"></a>
+<h1 id="环境介绍"><a href="#环境介绍" class="headerlink" title="环境介绍"></a>环境介绍</h1><ol>
+<li>Xcode 9.0;</li>
+<li>Swift 4.0;</li>
+<li>OpenCV iOS pack 3.3.0;</li>
+</ol>
+<h1 id="OpenCV-Package-添加"><a href="#OpenCV-Package-添加" class="headerlink" title="OpenCV Package 添加"></a>OpenCV Package 添加</h1><p>OpenCV Package 可以通过以下两种方式添加到 iOS 项目当中：</p>
+<ol>
+<li><p>使用 <a href="https://cocoapods.org/" target="_blank" rel="external">CocoaPods</a> 添加<br>Profile 中添加 OpenCV：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">target &apos;OpenCVTest&apos; do</div><div class="line">  use_frameworks!</div><div class="line">  pod &apos;OpenCV&apos;</div><div class="line">end</div></pre></td></tr></table></figure>
+</li>
+<li><p>直接下载<br>在官网的 <a href="https://opencv.org/releases.html" target="_blank" rel="external">Releases</a> 列表中直接下载相应版本的 iOS pack。<br>解压下载后的 zip 文件，得到一个 opencv2.framework 库，右键点击项目选择添加文件，进行添加即可：</p>
+<img src="/2017/10/16/programming/use-opencv-in-swift/1.png" alt="1.png" title="">
+<p>同时在 <code>Project／General／Linked Frameworks and Libraies</code> 中也请添加一份 opencv2.framework。<br>这里需要注意的是请不要以直接拖拽的方式添加，容易产生找不到<code>opencv2/opencv.hpp file not found</code>的错误。<br>以上是两种简单的添加 OpenCV 的方法。</p>
+</li>
+</ol>
+<p>需要注意的是如果在编译时产生如下错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">Undefined symbols for architecture arm64:</div><div class="line">  &quot;_OBJC_CLASS_$_ALAssetsLibrary&quot;, referenced from:</div><div class="line">      objc-class-ref in opencv2(cap_ios_video_camera.o)</div><div class="line">  &quot;_CMSampleBufferGetPresentationTimeStamp&quot;, referenced from:</div><div class="line">      -[CvVideoCamera captureOutput:didOutputSampleBuffer:fromConnection:] in opencv2(cap_ios_video_camera.o)</div><div class="line">  &quot;_CMTimeMake&quot;, referenced from:</div><div class="line">      -[CvVideoCamera createVideoDataOutput] in opencv2(cap_ios_video_camera.o)</div><div class="line">  &quot;_CMSampleBufferGetImageBuffer&quot;, referenced from:</div><div class="line">      -[CaptureDelegate captureOutput:didOutputSampleBuffer:fromConnection:] in opencv2(cap_avfoundation.o)</div><div class="line">      -[CvVideoCamera captureOutput:didOutputSampleBuffer:fromConnection:] in opencv2(cap_ios_video_camera.o)</div><div class="line">ld: symbol(s) not found for architecture arm64</div><div class="line">clang: error: linker command failed with exit code 1 (use -v to see invocation)</div></pre></td></tr></table></figure></p>
+<p>或<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">Undefined symbols for architecture arm64:</div><div class="line">  &quot;cv::String::deallocate()&quot;, referenced from:</div><div class="line">      cv::String::~String() in OpenCVMethods.o</div><div class="line">      cv::String::operator=(cv::String const&amp;) in OpenCVMethods.o</div><div class="line">  &quot;cv::fastFree(void*)&quot;, referenced from:</div><div class="line">      cv::Mat::~Mat() in OpenCVMethods.o</div><div class="line">  &quot;UIImageToMat(UIImage const*, cv::Mat&amp;, bool)&quot;, referenced from:</div><div class="line">      +[ImageConverter getBinaryImage:] in OpenCVMethods.o</div><div class="line">  &quot;cv::Mat::deallocate()&quot;, referenced from:</div><div class="line">      cv::Mat::release() in OpenCVMethods.o</div><div class="line">  &quot;cv::cvtColor(cv::_InputArray const&amp;, cv::_OutputArray const&amp;, int, int)&quot;, referenced from:</div><div class="line">      +[ImageConverter getBinaryImage:] in OpenCVMethods.o</div><div class="line">  &quot;cv::threshold(cv::_InputArray const&amp;, cv::_OutputArray const&amp;, double, double, int)&quot;, referenced from:</div><div class="line">      +[ImageConverter getBinaryImage:] in OpenCVMethods.o</div><div class="line">  &quot;MatToUIImage(cv::Mat const&amp;)&quot;, referenced from:</div><div class="line">      +[ImageConverter getBinaryImage:] in OpenCVMethods.o</div><div class="line">ld: symbol(s) not found for architecture arm64</div><div class="line">clang: error: linker command failed with exit code 1 (use -v to see invocation)</div></pre></td></tr></table></figure></p>
+<p>请在项目中再添加以下 framework 即可解决：<br><code>AssetsLibrary.framework</code>、<code>CoreMedia.framework</code>、<code>CoreVideo.framework</code>。<br>具体添加方法：<code>Project／General／Linked Frameworks and Libraies</code>：<img src="/2017/10/16/programming/use-opencv-in-swift/2.png" alt="2.png" title=""></p>
+<h1 id="OpenCV-使用准备"><a href="#OpenCV-使用准备" class="headerlink" title="OpenCV 使用准备"></a>OpenCV 使用准备</h1><p>我们添加的 OpenCV 是由 C++ 编码的，在 Swift 中可以通过添加 Objective-C++ 文件实现对 OpenCV 的使用。<br>原理示意如下：<br><img src="/2017/10/16/programming/use-opencv-in-swift/3.png" alt="3.png" title=""><br>具体步骤：</p>
+<ol>
+<li>添加一个 Objective-C 文件到项目中，这里命名为 OpenCVMethods（如果有自动提示是否添加 Bridging-Header 文件的话，选择添加。如果没有提示，则由第2步进行手动添加），将文件扩展名“m”改为“mm”。</li>
+<li>手动添加一个 Bridging-Header 文件：在添加一个头文件（Header file），重命名为“项目名-Bridging-Header.h”（本例中为：UseOpenCVInSwiftDemo-Bridging-Header.h）。</li>
+</ol>
+<h1 id="视频获取"><a href="#视频获取" class="headerlink" title="视频获取"></a>视频获取</h1><p>我们将在 <code>ViewController.swift</code> 中实现视频获取及展现的主要功能逻辑，视频处理主要在 <code>OpenCVMethods.mm</code> 由 OpenCV 完成。<br>下面是 <code>ViewController.swift</code> 中对视频获取及展现的实现代码：<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// ViewController.swift</span></div><div class="line"><span class="keyword">import</span> UIKit</div><div class="line"><span class="keyword">import</span> AVFoundation</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span>, <span class="title">AVCaptureVideoDataOutputSampleBufferDelegate</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">var</span> session = <span class="type">AVCaptureSession</span>()</div><div class="line">    <span class="keyword">var</span> previewImage = <span class="type">UIImage</span>()</div><div class="line">    <span class="meta">@IBOutlet</span> <span class="keyword">weak</span> <span class="keyword">var</span> imageView: <span class="type">UIImageView</span>!</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.viewDidLoad()</div><div class="line">        </div><div class="line">        startLiveVideo()</div><div class="line">        <span class="number">_</span> = <span class="type">Timer</span>.scheduledTimer(timeInterval: <span class="number">0.1</span>, target: <span class="keyword">self</span>, selector: #selector(<span class="keyword">self</span>.setPreviewImage), userInfo: <span class="literal">nil</span>, repeats: <span class="literal">true</span>)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">didReceiveMemoryWarning</span><span class="params">()</span></span> &#123;</div><div class="line">        <span class="keyword">super</span>.didReceiveMemoryWarning()</div><div class="line">        <span class="comment">// Dispose of any resources that can be recreated.</span></div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">startLiveVideo</span><span class="params">()</span></span> &#123;</div><div class="line">        session.sessionPreset = <span class="type">AVCaptureSession</span>.<span class="type">Preset</span>.photo</div><div class="line">        <span class="keyword">let</span> captureDevice = <span class="type">AVCaptureDevice</span>.<span class="keyword">default</span>(<span class="keyword">for</span>: <span class="type">AVMediaType</span>.video)</div><div class="line">        </div><div class="line">        <span class="keyword">let</span> deviceInput = <span class="keyword">try</span>! <span class="type">AVCaptureDeviceInput</span>(device: captureDevice!)</div><div class="line">        <span class="keyword">let</span> deviceOutput = <span class="type">AVCaptureVideoDataOutput</span>()</div><div class="line">        deviceOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey <span class="keyword">as</span> <span class="type">String</span>: <span class="type">Int</span>(kCVPixelFormatType_32BGRA)]</div><div class="line">        deviceOutput.setSampleBufferDelegate(<span class="keyword">self</span>, queue: <span class="type">DispatchQueue</span>.global(qos: <span class="type">DispatchQoS</span>.<span class="type">QoSClass</span>.<span class="keyword">default</span>))</div><div class="line">        session.addInput(deviceInput)</div><div class="line">        session.addOutput(deviceOutput)</div><div class="line">        session.startRunning()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">captureOutput</span><span class="params">(<span class="number">_</span> output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)</span></span> &#123;</div><div class="line">    </div><div class="line">        connection.videoOrientation = <span class="type">AVCaptureVideoOrientation</span>.portrait;</div><div class="line">        updatePreviewImage(sampleBuffer:sampleBuffer)</div><div class="line">        </div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">updatePreviewImage</span><span class="params">(sampleBuffer: CMSampleBuffer)</span></span>&#123;</div><div class="line">        <span class="keyword">let</span> imageBuffer: <span class="type">CVPixelBuffer</span> = <span class="type">CMSampleBufferGetImageBuffer</span>(sampleBuffer)!</div><div class="line">        <span class="keyword">let</span> ciimage : <span class="type">CIImage</span> = <span class="type">CIImage</span>(cvPixelBuffer: imageBuffer)</div><div class="line">        previewImage = <span class="keyword">self</span>.convertCIImageToUIImage(cmage: ciimage)</div><div class="line"></div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">func</span> <span class="title">convertCIImageToUIImage</span><span class="params">(cmage:CIImage)</span></span> -&gt; <span class="type">UIImage</span> &#123;</div><div class="line">        <span class="keyword">let</span> context:<span class="type">CIContext</span> = <span class="type">CIContext</span>.<span class="keyword">init</span>(options: <span class="literal">nil</span>)</div><div class="line">        <span class="keyword">let</span> cgImage:<span class="type">CGImage</span> = context.createCGImage(cmage, from: cmage.extent)!</div><div class="line">        <span class="keyword">let</span> image:<span class="type">UIImage</span> = <span class="type">UIImage</span>.<span class="keyword">init</span>(cgImage: cgImage, scale: <span class="number">1.0</span>, orientation: <span class="type">UIImageOrientation</span>.<span class="keyword">right</span>)</div><div class="line">        <span class="keyword">return</span> image</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="meta">@objc</span> <span class="function"><span class="keyword">func</span> <span class="title">setPreviewImage</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="keyword">let</span> image = <span class="type">ImageConverter</span>.getBinaryImage(previewImage)</div><div class="line">        imageView.image = image</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>session</code>：主要用于处理摄像头的视频流；<br><code>previewImage</code>：用于存储由视频帧（frame）转换得到的 UIImage；<br><code>imageView</code>：用于展示视频的处理结果，这里需要您在 storyboard 中创建一个 UIImageView 控件并与 <code>imageView</code> 建立连接；<br><code>startLiveVideo</code>: 建立并开始摄像头视频流；<br><code>Timer.scheduledTimer</code>：循环调用 <code>setPreviewImage</code> 函数，更新输入图像；<br><code>captureOutput</code>：当摄像头每输出每一帧图像时，该函数即会被调用一次；<br><code>connection.videoOrientation</code>：用于调整视频图像的朝向，我们这里是定为“竖直”方向；<br><code>updatePreviewImage</code>：将获取的 <code>sampleBuffer</code> 转换为 UIImage，保存在 <code>previewImage</code> 中；<br><code>setPreviewImage</code>：将获取的图像经 <code>ImageConverter.convert</code> 二值化处理后，更新到 <code>imageView</code> 中；</p>
+<h1 id="视频处理"><a href="#视频处理" class="headerlink" title="视频处理"></a>视频处理</h1><p>视频图像的处理工作我们主要交由 <code>OpenCVMethods.mm</code> 来完成，代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">// UseOpenCVInSwiftDemo-Bridging-Header.h</div><div class="line">#import &lt;Foundation/Foundation.h&gt;</div><div class="line">#import &lt;UIKit/UIKit.h&gt;</div><div class="line"></div><div class="line">@interface ImageConverter : NSObject</div><div class="line">+(UIImage *)getBinaryImage:(UIImage *)image;</div><div class="line">@end</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">// OpenCVMethods.mm</div><div class="line">#import &lt;opencv2/opencv.hpp&gt;</div><div class="line">#import &lt;opencv2/imgcodecs/ios.h&gt;</div><div class="line">#import &quot;UseOpenCVInSwiftDemo-Bridging-Header.h&quot;</div><div class="line"></div><div class="line">@implementation ImageConverter : NSObject</div><div class="line"></div><div class="line">+(UIImage *)getBinaryImage:(UIImage *)image &#123;</div><div class="line">    cv::Mat mat;</div><div class="line">    UIImageToMat(image, mat);</div><div class="line">    </div><div class="line">    cv::Mat gray;</div><div class="line">    cv::cvtColor(mat, gray, CV_RGB2GRAY);</div><div class="line">    </div><div class="line">    cv::Mat bin;</div><div class="line">    cv::threshold(gray, bin, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);</div><div class="line">    </div><div class="line">    UIImage *binImg = MatToUIImage(bin);</div><div class="line">    return binImg;</div><div class="line">&#125;</div><div class="line">@end</div></pre></td></tr></table></figure>
+<p><code>UseOpenCVInSwiftDemo-Bridging-Header.h</code>：是对 Objective-C++ 类及方法进行定义；<br><code>OpenCVMethods.mm</code>：用于对具体定义的类及方法实现；<br><code>getBinaryImage</code>：实现了对输入图像的二值化处理，方法与 OpenCV 在 C++ 中的使用时一样的，需要注意的是 Mat 与 UIImage 数据类型的转换；  </p>
+<p>至此我们便完成了 OpenCV 在 Swift 中的简单实用过程，接下来 OpenCV 如何在 Swift 中大显身手就任由您的自由发挥了：）</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>通过阅读本篇文章，您应该已经掌握了如何在 Swift 中使用 OpenCV，主要包括：</p>
+<ol>
+<li>OpenCV 载入；</li>
+<li>Objective-C++ 文件及桥接文件添加；</li>
+<li>Swift 中对摄像头图像的获取；</li>
+<li>Swift 中图像处理时与 OpenCV 的交互；</li>
+<li>处理后的图像的简单展示； </li>
+</ol>
+<p>文章使用的项目代码可以在<a href="https://github.com/yangguang2009/opencv_in_swift" target="_blank" rel="external">这里</a>下载。</p>
+<h1 id="更多参考"><a href="#更多参考" class="headerlink" title="更多参考"></a>更多参考</h1><ol>
+<li><a href="https://developer.apple.com/library/content/documentation/Swift/Conceptual/BuildingCocoaApps/MixandMatch.html" target="_blank" rel="external">Swift and Objective-C in the Same Project</a></li>
+<li><a href="https://opencv.org/releases.html" target="_blank" rel="external">OpenCV Releases</a></li>
+<li><a href="https://docs.opencv.org/master/" target="_blank" rel="external">OpenCV 示例文档</a></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+<! -- 添加捐赠图标 -->
+    
+    
+
+    <div class ="post-donate">
+      <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="Donate 打赏"></a>
+        <span class="donate_txt">
+           &uarr;<br>
+           
+            豪赏本篇文章（¥ 0.99）
+           
+        </span>
+        <br>
+      </div>
+
+      <div id="donate_guide" class="donate_bar center hidden">
+        
+
+      
+       <a href="/images/wechat.png" title="微信打赏（¥ 0.99）" class="fancybox" rel="article0">
+         <img src="/images/wechat.png" title="微信打赏（¥ 0.99）" height="164px" width="164px">
+       </a>
+      
+
+      </div>
+
+      <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+          $('#donate_board').addClass('hidden');
+          $('#donate_guide').removeClass('hidden');
+        }
+      </script>
+    </div>
+
+    
+
+<! -- end 添加捐赠图标 --> 
+
+      
+        <div class="post-tags">
+          
+            <a href="/tags/OpenCV/" rel="tag">#OpenCV</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/27/others/W3school-App/" rel="next" title="W3 App">
+                <i class="fa fa-chevron-left"></i> W3 App
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/default_avatar.jpg"
+               alt="Yangguang" />
+          <p class="site-author-name" itemprop="name">Yangguang</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yangguang2009" target="_blank">
+                  
+                    <i class="fa fa-github"></i> GitHub
+                  
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://stackoverflow.com/users/4869784/yangguang" target="_blank">
+                  
+                    <i class="fa fa-stackoverflow"></i> Stackoverflow
+                  
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#环境介绍"><span class="nav-number">1.</span> <span class="nav-text">环境介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#OpenCV-Package-添加"><span class="nav-number">2.</span> <span class="nav-text">OpenCV Package 添加</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#OpenCV-使用准备"><span class="nav-number">3.</span> <span class="nav-text">OpenCV 使用准备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#视频获取"><span class="nav-number">4.</span> <span class="nav-text">视频获取</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#视频处理"><span class="nav-number">5.</span> <span class="nav-text">视频处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#更多参考"><span class="nav-number">7.</span> <span class="nav-text">更多参考</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Yangguang</span>
+</div>
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.scheme !== 'Pisces' && (CONFIG.sidebar.display === 'post' || CONFIG.sidebar.display === 'always')) {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+  
+
+  
+
+
+</body>
+</html>
