@@ -69,7 +69,7 @@
 <meta property="og:image" content="http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/1.png">
 <meta property="og:image" content="http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/2.png">
 <meta property="og:image" content="http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/3.png">
-<meta property="og:updated_time" content="2017-10-20T13:59:31.000Z">
+<meta property="og:updated_time" content="2017-10-21T03:07:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="在 Swift 中使用 OpenCV">
 <meta name="twitter:description" content="通过阅读本篇内容您将了解到：- 如何在 iOS 项目项目中添加 OpenCV 库；- Objective-C++ 与 Swift 的结合使用，及桥接文件的添加；- Swift 中对摄像头图像的获取方法及展现；- Swift 与 OpenCV 的交互；">
@@ -257,8 +257,8 @@
               <span class="post-meta-item-text">In</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/programming/" itemprop="url" rel="index">
-                    <span itemprop="name">programming</span>
+                  <a href="/categories/Programming/" itemprop="url" rel="index">
+                    <span itemprop="name">Programming</span>
                   </a>
                 </span>
 
@@ -298,7 +298,7 @@
 <h1 id="OpenCV-Package-添加"><a href="#OpenCV-Package-添加" class="headerlink" title="OpenCV Package 添加"></a>OpenCV Package 添加</h1><p>OpenCV Package 可以通过以下两种方式添加到 iOS 项目当中：</p>
 <ol>
 <li><p>使用 <a href="https://cocoapods.org/" target="_blank" rel="external">CocoaPods</a> 添加<br>Profile 中添加 OpenCV：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">target &apos;OpenCVTest&apos; do</div><div class="line">  use_frameworks!</div><div class="line">  pod &apos;OpenCV&apos;</div><div class="line">end</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">target &apos;UseOpenCVInSwiftDemo&apos; do</div><div class="line">  use_frameworks!</div><div class="line">  pod &apos;OpenCV&apos;</div><div class="line">end</div></pre></td></tr></table></figure>
 </li>
 <li><p>直接下载<br>在官网的 <a href="https://opencv.org/releases.html" target="_blank" rel="external">Releases</a> 列表中直接下载相应版本的 iOS pack。<br>解压下载后的 zip 文件，得到一个 opencv2.framework 库，右键点击项目选择添加文件，进行添加即可：</p>
 <img src="/2017/10/16/programming/use-opencv-in-swift/1.png" alt="1.png" title="">
@@ -306,7 +306,6 @@
 </li>
 </ol>
 <p>需要注意的是如果在编译时产生如下错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">Undefined symbols for architecture arm64:</div><div class="line">  &quot;_OBJC_CLASS_$_ALAssetsLibrary&quot;, referenced from:</div><div class="line">      objc-class-ref in opencv2(cap_ios_video_camera.o)</div><div class="line">  &quot;_CMSampleBufferGetPresentationTimeStamp&quot;, referenced from:</div><div class="line">      -[CvVideoCamera captureOutput:didOutputSampleBuffer:fromConnection:] in opencv2(cap_ios_video_camera.o)</div><div class="line">  &quot;_CMTimeMake&quot;, referenced from:</div><div class="line">      -[CvVideoCamera createVideoDataOutput] in opencv2(cap_ios_video_camera.o)</div><div class="line">  &quot;_CMSampleBufferGetImageBuffer&quot;, referenced from:</div><div class="line">      -[CaptureDelegate captureOutput:didOutputSampleBuffer:fromConnection:] in opencv2(cap_avfoundation.o)</div><div class="line">      -[CvVideoCamera captureOutput:didOutputSampleBuffer:fromConnection:] in opencv2(cap_ios_video_camera.o)</div><div class="line">ld: symbol(s) not found for architecture arm64</div><div class="line">clang: error: linker command failed with exit code 1 (use -v to see invocation)</div></pre></td></tr></table></figure></p>
-<p>或<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">Undefined symbols for architecture arm64:</div><div class="line">  &quot;cv::String::deallocate()&quot;, referenced from:</div><div class="line">      cv::String::~String() in OpenCVMethods.o</div><div class="line">      cv::String::operator=(cv::String const&amp;) in OpenCVMethods.o</div><div class="line">  &quot;cv::fastFree(void*)&quot;, referenced from:</div><div class="line">      cv::Mat::~Mat() in OpenCVMethods.o</div><div class="line">  &quot;UIImageToMat(UIImage const*, cv::Mat&amp;, bool)&quot;, referenced from:</div><div class="line">      +[ImageConverter getBinaryImage:] in OpenCVMethods.o</div><div class="line">  &quot;cv::Mat::deallocate()&quot;, referenced from:</div><div class="line">      cv::Mat::release() in OpenCVMethods.o</div><div class="line">  &quot;cv::cvtColor(cv::_InputArray const&amp;, cv::_OutputArray const&amp;, int, int)&quot;, referenced from:</div><div class="line">      +[ImageConverter getBinaryImage:] in OpenCVMethods.o</div><div class="line">  &quot;cv::threshold(cv::_InputArray const&amp;, cv::_OutputArray const&amp;, double, double, int)&quot;, referenced from:</div><div class="line">      +[ImageConverter getBinaryImage:] in OpenCVMethods.o</div><div class="line">  &quot;MatToUIImage(cv::Mat const&amp;)&quot;, referenced from:</div><div class="line">      +[ImageConverter getBinaryImage:] in OpenCVMethods.o</div><div class="line">ld: symbol(s) not found for architecture arm64</div><div class="line">clang: error: linker command failed with exit code 1 (use -v to see invocation)</div></pre></td></tr></table></figure></p>
 <p>请在项目中再添加以下 framework 即可解决：<br><code>AssetsLibrary.framework</code>、<code>CoreMedia.framework</code>、<code>CoreVideo.framework</code>。<br>具体添加方法：<code>Project／General／Linked Frameworks and Libraies</code>：<img src="/2017/10/16/programming/use-opencv-in-swift/2.png" alt="2.png" title=""></p>
 <h1 id="OpenCV-使用准备"><a href="#OpenCV-使用准备" class="headerlink" title="OpenCV 使用准备"></a>OpenCV 使用准备</h1><p>我们添加的 OpenCV 是由 C++ 编码的，在 Swift 中可以通过添加 Objective-C++ 文件实现对 OpenCV 的使用。<br>原理示意如下：<br><img src="/2017/10/16/programming/use-opencv-in-swift/3.png" alt="3.png" title=""><br>具体步骤：</p>
 <ol>
@@ -477,7 +476,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">categories</span>
               </a>
             </div>
