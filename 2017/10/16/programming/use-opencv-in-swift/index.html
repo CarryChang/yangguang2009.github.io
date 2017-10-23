@@ -66,10 +66,9 @@
 <meta property="og:site_name" content="业精于勤，行成于思">
 <meta property="og:description" content="通过阅读本篇内容您将了解到：- 如何在 iOS 项目项目中添加 OpenCV 库；- Objective-C++ 与 Swift 的结合使用，及桥接文件的添加；- Swift 中对摄像头图像的获取方法及展现；- Swift 与 OpenCV 的交互；">
 <meta property="og:image" content="http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/0.gif">
-<meta property="og:image" content="http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/1.png">
 <meta property="og:image" content="http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/2.png">
 <meta property="og:image" content="http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/3.png">
-<meta property="og:updated_time" content="2017-10-21T03:07:49.000Z">
+<meta property="og:updated_time" content="2017-10-23T13:15:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="在 Swift 中使用 OpenCV">
 <meta name="twitter:description" content="通过阅读本篇内容您将了解到：- 如何在 iOS 项目项目中添加 OpenCV 库；- Objective-C++ 与 Swift 的结合使用，及桥接文件的添加；- Swift 中对摄像头图像的获取方法及展现；- Swift 与 OpenCV 的交互；">
@@ -300,9 +299,7 @@
 <li><p>使用 <a href="https://cocoapods.org/" target="_blank" rel="external">CocoaPods</a> 添加<br>Profile 中添加 OpenCV：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">target &apos;UseOpenCVInSwiftDemo&apos; do</div><div class="line">  use_frameworks!</div><div class="line">  pod &apos;OpenCV&apos;</div><div class="line">end</div></pre></td></tr></table></figure>
 </li>
-<li><p>直接下载<br>在官网的 <a href="https://opencv.org/releases.html" target="_blank" rel="external">Releases</a> 列表中直接下载相应版本的 iOS pack。<br>解压下载后的 zip 文件，得到一个 opencv2.framework 库，右键点击项目选择添加文件，进行添加即可：</p>
-<img src="/2017/10/16/programming/use-opencv-in-swift/1.png" alt="1.png" title="">
-<p>同时在 <code>Project／General／Linked Frameworks and Libraies</code> 中也请添加一份 opencv2.framework。<br>这里需要注意的是请不要以直接拖拽的方式添加，容易产生找不到<code>opencv2/opencv.hpp file not found</code>的错误。<br>以上是两种简单的添加 OpenCV 的方法。</p>
+<li><p>直接下载<br>在官网的 <a href="https://opencv.org/releases.html" target="_blank" rel="external">Releases</a> 列表中直接下载相应版本的 iOS pack。<br>解压下载后的 zip 文件，得到一个 opencv2.framework 库，右键点击项目选择添加文件，进行添加即可：<br>这里需要注意的是请不要以直接拖拽的方式添加，容易产生找不到<code>opencv2/opencv.hpp file not found</code>的错误。<br>以上是两种简单的添加 OpenCV 的方法。</p>
 </li>
 </ol>
 <p>需要注意的是如果在编译时产生如下错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">Undefined symbols for architecture arm64:</div><div class="line">  &quot;_OBJC_CLASS_$_ALAssetsLibrary&quot;, referenced from:</div><div class="line">      objc-class-ref in opencv2(cap_ios_video_camera.o)</div><div class="line">  &quot;_CMSampleBufferGetPresentationTimeStamp&quot;, referenced from:</div><div class="line">      -[CvVideoCamera captureOutput:didOutputSampleBuffer:fromConnection:] in opencv2(cap_ios_video_camera.o)</div><div class="line">  &quot;_CMTimeMake&quot;, referenced from:</div><div class="line">      -[CvVideoCamera createVideoDataOutput] in opencv2(cap_ios_video_camera.o)</div><div class="line">  &quot;_CMSampleBufferGetImageBuffer&quot;, referenced from:</div><div class="line">      -[CaptureDelegate captureOutput:didOutputSampleBuffer:fromConnection:] in opencv2(cap_avfoundation.o)</div><div class="line">      -[CvVideoCamera captureOutput:didOutputSampleBuffer:fromConnection:] in opencv2(cap_ios_video_camera.o)</div><div class="line">ld: symbol(s) not found for architecture arm64</div><div class="line">clang: error: linker command failed with exit code 1 (use -v to see invocation)</div></pre></td></tr></table></figure></p>
