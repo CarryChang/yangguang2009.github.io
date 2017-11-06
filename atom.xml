@@ -67,26 +67,6 @@
   </entry>
   
   <entry>
-    <title>Transfer Matrix Method 介绍</title>
-    <link href="http://yoursite.com/2017/10/30/algorithm/the-transfer-matrix-method/"/>
-    <id>http://yoursite.com/2017/10/30/algorithm/the-transfer-matrix-method/</id>
-    <published>2017-10-30T05:34:33.000Z</published>
-    <updated>2017-11-06T13:35:20.000Z</updated>
-    
-    <summary type="html">
-    
-    </summary>
-    
-      <category term="Algorithm" scheme="http://yoursite.com/categories/Algorithm/"/>
-    
-    
-      <category term="Math" scheme="http://yoursite.com/tags/Math/"/>
-    
-      <category term="Matrix" scheme="http://yoursite.com/tags/Matrix/"/>
-    
-  </entry>
-  
-  <entry>
     <title>在 Swift 中使用 OpenCV</title>
     <link href="http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/"/>
     <id>http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/</id>
@@ -1149,6 +1129,70 @@ if __name__ == '__main__':
       <category term="iOS" scheme="http://yoursite.com/tags/iOS/"/>
     
       <category term="App" scheme="http://yoursite.com/tags/App/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>《黑客列传》之互联网之子－Aaron Swartz</title>
+    <link href="http://yoursite.com/2016/03/15/%E9%BB%91%E5%AE%A2%E5%88%97%E4%BC%A0/%E3%80%8A%E9%BB%91%E5%AE%A2%E5%88%97%E4%BC%A0%E3%80%8B%E4%B9%8B%E4%BA%92%E8%81%94%E7%BD%91%E4%B9%8B%E5%AD%90%EF%BC%8DAaron-Swartz/"/>
+    <id>http://yoursite.com/2016/03/15/黑客列传/《黑客列传》之互联网之子－Aaron-Swartz/</id>
+    <published>2016-03-15T11:53:47.000Z</published>
+    <updated>2016-04-04T14:32:58.000Z</updated>
+    
+    <content type="html"><![CDATA[<img src="/2016/03/15/黑客列传/《黑客列传》之互联网之子－Aaron-Swartz/profile.jpg" alt="profile.jpg" title="">
+<p><br></p>
+<blockquote>
+<p>“你真的应该每时每刻都问自己，现在这世界有什么最重要的事是我能参与去做的？如果你没在做那最重要的事，那又是为什么？”<br>－亚伦·斯沃茨</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="大牛简介"><a href="#大牛简介" class="headerlink" title="大牛简介"></a>大牛简介</h1><p>亚伦·斯沃茨（Aaron Hillel Swartz，1986年11月8日－2013年1月11日），软件工程师、作家、政治组织者、互联网活动家、维基百科人。参与开发或制定了RSS、Markdown、知识共享（Creative Commons)、Web.py框架、Reddit，万维网联盟的资源描述框架工作组 (W3C)成员，撰写了RFC，定义了RDF及XML的网际网路媒体类型，创办了求进会（Demand Progress），协助创办了渐进社会变革活动委员会（Progressive Change Campaign Committee）。 </p>
+<h1 id="大牛足迹"><a href="#大牛足迹" class="headerlink" title="大牛足迹"></a>大牛足迹</h1><p>斯沃茨出生在美国芝加哥的伊利诺伊州一个犹太家庭，他是三兄弟里面最大的。斯沃茨的爷爷经营一个广告牌制作公司，后来斯沃茨的爸爸接手发展成一个小型软件公司，因此他家里总是会有电脑。经斯沃茨回忆说那时他们镇里没什么好玩的，所以斯沃茨就经常在家玩电脑。大概是在1992年的时候，斯沃茨家接入了互联网，从那时开始斯沃茨每天大部分的时间基本都是花在了网络上－写邮件、逛讨论组、浏览网页。斯沃茨上学的地方距家大概有六英里多远，而离同学家也并不近，因此，斯沃茨基本上就是在网上交朋友。在斯沃茨12岁那年，他爸爸带上他出差去了一趟麻省理工。斯沃茨一整天都待在了Philip Greenspun教授的堂课里面，听Philip Greenspun教授讲解制作网络应用的规范原则。听完课以后，斯沃茨很激动，迫不及待地回到家尝试大干一场。他最先做了一个所有人都能编辑的线上百科全书，但可惜的是除了斯沃茨的妈妈和一些学校的朋友以外，就没人在上面写东西了。然后他做了第二件东西，就是可以聚合很多网站上面的新闻到一个网页上。这在当时是件比较难实现的事情，因为每个网站都有自己特别的格式，需要针对每一个不同的网站专门设计程序来抓取新闻。而当时正好有一帮人在计划建立一种标准格式，以期实现只需要一个工具就可以抓不同网站的新闻。很自然地斯沃茨开始了与他们的联系。作为一个小孩斯沃茨当时有大把的空余时间，主动负责的工作也越来越多，这样14岁的斯沃茨成为了RSS 1.0 开发组的一员。后来，他又和 John Gruber一起开发了Markdown。15岁时斯沃茨进入了W3C的 RDF 核心工作组，并写了RFC3870（这个文档描述了一个新的media type – “RDF/XML“，用于定义互联网上的“语义网络”）。17岁斯沃茨进入了斯坦福大学，1年半后，因为受不了教条式的教育决定退学。同年斯沃茨通过Y Combinator公司的夏季创办人计划成立Infogami软件公司，在那里，他设想了一个Wiki平台来实现他的Internet Open Library（一个开放的网络图书馆），并写了著名的web.py 开发框架。他觉得自己太年轻，还要有一个合伙人，于是Y Combinator建议他和Reddit合并，于是斯沃茨19岁的时候成了Reddit的创始人。虽然Reddit不挣钱，但是相当火。2006年10月，在斯沃茨20岁的时候，他们把Reddit卖给了康泰纳仕出版社（Condé Nast），据说挣到了百万美金。之后斯沃茨与他的公司搬到了旧金山，在康泰纳仕出版社其下的连接杂志工作。后来由于斯沃茨对公司越来越不满，2007年1月，他辞去了在出版社的职位，同年的9月，斯沃茨与好友西蒙·卡斯特森推出了一个免费的wiki技术工具－Jottit。 </p>
+<p>在互联网时代，斯沃茨被支持者称为“罗宾汉”，和维基解密的阿桑奇一样，享有绿林好汉般的荣誉，或者说，他们都在用破坏性的方式做对的事情。斯沃茨从青少年时期起，就不懈地反抗网络审查，呼吁资源共享和信息交换自由。他在博客里写过，“我总是深入思考，同时希望别人也能这么做、我为理想（观念）而工作。我是个完美主义者。我不会浪费时间在那些不会有影响的事情上。我讨厌人们不把我当回事。我从自身经历中学习，我想让世界变得更美好。“斯沃茨是非常喜欢开放共享的人，不喜欢那些有CopyRight的东西，他喜欢质疑，打破常规。他在YC搞的那个Internet Open Library（互联网开放图书馆）的项目，就是想把那些没有Copyright的书籍和学术期刊放在网上让全世界的人免费查阅。他认为固体的图书馆遮蔽了知识的传播，互联网理应成为连接书籍，读者，作者，纸张与思想的最好载体，同时也非常痛恨任何一家巨型的机构独吞所有书籍的做法。他想把公共存取（Public Access）变成公共领域（Public Domain）。在他的青少年时期，他就在不懈地和一切限制信息自由交换和自由共享的做法做斗争。这是他认为的互联网精神，他同时也觉得这和美国民主自由的宪法的精神是一致的。这其中发生过这样一件事情，美国法院行政办公室有一个叫 PACER（Public Access to Court Electronic Records） 的政府服务。这个服务会把法庭记录的文件放在网上，如果你要看的话，一页要付费8美分，对这个事他非常不能理解，他觉得这些文件本来就属于公众，没有CopyRight，为什么属于公众的东西还要收费。PACER这个服务每年可以为政府带来1.2亿美金的收入。于是斯沃茨在2008年9月4日到20日，他用Perl在AWS上写了一个程序，从PACER上下载了270万的文档（2000万页，纽约时报里说他下载大约是总量的20%，但是也有人不到总量的1%）,于是FBI对他调查了两个多月，但最终没有对他起诉。</p>
+<p>斯沃茨还起草了一份《开放获取游击队宣言》（Guerrilla Open Access Manifesto），下面是节选：</p>
+<blockquote>
+<p>信息就是能源。但就像所有能源一样，有些人只想占为己有。世界上所有的科学和文化遗产，已在书籍和期刊上发布了数个世纪，正渐渐地被少数私有的公司数字化并上锁。想要阅读那些有着最著名研究成果的论文？你必须支付给如 Reed Elsevier 这样的出版商大把钱。 </p>
+<p>…… …… </p>
+<p>我们要夺回信息，无论它们被存在何处，制作我们的副本并和全世界分享。我们要取到版权到期的东西并将它们归档，我们要买下秘密的资料库并将它们放到网上。我们要下载科学期刊并将它们上传到文件分享网络。我们要为游击队开放访问而战。 </p>
+<p>只要全世界有足够多的我们，那就不仅是传达了一个反对知识私有化的强有力信号，我们还将让它成为过去。你愿意和我们一起吗？ </p>
+<p>亚伦·斯沃茨 (Aaron Swartz) 2008 年 7 月，意大利 Eremo </p>
+</blockquote>
+<p>斯沃茨觉得那些对人类有价值的科学和文化遗产属于全人类，美国大学每年需要向那些出版学术期刊、论文的机构（比如 ISI，Jstor）支付许可费用，许可费用极高，他觉得这是这个时代的悲剧。2009年，他成立了进步改变运动委员会，2010年，他又创建了求进会－利用互联网来组织群众与议会和政府对话。 也正因为他不理解政府和这个时代的一些行为，促使他开始学习各种政治上的东西去寻求突破。在2010年到2011年，斯沃茨在哈佛大学Edmond J. Safra研究实验室以Lab Fellow的身份主导了“制度腐败”课题的研究，也因为这个身份，斯沃茨在MIT做访问学者的时候拥有了JSTOR访问帐号，这意味着他可以通过MIT的网络访问大量的学术期刊。于是，他把笔记本放到了地下室网络交换机的机房中，直接插上网线全天后地从JSTOR下载学术期刊，还因此导致JSTOR一度瘫痪。由于他不断变换IP和MAC地址，躲过封锁，JSTOR无计可施，被迫禁止所有MIT用户访问长达四天。JSTOR报告了警方，美国国家安全警察找到了那间楼道里的机房，然后在那间机房里安了摄像头，拍摄到了斯沃茨去换硬盘时的录像，之后斯沃茨被捕了。在斯沃茨被捕后的第三天，一个用户名为Greg Maxwell的声援者，在海盗湾上传了一个BT种子，里面包含18,592篇来自JSTOR的论文，共计32.48GB。这位声援者说：“学术论文本应该允许自由获得，但是大多数论文都被像JSTOR这样的守门员，以高额收费的形式阻止传播。”同年的7月11日，检查官以通信欺诈、计算机欺诈、非法获得信息，以及破坏被保护的电脑罪名来起诉他，若罪名成立，斯沃茨将可能面临35年的监禁。事后JSTOR发表声明表示，他们无意牵扯入此案，他们已经和斯沃茨在2011年6月就相关事务达成一致，斯沃茨归还了相关文件，他们也即时撤销了所有民事指控，随后是否控告的决定由美国政府做出。而MIT方面虽然也放弃起诉，发表了保持中立相关的说明，但这种保持中立被舆论认为是一种“坐视不理”的行为，同时也违背了MIT一贯鼓吹的黑客文化，MIT一时间声名狼藉成了千夫所指。 美国政府的检查官坚持以重罪起诉斯沃茨，当时放在他前有两条路：1）认罪，承认犯下重罪，35年的判决会变成3个月入狱+1年的居家监禁（不得使用电脑），2）不认罪，那就有可能接受35年监禁的最坏结果，而斯沃茨选择了后者。在此期间，斯沃茨还通过他的求进会网聚众反对SOPA法案（Stop Online Piracy Act，网络审查制度）和政府做斗争，最终导致了整个社会都在反对SOPA，也导致了那些议员纷纷改变自己的想法，并导致了白宫最终放弃了这个法案。而在次年9月，政府对斯沃茨进行了更为严厉的起诉，新加入了另外9条起诉，如果成立，斯沃茨最多会获刑50年外加100万美金的罚款。同样，检察官给出了优惠条件，只要斯沃茨认罪，那就只起诉他6个月的监禁，然而，斯沃茨再次拒绝。 </p>
+<p>2013年1月11日上午，斯沃茨自杀了，这就是斯沃茨传奇的一生，他用生命捍卫了互联网的开放和自由。在斯沃茨的纪念网站上这样写着，“作为一个程序员和技术人员，他不是用惊人的技巧使自己富足，而是使网际网路和世界成为一个更公平，更美好的地方。”</p>
+<img src="/2016/03/15/黑客列传/《黑客列传》之互联网之子－Aaron-Swartz/2.jpg" alt="2.jpg" title="">
+<p><br></p>
+<p>斯沃茨的葬礼于2013年1月15日举行，万维网的发明者蒂姆·伯纳斯-李在葬礼上发表了悼词。匿名者组织（Anonymous）攻击了麻省理工学院网站并更改了首页，以示向斯沃茨致敬。</p>
+<img src="/2016/03/15/黑客列传/《黑客列传》之互联网之子－Aaron-Swartz/1.jpg" alt="1.jpg" title="">
+<p><br></p>
+<p>有一个叫 Jack Andraka的14岁男孩，来自巴尔的摩，因为阅读了斯沃茨推广的JSTOR免费学术论文，而想出了一种提早检测胰腺癌的方法。之后他去了约翰霍普金斯大学做继续研究。Jack说：“我之所以上了新闻，是因为我们的实验成功了，而这就是为什么斯沃茨做的事有那么重要……这个宇宙中的真理不是只有那些政策制定者曾经弄清楚过的，比如应该限速多少，它还包括那些能让你的孩子，不会因胰腺癌而死的研究。如果没有访问阅读权，那个能解决你的问题的人，可能就永远找不到答案。”</p>
+<img src="/2016/03/15/黑客列传/《黑客列传》之互联网之子－Aaron-Swartz/3.jpg" alt="3.jpg" title="">
+<p><br></p>
+<h1 id="更多参考"><a href="#更多参考" class="headerlink" title="更多参考"></a>更多参考</h1><ol>
+<li><a href="http://www.aaronsw.com/" target="_blank" rel="external">http://www.aaronsw.com/</a></li>
+<li>纪录片－《互联网之子》</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E4%BA%9A%E4%BC%A6%C2%B7%E6%96%AF%E6%B2%83%E8%8C%A8" target="_blank" rel="external">https://zh.wikipedia.org/wiki/%E4%BA%9A%E4%BC%A6%C2%B7%E6%96%AF%E6%B2%83%E8%8C%A8</a></li>
+<li><a href="http://baike.baidu.com/view/7854319.htm" target="_blank" rel="external">http://baike.baidu.com/view/7854319.htm</a></li>
+<li><a href="http://coolshell.cn/articles/11928.html" target="_blank" rel="external">http://coolshell.cn/articles/11928.html</a></li>
+<li><a href="https://www.zhihu.com/question/20711220/answer/15950812" target="_blank" rel="external">https://www.zhihu.com/question/20711220/answer/15950812</a> </li>
+<li><a href="https://www.zhihu.com/question/24928691/answer/29478342" target="_blank" rel="external">https://www.zhihu.com/question/24928691/answer/29478342</a></li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;img src=&quot;/2016/03/15/黑客列传/《黑客列传》之互联网之子－Aaron-Swartz/profile.jpg&quot; alt=&quot;profile.jpg&quot; title=&quot;&quot;&gt;
+&lt;p&gt;&lt;br/&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“你真的应该每时每刻都问自己，现在这世界有什么最重要的事是我能参与去做的？如果你没在做那最重要的事，那又是为什么？”&lt;br&gt;－亚伦·斯沃茨&lt;/p&gt;
+&lt;/blockquote&gt;
+    
+    </summary>
+    
+      <category term="《黑客列传》" scheme="http://yoursite.com/categories/%E3%80%8A%E9%BB%91%E5%AE%A2%E5%88%97%E4%BC%A0%E3%80%8B/"/>
+    
+    
+      <category term="黑客" scheme="http://yoursite.com/tags/%E9%BB%91%E5%AE%A2/"/>
+    
+      <category term="传记" scheme="http://yoursite.com/tags/%E4%BC%A0%E8%AE%B0/"/>
     
   </entry>
   
