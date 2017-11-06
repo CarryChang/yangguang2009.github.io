@@ -68,7 +68,7 @@
 <meta property="og:image" content="http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/0.gif">
 <meta property="og:image" content="http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/2.png">
 <meta property="og:image" content="http://yoursite.com/2017/10/16/programming/use-opencv-in-swift/3.png">
-<meta property="og:updated_time" content="2017-10-23T13:15:27.000Z">
+<meta property="og:updated_time" content="2017-11-06T13:35:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="在 Swift 中使用 OpenCV">
 <meta name="twitter:description" content="通过阅读本篇内容您将了解到：- 如何在 iOS 项目项目中添加 OpenCV 库；- Objective-C++ 与 Swift 的结合使用，及桥接文件的添加；- Swift 中对摄像头图像的获取方法及展现；- Swift 与 OpenCV 的交互；">
@@ -80,7 +80,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     scheme: 'Mist',
-    sidebar: {"position":"left","display":"hide"},
+    sidebar: {"position":"left","display":"post"},
     fancybox: true,
     motion: true,
     duoshuo: {
@@ -299,10 +299,10 @@
 <li><p>使用 <a href="https://cocoapods.org/" target="_blank" rel="external">CocoaPods</a> 添加<br>Profile 中添加 OpenCV：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">target &apos;UseOpenCVInSwiftDemo&apos; do</div><div class="line">  use_frameworks!</div><div class="line">  pod &apos;OpenCV&apos;</div><div class="line">end</div></pre></td></tr></table></figure>
 </li>
-<li><p>直接下载<br>在官网的 <a href="https://opencv.org/releases.html" target="_blank" rel="external">Releases</a> 列表中直接下载相应版本的 iOS pack。<br>解压下载后的 zip 文件，得到一个 opencv2.framework 库，右键点击项目选择添加文件，进行添加即可：<br>这里需要注意的是请不要以直接拖拽的方式添加，容易产生找不到<code>opencv2/opencv.hpp file not found</code>的错误。<br>以上是两种简单的添加 OpenCV 的方法。</p>
+<li><p>直接下载<br>在官网的 <a href="https://opencv.org/releases.html" target="_blank" rel="external">Releases</a> 列表中直接下载相应版本的 iOS pack。<br>解压下载后的 zip 文件，得到一个 opencv2.framework 库，右键点击项目选择添加文件，进行添加即可：<br>这里需要注意的是请不要以直接拖拽的方式添加，容易产生找不到<code>opencv2/opencv.hpp file not found</code>的错误。</p>
 </li>
 </ol>
-<p>需要注意的是如果在编译时产生如下错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">Undefined symbols for architecture arm64:</div><div class="line">  &quot;_OBJC_CLASS_$_ALAssetsLibrary&quot;, referenced from:</div><div class="line">      objc-class-ref in opencv2(cap_ios_video_camera.o)</div><div class="line">  &quot;_CMSampleBufferGetPresentationTimeStamp&quot;, referenced from:</div><div class="line">      -[CvVideoCamera captureOutput:didOutputSampleBuffer:fromConnection:] in opencv2(cap_ios_video_camera.o)</div><div class="line">  &quot;_CMTimeMake&quot;, referenced from:</div><div class="line">      -[CvVideoCamera createVideoDataOutput] in opencv2(cap_ios_video_camera.o)</div><div class="line">  &quot;_CMSampleBufferGetImageBuffer&quot;, referenced from:</div><div class="line">      -[CaptureDelegate captureOutput:didOutputSampleBuffer:fromConnection:] in opencv2(cap_avfoundation.o)</div><div class="line">      -[CvVideoCamera captureOutput:didOutputSampleBuffer:fromConnection:] in opencv2(cap_ios_video_camera.o)</div><div class="line">ld: symbol(s) not found for architecture arm64</div><div class="line">clang: error: linker command failed with exit code 1 (use -v to see invocation)</div></pre></td></tr></table></figure></p>
+<p>以上是两种简单的添加 OpenCV 的方法，需要注意的是如果在编译时产生如下错误：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">Undefined symbols for architecture arm64:</div><div class="line">  &quot;_OBJC_CLASS_$_ALAssetsLibrary&quot;, referenced from:</div><div class="line">      objc-class-ref in opencv2(cap_ios_video_camera.o)</div><div class="line">  &quot;_CMSampleBufferGetPresentationTimeStamp&quot;, referenced from:</div><div class="line">      -[CvVideoCamera captureOutput:didOutputSampleBuffer:fromConnection:] in opencv2(cap_ios_video_camera.o)</div><div class="line">  &quot;_CMTimeMake&quot;, referenced from:</div><div class="line">      -[CvVideoCamera createVideoDataOutput] in opencv2(cap_ios_video_camera.o)</div><div class="line">  &quot;_CMSampleBufferGetImageBuffer&quot;, referenced from:</div><div class="line">      -[CaptureDelegate captureOutput:didOutputSampleBuffer:fromConnection:] in opencv2(cap_avfoundation.o)</div><div class="line">      -[CvVideoCamera captureOutput:didOutputSampleBuffer:fromConnection:] in opencv2(cap_ios_video_camera.o)</div><div class="line">ld: symbol(s) not found for architecture arm64</div><div class="line">clang: error: linker command failed with exit code 1 (use -v to see invocation)</div></pre></td></tr></table></figure></p>
 <p>请在项目中再添加以下 framework 即可解决：<br><code>AssetsLibrary.framework</code>、<code>CoreMedia.framework</code>、<code>CoreVideo.framework</code>。<br>具体添加方法：<code>Project／General／Linked Frameworks and Libraies</code>：<img src="/2017/10/16/programming/use-opencv-in-swift/2.png" alt="2.png" title=""></p>
 <h1 id="OpenCV-使用准备"><a href="#OpenCV-使用准备" class="headerlink" title="OpenCV 使用准备"></a>OpenCV 使用准备</h1><p>我们添加的 OpenCV 是由 C++ 编码的，在 Swift 中可以通过添加 Objective-C++ 文件实现对 OpenCV 的使用。<br>原理示意如下：<br><img src="/2017/10/16/programming/use-opencv-in-swift/3.png" alt="3.png" title=""><br>具体步骤：</p>
 <ol>
@@ -399,6 +399,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2017/10/30/algorithm/the-transfer-matrix-method/" rel="prev" title="Transfer Matrix Method 介绍">
+                Transfer Matrix Method 介绍 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -465,7 +469,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-count">23</span>
               <span class="site-state-item-name">posts</span>
             </a>
           </div>
@@ -482,7 +486,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
